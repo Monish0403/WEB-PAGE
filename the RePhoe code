@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RePhone | Buy & Sell Certified Pre-Owned Smartphones</title>
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
+            },
+            accent: {
+              500: '#3b82f6',
+              600: '#2563eb',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom utility & scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .badge-shimmer {
+      background: linear-gradient(110deg, #10b981 8%, #34d399 18%, #10b981 33%);
+      background-size: 200% 100%;
+      animation: shimmer 2.5s infinite linear;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .modal-backdrop {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- ================= TOP ANNOUNCEMENT BAR ================= -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-2 px-4 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1 bg-brand-500/20 text-brand-400 font-semibold px-2 py-0.5 rounded-full text-[11px]">
+          <i class="ph-bold ph-shield-check"></i> RePhone Assured
+        </span>
+        <span class="hidden sm:inline">32-Point Quality Inspection &middot; 7-Day Money Back &middot; Up to 1 Year Warranty</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1"><i class="ph-bold ph-map-pin"></i> Delivering across India</span>
+        <a href="#sell-section" onclick="openSellModal()" class="text-brand-400 hover:underline font-medium flex items-center gap-1">
+          Sell for Instant Cash <i class="ph-bold ph-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= NAVIGATION HEADER ================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-2.5 shrink-0 group">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/25 group-hover:scale-105 transition-transform">
+          <i class="ph-fill ph-device-mobile text-2xl"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-2xl font-black tracking-tight text-slate-900 flex items-center gap-0.5">
+            Re<span class="text-brand-600">Phone</span>
+          </span>
+          <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 -mt-1">Verified Marketplace</span>
+        </div>
+      </a>
+
+      <!-- Realtime Search Input -->
+      <div class="flex-1 max-w-xl mx-2 hidden md:block">
+        <div class="relative">
+          <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+          <input 
+            type="text" 
+            id="globalSearchInput"
+            placeholder="Search model, brand or specs (e.g. iPhone 14 Pro, Galaxy S23 Ultra, 256GB)..." 
+            class="w-full bg-slate-100 hover:bg-slate-100/80 focus:bg-white text-sm pl-11 pr-10 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-slate-400 font-medium"
+            oninput="handleSearch(this.value)"
+          />
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
+            <i class="ph-bold ph-x text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Action Nav Items -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Wishlist Button -->
+        <button onclick="toggleWishlistDrawer()" class="relative p-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+          <i class="ph-bold ph-heart text-2xl"></i>
+          <span id="wishlistCountBadge" class="hidden absolute top-1 right-1 w-5 h-5 bg-rose-500 text-white text-[11px] font-bold rounded-full flex items-center justify-center border-2 border-white">0</span>
+        </button>
+
+        <!-- Sell Device CTA -->
+        <button onclick="openSellModal()" class="flex items-center gap-2 bg-gradient-to-r from-brand-600 to-emerald-600 hover:from-brand-700 hover:to-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-brand-600/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+          <i class="ph-bold ph-plus-circle text-lg"></i>
+          <span class="hidden sm:inline">Sell Your Phone</span>
+          <span class="sm:hidden">Sell</span>
+        </button>
+
+        <!-- Quick Location Selector -->
+        <div class="hidden lg:flex items-center gap-1.5 px-3 py-2 bg-slate-100 rounded-xl text-xs font-semibold text-slate-700 border border-slate-200">
+          <i class="ph-fill ph-map-pin text-brand-600 text-base"></i>
+          <select id="cityFilterSelect" onchange="handleCityFilter(this.value)" class="bg-transparent border-none outline-none cursor-pointer pr-1">
+            <option value="All">All Cities</option>
+            <option value="Bengaluru">Bengaluru</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Delhi NCR">Delhi NCR</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Pune">Pune</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Search Bar (Only visible on small devices) -->
+    <div class="p-3 border-t border-slate-100 md:hidden bg-white">
+      <div class="relative">
+        <i class="ph ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input 
+          type="text" 
+          id="mobileSearchInput"
+          placeholder="Search iPhone, Samsung, Pixel..." 
+          class="w-full bg-slate-100 text-sm pl-10 pr-8 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+          oninput="handleSearch(this.value)"
+        />
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= HERO PROMO BANNER ================= -->
+  <section class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white pt-10 pb-12 px-4 relative overflow-hidden">
+    <!-- Ambient Glow effects -->
+    <div class="absolute -top-32 left-1/4 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-10 right-10 w-80 h-80 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-7 space-y-5 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3.5 py-1.5 rounded-full text-xs font-semibold text-emerald-400">
+          <i class="ph-bold ph-sparkle"></i> India's Cleanest Phone Exchange
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight text-white">
+          Certified Pre-Owned Flagships. <br class="hidden sm:block" />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-blue-400">
+            Up to 60% Less Than Retail.
+          </span>
+        </h1>
+        <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+          Every phone is passed through our comprehensive 32-point hardware test, IMEI integrity check, and sanitized before delivery.
+        </p>
+
+        <!-- Trust Badges Row -->
+        <div class="pt-2 flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 text-xs text-slate-300 font-medium">
+          <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-700/60">
+            <i class="ph-bold ph-shield-check text-brand-400 text-lg"></i>
+            <span>6-12 Mo. Warranty</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-700/60">
+            <i class="ph-bold ph-battery-charging text-amber-400 text-lg"></i>
+            <span>85%+ Battery Guaranteed</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-700/60">
+            <i class="ph-bold ph-arrow-counter-clockwise text-blue-400 text-lg"></i>
+            <span>7-Day Return Policy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Phone Valuation Teaser Card -->
+      <div class="lg:col-span-5">
+        <div class="bg-white/10 backdrop-blur-xl border border-white/15 p-6 rounded-2xl shadow-2xl relative">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+            <div>
+              <p class="text-xs uppercase tracking-wider text-emerald-400 font-bold">Sell in 60 Seconds</p>
+              <h2 class="text-lg font-bold text-white">Instant Phone Appraisal</h2>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+              ₹
+            </div>
+          </div>
+          <p class="text-xs text-slate-300 mb-4">Want to upgrade? Get an instant market quote & cash payment at your doorstep.</p>
+          
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div>
+              <label class="text-[11px] text-slate-300 font-semibold mb-1 block">Brand</label>
+              <select id="heroQuickBrand" class="w-full bg-slate-900/80 border border-slate-700 text-white text-xs rounded-xl p-2.5 outline-none focus:border-brand-500">
+                <option value="Apple">Apple iPhone</option>
+                <option value="Samsung">Samsung Galaxy</option>
+                <option value="Google">Google Pixel</option>
+                <option value="OnePlus">OnePlus</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-300 font-semibold mb-1 block">Model</label>
+              <select id="heroQuickModel" class="w-full bg-slate-900/80 border border-slate-700 text-white text-xs rounded-xl p-2.5 outline-none focus:border-brand-500">
+                <option value="iPhone 13">iPhone 13 (128GB)</option>
+                <option value="iPhone 14">iPhone 14 (128GB)</option>
+                <option value="Galaxy S23">Galaxy S23 5G</option>
+                <option value="Pixel 7">Pixel 7</option>
+              </select>
+            </div>
+          </div>
+
+          <button onclick="triggerQuickEstimate()" class="w-full py-3 px-4 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-sm rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20">
+            <span>Calculate Resale Value</span>
+            <i class="ph-bold ph-calculator text-base"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BRAND FILTER TABS ================= -->
+  <section class="border-b border-slate-200 bg-white sticky top-20 z-30 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-2 overflow-x-auto py-3 no-scrollbar scroll-smooth" id="brandTabsContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MAIN MARKETPLACE CONTAINER ================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <!-- Top toolbar: Stats, Sorting, and Toggle Filters -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+      <div class="flex items-center gap-3">
+        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight" id="activeFilterHeading">Available Phones</h2>
+        <span id="activeCountBadge" class="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-full border border-slate-200">12 devices</span>
+      </div>
+
+      <!-- Filters & Sorting Controls -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Verified Only Toggle -->
+        <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-2 rounded-xl transition-all">
+          <input type="checkbox" id="verifiedOnlyToggle" class="accent-brand-600 w-4 h-4 rounded cursor-pointer" onchange="applyFilters()">
+          <span class="flex items-center gap-1">
+            <i class="ph-bold ph-seal-check text-brand-600"></i>
+            <span>Certified Only</span>
+          </span>
+        </label>
+
+        <!-- Condition Filter Dropdown -->
+        <div class="relative">
+          <select id="conditionFilterSelect" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3 py-2 pr-8 focus:outline-none focus:border-brand-500 cursor-pointer">
+            <option value="All">All Conditions</option>
+            <option value="Flawless">Like New (Mint)</option>
+            <option value="Excellent">Good (Light Wear)</option>
+            <option value="Fair">Fair (Noticeable)</option>
+          </select>
+        </div>
+
+        <!-- Storage Filter Dropdown -->
+        <div class="relative">
+          <select id="storageFilterSelect" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3 py-2 pr-8 focus:outline-none focus:border-brand-500 cursor-pointer">
+            <option value="All">Storage: Any</option>
+            <option value="64GB">64 GB</option>
+            <option value="128GB">128 GB</option>
+            <option value="256GB">256 GB</option>
+            <option value="512GB">512 GB+</option>
+          </select>
+        </div>
+
+        <!-- Sort Select -->
+        <div class="relative">
+          <select id="sortSelect" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3 py-2 pr-8 focus:outline-none focus:border-brand-500 cursor-pointer">
+            <option value="featured">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="battery-desc">Battery Health: Best First</option>
+            <option value="newest">Latest Uploads</option>
+          </select>
+        </div>
+
+        <!-- Reset Filters Button -->
+        <button onclick="resetAllFilters()" title="Reset all filters" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors">
+          <i class="ph-bold ph-arrow-counter-clockwise text-base"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Filter Tags row (appears when filters are active) -->
+    <div id="activeTagsRow" class="hidden flex-wrap items-center gap-2 mb-5"></div>
+
+    <!-- PRODUCT LISTINGS GRID -->
+    <div id="phonesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Phone cards injected dynamically -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden py-16 text-center bg-white rounded-3xl border border-slate-200 p-8">
+      <div class="w-20 h-20 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+        <i class="ph ph-device-mobile-slash"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-900 mb-2">No matching phones found</h3>
+      <p class="text-slate-500 text-sm max-w-md mx-auto mb-6">
+        We couldn't find any phone matching your chosen filters. Try widening your price range or clearing selected brands.
+      </p>
+      <button onclick="resetAllFilters()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-md">
+        Clear All Filters
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ================= VALUE PROPOSITION / TRUST SECTION ================= -->
+  <section class="bg-white border-t border-slate-200 py-12 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-brand-600 font-bold text-xs uppercase tracking-widest">Why Choose RePhone</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">The Safest Way to Buy Used Tech</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mb-4">
+            <i class="ph-bold ph-check-square-offset"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1">32-Point Diagnostic</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">Cameras, biometric sensors, touchscreen, speakers, and logic boards fully checked.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl mb-4">
+            <i class="ph-bold ph-file-text"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1">Verified IMEI & Invoice</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">Anti-theft checked through government blacklists. Genuine ownership guaranteed.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl mb-4">
+            <i class="ph-bold ph-shield-check"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1">Up to 12M Warranty</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">Peace of mind with hardware breakdown warranty and express customer support.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mb-4">
+            <i class="ph-bold ph-hand-coins"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1">Instant Doorstep Payout</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">Selling your old phone? Get instant UPI or bank transfer after doorstep physical check.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-slate-950 text-slate-400 text-xs py-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-8 mb-8">
+      <div class="col-span-2">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-8 h-8 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold">
+            <i class="ph-fill ph-device-mobile text-lg"></i>
+          </div>
+          <span class="text-lg font-black text-white tracking-tight">RePhone</span>
+        </div>
+        <p class="text-slate-400 max-w-sm mb-4 leading-relaxed">
+          The next-generation certified pre-owned smartphone marketplace. Transparent device grading, verified diagnostics, and reliable peer-to-peer exchanges.
+        </p>
+        <p class="text-slate-500 text-[11px]">&copy; 2026 RePhone Technologies Inc. All rights reserved.</p>
+      </div>
+
+      <div>
+        <h4 class="text-white font-bold uppercase tracking-wider text-[11px] mb-3">Top Brands</h4>
+        <ul class="space-y-2">
+          <li><button onclick="setBrandFilter('Apple')" class="hover:text-white">Used Apple iPhone</button></li>
+          <li><button onclick="setBrandFilter('Samsung')" class="hover:text-white">Used Samsung Galaxy</button></li>
+          <li><button onclick="setBrandFilter('Google')" class="hover:text-white">Used Google Pixel</button></li>
+          <li><button onclick="setBrandFilter('OnePlus')" class="hover:text-white">Used OnePlus Devices</button></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-bold uppercase tracking-wider text-[11px] mb-3">Trust & Safety</h4>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:text-white">32-Point Test Protocol</a></li>
+          <li><a href="#" class="hover:text-white">IMEI Blacklist Verification</a></li>
+          <li><a href="#" class="hover:text-white">7-Day Refund Policy</a></li>
+          <li><a href="#" class="hover:text-white">Warranty Claim Portal</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-bold uppercase tracking-wider text-[11px] mb-3">Cities Served</h4>
+        <ul class="space-y-2">
+          <li><span class="hover:text-white">Bengaluru (Electronic City & Indiranagar)</span></li>
+          <li><span class="hover:text-white">Mumbai & Navi Mumbai</span></li>
+          <li><span class="hover:text-white">Delhi NCR & Gurugram</span></li>
+          <li><span class="hover:text-white">Hyderabad & Pune</span></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= PRODUCT DETAILS MODAL ================= -->
+  <div id="productModal" class="fixed inset-0 z-50 hidden overflow-y-auto modal-backdrop bg-slate-900/60 transition-opacity">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center p-0 sm:p-4">
+      <div class="inline-block w-full max-w-4xl my-8 text-left align-middle transition-all transform bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-200">
+        
+        <!-- Modal Top Bar -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70">
+          <div class="flex items-center gap-2">
+            <span id="modalVerifiedBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200">
+              <i class="ph-bold ph-seal-check"></i> RePhone Certified
+            </span>
+            <span id="modalConditionScore" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">9.5/10 Flawless</span>
+          </div>
+          <button onclick="closeProductModal()" class="w-9 h-9 rounded-full bg-slate-200/80 hover:bg-slate-300 flex items-center justify-center text-slate-600 transition-colors">
+            <i class="ph-bold ph-x text-lg"></i>
+          </button>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 md:grid-cols-12 gap-8 max-h-[82vh] overflow-y-auto">
+          <!-- Left: Gallery & Quick Visuals -->
+          <div class="md:col-span-5 space-y-4">
+            <div class="relative w-full aspect-square bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 flex items-center justify-center p-4">
+              <img id="modalMainImg" src="" alt="Phone Image" class="w-full h-full object-contain mix-blend-multiply transition-all duration-300">
+              <button onclick="toggleModalFavorite()" id="modalFavBtn" class="absolute top-3 right-3 p-2.5 rounded-full bg-white/90 shadow text-slate-600 hover:text-rose-500">
+                <i class="ph-bold ph-heart text-xl"></i>
+              </button>
+            </div>
+
+            <!-- Thumbnail Selector -->
+            <div id="modalThumbsList" class="flex items-center gap-2 overflow-x-auto pb-1">
+              <!-- JS Injected -->
+            </div>
+
+            <!-- Key Quick Specs -->
+            <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200/80 text-center">
+              <div>
+                <p class="text-[10px] uppercase font-bold text-slate-400">Battery Health</p>
+                <p id="modalBattery" class="text-sm font-extrabold text-emerald-600">--%</p>
+              </div>
+              <div class="border-x border-slate-200">
+                <p class="text-[10px] uppercase font-bold text-slate-400">Storage</p>
+                <p id="modalStorage" class="text-sm font-extrabold text-slate-800">--</p>
+              </div>
+              <div>
+                <p class="text-[10px] uppercase font-bold text-slate-400">Warranty</p>
+                <p id="modalWarranty" class="text-sm font-extrabold text-slate-800">--</p>
+              </div>
+            </div>
+
+            <!-- Included in the box -->
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <p class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
+                <i class="ph-bold ph-package text-brand-600"></i> What's Included:
+              </p>
+              <div id="modalBoxItems" class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
+                <!-- Injected -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Details, Inspection Checklist & Offer/Chat CTA -->
+          <div class="md:col-span-7 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <p id="modalBrandTag" class="text-xs font-bold text-brand-600 uppercase tracking-wider">Brand</p>
+                  <h3 id="modalTitle" class="text-2xl font-extrabold text-slate-900 tracking-tight">Smartphone Model</h3>
+                </div>
+                <div class="text-right">
+                  <div class="flex items-baseline gap-2">
+                    <span id="modalPrice" class="text-2xl font-black text-slate-900">₹--</span>
+                    <span id="modalOriginalPrice" class="text-xs text-slate-400 line-through">₹--</span>
+                  </div>
+                  <span id="modalSavingsBadge" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">Save 45%</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 text-xs text-slate-500 mb-4 pb-3 border-b border-slate-100">
+                <span class="flex items-center gap-1"><i class="ph-bold ph-map-pin"></i> <span id="modalLocation">Bengaluru</span></span>
+                <span>&bull;</span>
+                <span class="flex items-center gap-1"><i class="ph-bold ph-clock"></i> Listed <span id="modalDate">2 days ago</span></span>
+                <span>&bull;</span>
+                <span class="flex items-center gap-1"><i class="ph-bold ph-fingerprint text-brand-600"></i> IMEI Clean</span>
+              </div>
+
+              <!-- 32-Point Diagnostic Inspection Results -->
+              <div class="mb-5">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="ph-fill ph-check-circle text-brand-600"></i> Diagnostic Inspection Passed (32/32)
+                  </h4>
+                  <span class="text-[11px] text-brand-700 font-bold bg-brand-50 px-2 py-0.5 rounded">All Verified</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100">
+                    <i class="ph-bold ph-check text-emerald-600"></i>
+                    <span class="text-slate-700">Display (No pixel burns)</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100">
+                    <i class="ph-bold ph-check text-emerald-600"></i>
+                    <span class="text-slate-700">Camera OIS & Autofocus</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100">
+                    <i class="ph-bold ph-check text-emerald-600"></i>
+                    <span class="text-slate-700">Biometrics / Face ID</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100">
+                    <i class="ph-bold ph-check text-emerald-600"></i>
+                    <span class="text-slate-700">Microphone & Speakers</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Seller Snapshot Card -->
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div id="modalSellerAvatar" class="w-10 h-10 rounded-full bg-slate-800 text-white font-bold flex items-center justify-center text-sm shadow">
+                    RP
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <p id="modalSellerName" class="text-sm font-bold text-slate-800">RePhone Refurb Lab</p>
+                      <i id="modalSellerBadge" class="ph-fill ph-seal-check text-brand-600" title="Verified Seller"></i>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                      <span class="flex items-center text-amber-500 font-bold">
+                        <i class="ph-fill ph-star mr-0.5"></i> <span id="modalSellerRating">4.9</span>
+                      </span>
+                      <span>&bull;</span>
+                      <span id="modalSellerType">Certified Merchant</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full inline-block">Fast Responder</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons: Chat, Counter Offer, Buy Now -->
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+              <div class="grid grid-cols-2 gap-3">
+                <button onclick="openOfferModal()" class="py-3 px-4 rounded-xl border-2 border-brand-600 text-brand-700 font-bold text-xs hover:bg-brand-50 transition-colors flex items-center justify-center gap-2">
+                  <i class="ph-bold ph-tag"></i> Make an Offer
+                </button>
+                <button onclick="openChatSimulator()" class="py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2">
+                  <i class="ph-bold ph-chat-teardrop-dots"></i> Chat with Seller
+                </button>
+              </div>
+
+              <button onclick="simulateBuyNow()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-brand-600 to-emerald-600 hover:from-brand-700 hover:to-emerald-700 text-white font-bold text-sm shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2">
+                <i class="ph-bold ph-lightning"></i> Buy Now with RePhone Guarantee
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SELL PHONE MODAL / VALUATION FLOW ================= -->
+  <div id="sellModal" class="fixed inset-0 z-50 hidden overflow-y-auto modal-backdrop bg-slate-900/60 transition-opacity">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center p-0 sm:p-4">
+      <div class="inline-block w-full max-w-2xl my-8 text-left align-middle transition-all transform bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-200">
+        
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-900 text-white">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-brand-500 flex items-center justify-center text-slate-950 font-bold">
+              <i class="ph-bold ph-plus"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-bold">List Your Smartphone</h3>
+              <p class="text-xs text-slate-400">Instant price estimate & direct listing to buyers</p>
+            </div>
+          </div>
+          <button onclick="closeSellModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300">
+            <i class="ph-bold ph-x text-base"></i>
+          </button>
+        </div>
+
+        <form id="sellPhoneForm" onsubmit="handleSellSubmit(event)" class="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+          
+          <!-- Device Spec Selection -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Brand *</label>
+              <select id="sellBrand" onchange="updateEstimatedPrice()" required class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-brand-500">
+                <option value="Apple">Apple</option>
+                <option value="Samsung">Samsung</option>
+                <option value="Google">Google</option>
+                <option value="OnePlus">OnePlus</option>
+                <option value="Xiaomi">Xiaomi</option>
+                <option value="Nothing">Nothing</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Model Name *</label>
+              <input type="text" id="sellModel" required placeholder="e.g. iPhone 13 Pro Max" oninput="updateEstimatedPrice()" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-brand-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Storage *</label>
+              <select id="sellStorage" onchange="updateEstimatedPrice()" required class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-brand-500">
+                <option value="64GB">64 GB</option>
+                <option value="128GB" selected>128 GB</option>
+                <option value="256GB">256 GB</option>
+                <option value="512GB">512 GB</option>
+                <option value="1TB">1 TB</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Condition & Battery -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Physical Condition *</label>
+              <select id="sellCondition" onchange="updateEstimatedPrice()" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-brand-500">
+                <option value="Flawless">Like New (Mint, No Scratches)</option>
+                <option value="Excellent">Good (Minor Micro-scratches)</option>
+                <option value="Fair">Fair (Noticeable Scuffs / Dents)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Battery Health (%) *</label>
+              <div class="flex items-center gap-3">
+                <input type="range" id="sellBatteryRange" min="70" max="100" value="88" oninput="document.getElementById('batteryValLabel').innerText = this.value + '%'; updateEstimatedPrice()" class="w-full accent-brand-600">
+                <span id="batteryValLabel" class="text-xs font-bold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg">88%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ESTIMATED VALUATION BOX -->
+          <div class="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-blue-500/10 border border-brand-200/60 p-4 rounded-2xl flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-bold uppercase text-brand-700 flex items-center gap-1">
+                <i class="ph-bold ph-scales"></i> Algorithmic Price Appraisal
+              </span>
+              <p class="text-xs text-slate-600 mt-0.5">Suggested fair market resale value:</p>
+            </div>
+            <div class="text-right">
+              <span id="suggestedPriceTag" class="text-xl font-extrabold text-brand-700">₹32,500</span>
+              <button type="button" onclick="useSuggestedPrice()" class="block text-[10px] text-brand-600 font-bold hover:underline">Apply to Asking Price</button>
+            </div>
+          </div>
+
+          <!-- Included Accessories & Boxes -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-2">Original Accessories Included:</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <label class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+                <input type="checkbox" id="accOriginalBox" class="accent-brand-600" checked>
+                <span>Original Box</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+                <input type="checkbox" id="accOriginalCharger" class="accent-brand-600" checked>
+                <span>Fast Charger</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+                <input type="checkbox" id="accOriginalBill" class="accent-brand-600" checked>
+                <span>GST Tax Invoice</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+                <input type="checkbox" id="accCase" class="accent-brand-600">
+                <span>Free Cases</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Pricing & Contact -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Your Asking Price (₹) *</label>
+              <input type="number" id="sellPrice" required min="1000" step="500" placeholder="e.g. 33000" class="w-full text-xs font-bold text-slate-900 bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-brand-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Your City *</label>
+              <select id="sellCity" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-brand-500">
+                <option value="Bengaluru">Bengaluru</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Delhi NCR">Delhi NCR</option>
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="Pune">Pune</option>
+                <option value="Chennai">Chennai</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Contact Phone / WhatsApp *</label>
+              <input type="tel" id="sellPhoneContact" required placeholder="+91 98765 43210" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-brand-500">
+            </div>
+          </div>
+
+          <!-- Device Image Selector -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Select Preset Device Photo or Custom URL</label>
+            <div class="flex items-center gap-3">
+              <select id="sellPresetImage" onchange="previewSellImage(this.value)" class="flex-1 text-xs bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-brand-500 font-medium">
+                <option value="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80">iPhone 15 Pro Titanium</option>
+                <option value="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&auto=format&fit=crop&q=80">iPhone 13 / 14 Midnight</option>
+                <option value="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80">Samsung Galaxy S Series Ultra</option>
+                <option value="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80">Google Pixel Flagship</option>
+                <option value="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80">OnePlus Series</option>
+              </select>
+              <div class="w-10 h-10 rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-slate-100">
+                <img id="sellImagePreview" src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80" class="w-full h-full object-cover">
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2">
+            <i class="ph-bold ph-rocket-launch"></i> Publish Phone Listing Instantly
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MAKE AN OFFER MODAL ================= -->
+  <div id="offerModal" class="fixed inset-0 z-50 hidden overflow-y-auto modal-backdrop bg-slate-900/60 transition-opacity">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center p-4">
+      <div class="inline-block w-full max-w-md text-left bg-white shadow-2xl rounded-2xl overflow-hidden border border-slate-200 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
+            <i class="ph-bold ph-handshake text-brand-600"></i> Make an Offer to Seller
+          </h4>
+          <button onclick="closeOfferModal()" class="text-slate-400 hover:text-slate-600"><i class="ph-bold ph-x text-lg"></i></button>
+        </div>
+        
+        <p class="text-xs text-slate-500 mb-4">Current listing price: <span id="offerListingPrice" class="font-bold text-slate-800">₹--</span>. Sellers respond 3x faster to offers within 10% of asking price.</p>
+
+        <div class="space-y-3 mb-5">
+          <label class="block text-xs font-bold text-slate-700">Your Counter Offer (₹)</label>
+          <input type="number" id="counterOfferInput" step="500" class="w-full text-base font-extrabold text-slate-900 bg-slate-50 border border-slate-300 rounded-xl p-3 outline-none focus:border-brand-500">
+          <div class="flex gap-2 text-xs">
+            <button onclick="quickOfferPercent(-5)" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg font-semibold text-slate-700">-5%</button>
+            <button onclick="quickOfferPercent(-10)" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg font-semibold text-slate-700">-10%</button>
+            <button onclick="quickOfferPercent(-15)" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg font-semibold text-slate-700">-15%</button>
+          </div>
+        </div>
+
+        <button onclick="submitCounterOffer()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition-all shadow-md">
+          Send Offer to Seller
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CHAT WITH SELLER SIMULATION MODAL ================= -->
+  <div id="chatModal" class="fixed inset-0 z-50 hidden overflow-y-auto modal-backdrop bg-slate-900/60 transition-opacity">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center p-4">
+      <div class="inline-block w-full max-w-lg text-left bg-white shadow-2xl rounded-2xl overflow-hidden border border-slate-200 flex flex-col h-[520px]">
+        <!-- Chat Header -->
+        <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-brand-500 text-slate-950 font-bold flex items-center justify-center text-xs">
+              <span id="chatSellerInitial">R</span>
+            </div>
+            <div>
+              <p id="chatSellerName" class="text-xs font-bold">Seller</p>
+              <p class="text-[10px] text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online &bull; Replies within 5 mins</p>
+            </div>
+          </div>
+          <button onclick="closeChatModal()" class="text-slate-400 hover:text-white"><i class="ph-bold ph-x text-base"></i></button>
+        </div>
+
+        <!-- Chat Messages Body -->
+        <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs">
+          <!-- Injected dynamically -->
+        </div>
+
+        <!-- Chat Input Form -->
+        <form onsubmit="handleSendChatMessage(event)" class="p-3 border-t border-slate-200 bg-white flex items-center gap-2">
+          <input type="text" id="chatInputMessage" placeholder="Ask about battery, inspection, or delivery..." required class="flex-1 text-xs bg-slate-100 rounded-xl px-3.5 py-2.5 border border-slate-200 outline-none focus:border-brand-500">
+          <button type="submit" class="p-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl">
+            <i class="ph-bold ph-paper-plane-right text-sm"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= WISHLIST DRAWER ================= -->
+  <div id="wishlistDrawer" class="fixed inset-y-0 right-0 z-50 w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out border-l border-slate-200 flex flex-col">
+    <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+      <div class="flex items-center gap-2">
+        <i class="ph-fill ph-heart text-rose-500 text-lg"></i>
+        <h3 class="font-bold text-slate-800 text-sm">Saved Smartphones (<span id="wishlistDrawerCount">0</span>)</h3>
+      </div>
+      <button onclick="toggleWishlistDrawer()" class="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+        <i class="ph-bold ph-x text-base"></i>
+      </button>
+    </div>
+
+    <!-- Wishlist items list -->
+    <div id="wishlistItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-slate-100">
+      <!-- Items dynamically populated -->
+    </div>
+
+    <div class="p-4 border-t border-slate-200 bg-slate-50">
+      <button onclick="clearAllWishlist()" class="w-full py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl border border-rose-200 transition-colors">
+        Clear All Saved Items
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION CONTAINER ================= -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ================= SCRIPTS & APPLICATION LOGIC ================= -->
+  <script>
+    /* ==========================================================
+       SAMPLE MOCK DATA: CERTIFIED & USED SMARTPHONES
+       ========================================================== */
+    const DEFAULT_PHONES = [
+      {
+        id: 'phone-1',
+        brand: 'Apple',
+        model: 'iPhone 14 Pro Max',
+        storage: '256GB',
+        condition: 'Flawless', // Flawless (Mint), Excellent (Good), Fair
+        conditionScore: '9.8/10',
+        batteryHealth: 92,
+        price: 74999,
+        originalPrice: 139900,
+        warranty: '8 Months RePhone Warranty',
+        location: 'Bengaluru',
+        sellerType: 'Certified Refurbisher',
+        sellerName: 'RePhone Assured Hub',
+        sellerRating: 4.9,
+        verified: true,
+        dateAdded: '2 hours ago',
+        images: [
+          'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&auto=format&fit=crop&q=80'
+        ],
+        boxItems: ['Original Apple Box', 'Braided Type-C Cable', 'GST Tax Invoice', 'SIM Ejector']
+      },
+      {
+        id: 'phone-2',
+        brand: 'Samsung',
+        model: 'Galaxy S23 Ultra 5G',
+        storage: '256GB',
+        condition: 'Flawless',
+        conditionScore: '9.7/10',
+        batteryHealth: 95,
+        price: 63999,
+        originalPrice: 124999,
+        warranty: '6 Months RePhone Warranty',
+        location: 'Mumbai',
+        sellerType: 'Certified Refurbisher',
+        sellerName: 'Galaxy Direct Refurb',
+        sellerRating: 4.8,
+        verified: true,
+        dateAdded: 'Yesterday',
+        images: [
+          'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80'
+        ],
+        boxItems: ['Original Box', 'Original 45W Charger', 'S-Pen Included', 'Tax Invoice']
+      },
+      {
+        id: 'phone-3',
+        brand: 'Apple',
+        model: 'iPhone 13',
+        storage: '128GB',
+        condition: 'Excellent',
+        conditionScore: '9.2/10',
+        batteryHealth: 88,
+        price: 38499,
+        originalPrice: 69900,
+        warranty: '6 Months RePhone Warranty',
+        location: 'Delhi NCR',
+        sellerType: 'Individual Seller',
+        sellerName: 'Arjun Verma',
+        sellerRating: 4.7,
+        verified: true,
+        dateAdded: '3 days ago',
+        images: [
+          'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&auto=format&fit=crop&q=80'
+        ],
+        boxItems: ['Original Box', 'Lightning Cable', 'Clear Protective Case']
+      },
+      {
+        id: 'phone-4',
+        brand: 'Google',
+        model: 'Pixel 8 Pro',
+        storage: '128GB',
+        condition: 'Flawless',
+        conditionScore: '9.9/10',
+        batteryHealth: 98,
+        price: 52999,
+        originalPrice: 106999,
+        warranty: '10 Months Brand Warranty',
+        location: 'Bengaluru',
+        sellerType: 'Certified Refurbisher',
+        sellerName: 'Pixel Hub India',
+        sellerRating: 4.9,
+        verified: true,
+        dateAdded: 'Just now',
+        images: [
+          'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80'
+        ],
+        boxItems: ['Google Original Box', 'Quick Switch Adapter', 'Invoice Available']
+      },
+      {
+        id: 'phone-5',
+        brand: 'OnePlus',
+        model: 'OnePlus 11 5G',
+        storage: '256GB',
+        condition: 'Excellent',
+        conditionScore: '9.0/10',
+        batteryHealth: 91,
+        price: 33999,
+        originalPrice: 61999,
+        warranty: '6 Months RePhone Warranty',
+        location: 'Hyderabad',
+        sellerType: 'Individual Seller',
+        sellerName: 'Karthik Rao',
+        sellerRating: 4.6,
+        verified: false,
+        dateAdded: '5 days ago',
+        images: [
+          'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80'
+        ],
+        boxItems: ['SuperVOOC 100W Fast Charger', 'Red Cable', 'Case']
+      },
+      {
+        id: 'phone-6',
+        brand: 'Apple',
+        model: 'iPhone 12 Mini',
+        storage: '64GB',
+        condition: 'Fair',
+        conditionScore: '8.4/10',
+        batteryHealth: 83,
+        price: 21999,
+        originalPrice: 59900,
+        warranty: '3 Months RePhone Warranty',
+        location: 'Pune',
+        sellerType: 'Individual Seller',
+        sellerName: 'Sneha Patil',
+        sellerRating: 4.5,
+        verified: true,
+        dateAdded: '4 days ago',
+        images: [
+          'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&auto=format&fit=crop&q=80'
+        ],
+        boxItems: ['Cable Only', 'Original Box']
+      },
+      {
+        id: 'phone-7',
+        brand: 'Nothing',
+        model: 'Nothing Phone (2)',
+        storage: '256GB',
+        condition: 'Flawless',
+        conditionScore: '9.6/10',
+        batteryHealth: 96,
+        price: 29999,
+        originalPrice: 49999,
+        warranty: '7 Months Brand Warranty',
+        location: 'Bengaluru',
+        sellerType: 'Individual Seller',
+        sellerName: 'Rahul Mehta',
+        sellerRating: 4.8,
+        verified: true,
+        dateAdded: '1 day ago',
+        images: [
+          'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80'
+        ],
+        boxItems: ['Glyph Interface Checked', 'Box & Cable', 'Bill Available']
+      },
+      {
+        id: 'phone-8',
+        brand: 'Samsung',
+        model: 'Galaxy Z Flip 5',
+        storage: '256GB',
+        condition: 'Excellent',
+        conditionScore: '9.3/10',
+        batteryHealth: 90,
+        price: 45999,
+        originalPrice: 99999,
+        warranty: '6 Months RePhone Warranty',
+        location: 'Mumbai',
+        sellerType: 'Certified Refurbisher',
+        sellerName: 'RePhone Flex Lab',
+        sellerRating: 4.9,
+        verified: true,
+        dateAdded: '2 days ago',
+        images: [
+          'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80'
+        ],
+        boxItems: ['Hinge Tested (Zero Creak)', 'Box & Cable', 'Warranty Card']
+      }
+    ];
+
+    /* ==========================================================
+       APP STATE MANAGEMENT
+       ========================================================== */
+    let phonesData = [];
+    let activeBrandFilter = 'All';
+    let activeCityFilter = 'All';
+    let searchQuery = '';
+    let selectedPhoneForModal = null;
+    let wishlistIds = [];
+
+    // Initialize application data
+    function initApp() {
+      // Load saved devices or fallback to defaults
+      const localPhones = localStorage.getItem('rephone_listings');
+      if (localPhones) {
+        try {
+          phonesData = JSON.parse(localPhones);
+        } catch (e) {
+          phonesData = [...DEFAULT_PHONES];
+        }
+      } else {
+        phonesData = [...DEFAULT_PHONES];
+        savePhonesToStorage();
+      }
+
+      // Load Wishlist
+      const localWishlist = localStorage.getItem('rephone_wishlist');
+      if (localWishlist) {
+        try {
+          wishlistIds = JSON.parse(localWishlist);
+        } catch (e) {
+          wishlistIds = [];
+        }
+      }
+
+      renderBrandTabs();
+      updateWishlistBadges();
+      applyFilters();
+      updateEstimatedPrice();
+    }
+
+    function savePhonesToStorage() {
+      localStorage.setItem('rephone_listings', JSON.stringify(phonesData));
+    }
+
+    function saveWishlistToStorage() {
+      localStorage.setItem('rephone_wishlist', JSON.stringify(wishlistIds));
+      updateWishlistBadges();
+    }
+
+    /* ==========================================================
+       RENDERING: BRAND TABS
+       ========================================================== */
+    const BRANDS = ['All', 'Apple', 'Samsung', 'Google', 'OnePlus', 'Nothing', 'Xiaomi'];
+
+    function renderBrandTabs() {
+      const container = document.getElementById('brandTabsContainer');
+      container.innerHTML = BRANDS.map(brand => {
+        const isActive = activeBrandFilter === brand;
+        return `
+          <button 
+            onclick="setBrandFilter('${brand}')"
+            class="px-4 py-2 rounded-xl text-xs font-bold shrink-0 transition-all flex items-center gap-1.5 ${
+              isActive 
+                ? 'bg-slate-900 text-white shadow-md' 
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+            }"
+          >
+            ${getBrandIcon(brand)}
+            <span>${brand === 'All' ? 'All Brands' : brand}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function getBrandIcon(brand) {
+      switch (brand) {
+        case 'Apple': return '<i class="ph-bold ph-apple-logo text-sm"></i>';
+        case 'Samsung': return '<i class="ph-bold ph-android-logo text-sm"></i>';
+        case 'Google': return '<i class="ph-bold ph-google-logo text-sm"></i>';
+        case 'OnePlus': return '<i class="ph-bold ph-lightning text-sm"></i>';
+        default: return '<i class="ph-bold ph-device-mobile text-sm"></i>';
+      }
+    }
+
+    function setBrandFilter(brand) {
+      activeBrandFilter = brand;
+      renderBrandTabs();
+      applyFilters();
+      
+      // Auto scroll smoothly to listings
+      document.getElementById('phonesGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ==========================================================
+       FILTERING & SORTING LOGIC
+       ========================================================== */
+    function applyFilters() {
+      const certifiedOnly = document.getElementById('verifiedOnlyToggle').checked;
+      const conditionSelect = document.getElementById('conditionFilterSelect').value;
+      const storageSelect = document.getElementById('storageFilterSelect').value;
+      const sortSelect = document.getElementById('sortSelect').value;
+
+      let filtered = phonesData.filter(phone => {
+        // Brand Filter
+        if (activeBrandFilter !== 'All' && phone.brand.toLowerCase() !== activeBrandFilter.toLowerCase()) {
+          return false;
+        }
+        // City Filter
+        if (activeCityFilter !== 'All' && phone.location !== activeCityFilter) {
+          return false;
+        }
+        // Certified / Verified Toggle
+        if (certifiedOnly && !phone.verified) {
+          return false;
+        }
+        // Condition Filter
+        if (conditionSelect !== 'All' && phone.condition !== conditionSelect) {
+          return false;
+        }
+        // Storage Filter
+        if (storageSelect !== 'All') {
+          if (storageSelect === '512GB+' && !(phone.storage.includes('512') || phone.storage.includes('1TB'))) {
+            return false;
+          } else if (storageSelect !== '512GB+' && !phone.storage.includes(storageSelect.replace('GB', ''))) {
+            return false;
+          }
+        }
+        // Search Query
+        if (searchQuery.trim() !== '') {
+          const q = searchQuery.toLowerCase();
+          const matchTitle = phone.model.toLowerCase().includes(q);
+          const matchBrand = phone.brand.toLowerCase().includes(q);
+          const matchStorage = phone.storage.toLowerCase().includes(q);
+          const matchLoc = phone.location.toLowerCase().includes(q);
+          if (!matchTitle && !matchBrand && !matchStorage && !matchLoc) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      // Sorting
+      if (sortSelect === 'price-asc') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (sortSelect === 'price-desc') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else if (sortSelect === 'battery-desc') {
+        filtered.sort((a, b) => b.batteryHealth - a.batteryHealth);
+      } else if (sortSelect === 'newest') {
+        filtered.reverse();
+      }
+
+      renderPhonesGrid(filtered);
+      renderActiveTags();
+    }
+
+    /* ==========================================================
+       RENDERING: PHONES GRID & CARDS
+       ========================================================== */
+    function renderPhonesGrid(items) {
+      const grid = document.getElementById('phonesGrid');
+      const emptyState = document.getElementById('emptyState');
+      const countBadge = document.getElementById('activeCountBadge');
+      const heading = document.getElementById('activeFilterHeading');
+
+      heading.innerText = activeBrandFilter === 'All' ? 'Available Phones' : `${activeBrandFilter} Phones`;
+      countBadge.innerText = `${items.length} ${items.length === 1 ? 'device' : 'devices'}`;
+
+      if (items.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = items.map(phone => {
+        const isFav = wishlistIds.includes(phone.id);
+        const conditionColor = 
+          phone.condition === 'Flawless' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+          phone.condition === 'Excellent' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+          'bg-amber-50 text-amber-700 border-amber-200';
+
+        const batteryColor = 
+          phone.batteryHealth >= 90 ? 'text-emerald-600 bg-emerald-50' : 
+          phone.batteryHealth >= 80 ? 'text-amber-600 bg-amber-50' : 'text-rose-600 bg-rose-50';
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+            
+            <!-- Top Card Media -->
+            <div class="relative p-4 pb-0 bg-slate-50/60 aspect-[4/3] flex items-center justify-center overflow-hidden">
+              <!-- RePhone Inspection / Verified badge -->
+              <div class="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start">
+                ${phone.verified ? `
+                  <span class="inline-flex items-center gap-1 bg-white/95 text-brand-700 text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-xs border border-brand-200">
+                    <i class="ph-bold ph-seal-check text-brand-600"></i> Certified
+                  </span>
+                ` : ''}
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${conditionColor}">
+                  ${phone.condition} (${phone.conditionScore})
+                </span>
+              </div>
+
+              <!-- Wishlist Toggle -->
+              <button 
+                onclick="event.stopPropagation(); toggleWishlist('${phone.id}')"
+                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 shadow-xs flex items-center justify-center text-slate-500 hover:text-rose-500 hover:scale-110 transition-all"
+                title="Save to Wishlist"
+              >
+                <i class="${isFav ? 'ph-fill ph-heart text-rose-500' : 'ph-bold ph-heart'} text-base"></i>
+              </button>
+
+              <!-- Phone Image with zoom hover -->
+              <img 
+                src="${phone.images[0]}" 
+                alt="${phone.model}" 
+                class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                onclick="openProductModal('${phone.id}')"
+                loading="lazy"
+              />
+            </div>
+
+            <!-- Card Body Specs -->
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <!-- Brand & Location -->
+                <div class="flex items-center justify-between text-[11px] text-slate-400 font-semibold mb-1">
+                  <span class="uppercase tracking-wider text-slate-500">${phone.brand}</span>
+                  <span class="flex items-center gap-0.5 text-slate-500">
+                    <i class="ph-bold ph-map-pin"></i> ${phone.location}
+                  </span>
+                </div>
+
+                <!-- Phone Title -->
+                <h3 
+                  onclick="openProductModal('${phone.id}')" 
+                  class="font-extrabold text-slate-900 text-base leading-snug group-hover:text-brand-600 transition-colors cursor-pointer line-clamp-1"
+                >
+                  ${phone.model}
+                </h3>
+
+                <!-- Key Specs Pills -->
+                <div class="flex flex-wrap items-center gap-1.5 mt-2.5">
+                  <span class="text-[11px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">
+                    ${phone.storage}
+                  </span>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 ${batteryColor}">
+                    <i class="ph-bold ph-battery-charging"></i> ${phone.batteryHealth}% Battery
+                  </span>
+                </div>
+              </div>
+
+              <!-- Price & CTA Footer -->
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                <div>
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="text-lg font-black text-slate-900">₹${phone.price.toLocaleString('en-IN')}</span>
+                    ${phone.originalPrice ? `<span class="text-xs text-slate-400 line-through">₹${phone.originalPrice.toLocaleString('en-IN')}</span>` : ''}
+                  </div>
+                  <p class="text-[10px] text-brand-600 font-semibold">${phone.warranty}</p>
+                </div>
+
+                <button 
+                  onclick="openProductModal('${phone.id}')"
+                  class="px-3 py-1.5 bg-slate-900 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1"
+                >
+                  <span>View</span>
+                  <i class="ph-bold ph-arrow-right text-xs"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* ==========================================================
+       ACTIVE FILTER TAGS ROW
+       ========================================================== */
+    function renderActiveTags() {
+      const row = document.getElementById('activeTagsRow');
+      let tags = [];
+
+      if (activeBrandFilter !== 'All') {
+        tags.push({ label: `Brand: ${activeBrandFilter}`, clear: () => setBrandFilter('All') });
+      }
+      if (activeCityFilter !== 'All') {
+        tags.push({ label: `City: ${activeCityFilter}`, clear: () => handleCityFilter('All') });
+      }
+      if (document.getElementById('verifiedOnlyToggle').checked) {
+        tags.push({ label: 'Certified Only', clear: () => { document.getElementById('verifiedOnlyToggle').checked = false; applyFilters(); } });
+      }
+      const cond = document.getElementById('conditionFilterSelect').value;
+      if (cond !== 'All') {
+        tags.push({ label: `Condition: ${cond}`, clear: () => { document.getElementById('conditionFilterSelect').value = 'All'; applyFilters(); } });
+      }
+      const stor = document.getElementById('storageFilterSelect').value;
+      if (stor !== 'All') {
+        tags.push({ label: `Storage: ${stor}`, clear: () => { document.getElementById('storageFilterSelect').value = 'All'; applyFilters(); } });
+      }
+      if (searchQuery.trim() !== '') {
+        tags.push({ label: `Search: "${searchQuery}"`, clear: clearSearch });
+      }
+
+      if (tags.length === 0) {
+        row.classList.add('hidden');
+        row.innerHTML = '';
+        return;
+      }
+
+      row.classList.remove('hidden');
+      row.innerHTML = tags.map((t, index) => `
+        <span class="inline-flex items-center gap-1 bg-slate-200/80 text-slate-800 text-xs font-bold px-2.5 py-1 rounded-full">
+          <span>${t.label}</span>
+          <button onclick="window.__clearTag(${index})" class="hover:text-rose-600"><i class="ph-bold ph-x"></i></button>
+        </span>
+      `).join('');
+
+      window.__clearTag = (i) => tags[i].clear();
+    }
+
+    /* ==========================================================
+       PRODUCT DETAILS MODAL LOGIC
+       ========================================================== */
+    function openProductModal(phoneId) {
+      const phone = phonesData.find(p => p.id === phoneId);
+      if (!phone) return;
+
+      selectedPhoneForModal = phone;
+
+      // Populate details
+      document.getElementById('modalTitle').innerText = phone.model;
+      document.getElementById('modalBrandTag').innerText = phone.brand;
+      document.getElementById('modalPrice').innerText = `₹${phone.price.toLocaleString('en-IN')}`;
+      document.getElementById('modalOriginalPrice').innerText = phone.originalPrice ? `₹${phone.originalPrice.toLocaleString('en-IN')}` : '';
+      
+      const discount = phone.originalPrice ? Math.round(((phone.originalPrice - phone.price) / phone.originalPrice) * 100) : 0;
+      document.getElementById('modalSavingsBadge').innerText = discount > 0 ? `Save ${discount}%` : 'Fair Price';
+
+      document.getElementById('modalLocation').innerText = phone.location;
+      document.getElementById('modalDate').innerText = phone.dateAdded;
+      document.getElementById('modalBattery').innerText = `${phone.batteryHealth}%`;
+      document.getElementById('modalStorage').innerText = phone.storage;
+      document.getElementById('modalWarranty').innerText = phone.warranty.split(' ')[0] + ' ' + (phone.warranty.split(' ')[1] || 'Mo');
+      document.getElementById('modalConditionScore').innerText = `${phone.conditionScore} ${phone.condition}`;
+      
+      // Verified badge
+      const vBadge = document.getElementById('modalVerifiedBadge');
+      if (phone.verified) {
+        vBadge.classList.remove('hidden');
+      } else {
+        vBadge.classList.add('hidden');
+      }
+
+      // Seller
+      document.getElementById('modalSellerName').innerText = phone.sellerName;
+      document.getElementById('modalSellerAvatar').innerText = phone.sellerName.substring(0, 2).toUpperCase();
+      document.getElementById('modalSellerRating').innerText = phone.sellerRating;
+      document.getElementById('modalSellerType').innerText = phone.sellerType;
+
+      // Main image & gallery thumbnails
+      const mainImg = document.getElementById('modalMainImg');
+      mainImg.src = phone.images[0];
+
+      const thumbsContainer = document.getElementById('modalThumbsList');
+      thumbsContainer.innerHTML = phone.images.map((img, i) => `
+        <button onclick="document.getElementById('modalMainImg').src='${img}'" class="w-14 h-14 rounded-xl border-2 border-slate-200 hover:border-brand-500 overflow-hidden bg-slate-50 shrink-0">
+          <img src="${img}" class="w-full h-full object-cover">
+        </button>
+      `).join('');
+
+      // Box items
+      const boxContainer = document.getElementById('modalBoxItems');
+      boxContainer.innerHTML = (phone.boxItems || ['Device only', 'GST Invoice']).map(item => `
+        <span class="bg-white border border-slate-200 px-2 py-1 rounded-lg text-[11px] font-semibold text-slate-700">
+          ✓ ${item}
+        </span>
+      `).join('');
+
+      updateModalFavButtonState();
+
+      // Show modal
+      document.getElementById('productModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      selectedPhoneForModal = null;
+    }
+
+    function toggleModalFavorite() {
+      if (!selectedPhoneForModal) return;
+      toggleWishlist(selectedPhoneForModal.id);
+      updateModalFavButtonState();
+    }
+
+    function updateModalFavButtonState() {
+      if (!selectedPhoneForModal) return;
+      const isFav = wishlistIds.includes(selectedPhoneForModal.id);
+      const btn = document.getElementById('modalFavBtn');
+      btn.innerHTML = `<i class="${isFav ? 'ph-fill ph-heart text-rose-500' : 'ph-bold ph-heart text-slate-600'} text-xl"></i>`;
+    }
+
+    /* ==========================================================
+       MAKE AN OFFER & CHAT SIMULATOR
+       ========================================================== */
+    function openOfferModal() {
+      if (!selectedPhoneForModal) return;
+      document.getElementById('offerListingPrice').innerText = `₹${selectedPhoneForModal.price.toLocaleString('en-IN')}`;
+      document.getElementById('counterOfferInput').value = Math.round(selectedPhoneForModal.price * 0.95 / 500) * 500;
+      document.getElementById('offerModal').classList.remove('hidden');
+    }
+
+    function closeOfferModal() {
+      document.getElementById('offerModal').classList.add('hidden');
+    }
+
+    function quickOfferPercent(perc) {
+      if (!selectedPhoneForModal) return;
+      const target = selectedPhoneForModal.price * (1 + (perc / 100));
+      document.getElementById('counterOfferInput').value = Math.round(target / 100) * 100;
+    }
+
+    function submitCounterOffer() {
+      const offer = document.getElementById('counterOfferInput').value;
+      if (!offer || offer <= 0) {
+        showToast('Please enter a valid offer amount');
+        return;
+      }
+      closeOfferModal();
+      showToast(`Offer of ₹${Number(offer).toLocaleString('en-IN')} submitted! The seller typically accepts within 2 hours.`);
+    }
+
+    // Chat
+    function openChatSimulator() {
+      if (!selectedPhoneForModal) return;
+      const phone = selectedPhoneForModal;
+      document.getElementById('chatSellerName').innerText = phone.sellerName;
+      document.getElementById('chatSellerInitial').innerText = phone.sellerName.charAt(0);
+
+      const msgs = document.getElementById('chatMessages');
+      msgs.innerHTML = `
+        <div class="text-center my-2">
+          <span class="bg-slate-200 text-slate-600 text-[10px] px-2.5 py-0.5 rounded-full">Conversation regarding ${phone.model} (${phone.storage})</span>
+        </div>
+        <div class="flex items-start gap-2">
+          <div class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] shrink-0 font-bold">
+            ${phone.sellerName.charAt(0)}
+          </div>
+          <div class="bg-white p-2.5 rounded-2xl rounded-tl-none border border-slate-200 text-slate-700 shadow-xs max-w-[80%]">
+            Hello! Yes, the <strong>${phone.model}</strong> is available and in stock. Battery health is genuine ${phone.batteryHealth}% with 0 display scratches. Let me know if you would like me to reserve it!
+          </div>
+        </div>
+      `;
+
+      document.getElementById('chatModal').classList.remove('hidden');
+    }
+
+    function closeChatModal() {
+      document.getElementById('chatModal').classList.add('hidden');
+    }
+
+    function handleSendChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInputMessage');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const msgs = document.getElementById('chatMessages');
+      // Append user msg
+      msgs.innerHTML += `
+        <div class="flex items-end justify-end gap-2">
+          <div class="bg-brand-600 text-white p-2.5 rounded-2xl rounded-tr-none shadow-xs max-w-[80%]">
+            ${val}
+          </div>
+        </div>
+      `;
+      input.value = '';
+      msgs.scrollTop = msgs.scrollHeight;
+
+      // Simulated auto-reply
+      setTimeout(() => {
+        msgs.innerHTML += `
+          <div class="flex items-start gap-2">
+            <div class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] shrink-0 font-bold">
+              ${selectedPhoneForModal ? selectedPhoneForModal.sellerName.charAt(0) : 'S'}
+            </div>
+            <div class="bg-white p-2.5 rounded-2xl rounded-tl-none border border-slate-200 text-slate-700 shadow-xs max-w-[80%]">
+              Understood! We can arrange express delivery or you can inspect it in person. Feel free to use 'Buy Now' to lock this device with full 7-day buyer return protection.
+            </div>
+          </div>
+        `;
+        msgs.scrollTop = msgs.scrollHeight;
+      }, 1000);
+    }
+
+    function simulateBuyNow() {
+      if (!selectedPhoneForModal) return;
+      closeProductModal();
+      showToast(`Reserved ${selectedPhoneForModal.model}! Redirecting to RePhone Secure Escrow Checkout...`);
+    }
+
+    /* ==========================================================
+       SELL YOUR PHONE & RESALE APPRAISAL ENGINE
+       ========================================================== */
+    function openSellModal() {
+      document.getElementById('sellModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      updateEstimatedPrice();
+    }
+
+    function closeSellModal() {
+      document.getElementById('sellModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    function previewSellImage(url) {
+      document.getElementById('sellImagePreview').src = url;
+    }
+
+    function triggerQuickEstimate() {
+      const brand = document.getElementById('heroQuickBrand').value;
+      const model = document.getElementById('heroQuickModel').value;
+      
+      openSellModal();
+      document.getElementById('sellBrand').value = brand;
+      document.getElementById('sellModel').value = model;
+      updateEstimatedPrice();
+    }
+
+    // Dynamic valuation algorithm based on hardware conditions
+    function updateEstimatedPrice() {
+      const brand = document.getElementById('sellBrand').value;
+      const model = document.getElementById('sellModel').value.toLowerCase();
+      const storage = document.getElementById('sellStorage').value;
+      const condition = document.getElementById('sellCondition').value;
+      const battery = parseInt(document.getElementById('sellBatteryRange').value) || 85;
+
+      let basePrice = 28000;
+
+      if (brand === 'Apple') {
+        basePrice = 42000;
+        if (model.includes('15') || model.includes('pro')) basePrice += 22000;
+        if (model.includes('14')) basePrice += 12000;
+      } else if (brand === 'Samsung') {
+        basePrice = 30000;
+        if (model.includes('ultra') || model.includes('s23') || model.includes('s24')) basePrice += 20000;
+        if (model.includes('flip') || model.includes('fold')) basePrice += 15000;
+      } else if (brand === 'Google') {
+        basePrice = 26000;
+        if (model.includes('8') || model.includes('pro')) basePrice += 18000;
+      }
+
+      // Storage modifier
+      if (storage === '256GB') basePrice *= 1.12;
+      if (storage === '512GB') basePrice *= 1.25;
+      if (storage === '1TB') basePrice *= 1.35;
+
+      // Condition modifier
+      if (condition === 'Flawless') basePrice *= 1.15;
+      if (condition === 'Fair') basePrice *= 0.85;
+
+      // Battery health factor
+      const batteryFactor = 0.75 + (battery / 400); // 80% = 0.95, 100% = 1.0
+      basePrice = Math.round((basePrice * batteryFactor) / 500) * 500;
+
+      document.getElementById('suggestedPriceTag').innerText = `₹${basePrice.toLocaleString('en-IN')}`;
+    }
+
+    function useSuggestedPrice() {
+      const rawText = document.getElementById('suggestedPriceTag').innerText;
+      const cleanNum = rawText.replace(/[^0-9]/g, '');
+      document.getElementById('sellPrice').value = cleanNum;
+      showToast('Applied recommended fair market valuation to your listing!');
+    }
+
+    function handleSellSubmit(e) {
+      e.preventDefault();
+
+      const brand = document.getElementById('sellBrand').value;
+      const model = document.getElementById('sellModel').value;
+      const storage = document.getElementById('sellStorage').value;
+      const condition = document.getElementById('sellCondition').value;
+      const batteryHealth = parseInt(document.getElementById('sellBatteryRange').value);
+      const price = parseInt(document.getElementById('sellPrice').value);
+      const city = document.getElementById('sellCity').value;
+      const phoneContact = document.getElementById('sellPhoneContact').value;
+      const image = document.getElementById('sellPresetImage').value;
+
+      const boxItems = [];
+      if (document.getElementById('accOriginalBox').checked) boxItems.push('Original Box');
+      if (document.getElementById('accOriginalCharger').checked) boxItems.push('Fast Charger');
+      if (document.getElementById('accOriginalBill').checked) boxItems.push('GST Tax Invoice');
+      if (document.getElementById('accCase').checked) boxItems.push('Protective Case');
+
+      const newPhone = {
+        id: 'phone-user-' + Date.now(),
+        brand,
+        model,
+        storage,
+        condition,
+        conditionScore: condition === 'Flawless' ? '9.8/10' : condition === 'Excellent' ? '9.1/10' : '8.5/10',
+        batteryHealth,
+        price,
+        originalPrice: Math.round(price * 1.5 / 1000) * 1000,
+        warranty: 'RePhone Peer Verified',
+        location: city,
+        sellerType: 'Individual Seller',
+        sellerName: 'Verified Member (' + phoneContact.slice(-4) + ')',
+        sellerRating: 5.0,
+        verified: true, // auto-verified for demonstration
+        dateAdded: 'Just now',
+        images: [image],
+        boxItems
+      };
+
+      // Add to beginning of array
+      phonesData.unshift(newPhone);
+      savePhonesToStorage();
+      applyFilters();
+      closeSellModal();
+
+      // Reset form
+      document.getElementById('sellPhoneForm').reset();
+      updateEstimatedPrice();
+
+      showToast(`Success! Your ${model} has been listed to buyers!`);
+      
+      // Auto scroll to card
+      document.getElementById('phonesGrid').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ==========================================================
+       WISHLIST MANAGEMENT & DRAWER
+       ========================================================== */
+    function toggleWishlist(phoneId) {
+      const index = wishlistIds.indexOf(phoneId);
+      if (index > -1) {
+        wishlistIds.splice(index, 1);
+        showToast('Removed device from saved wishlist');
+      } else {
+        wishlistIds.push(phoneId);
+        showToast('Saved to your wishlist!');
+      }
+      saveWishlistToStorage();
+      applyFilters();
+      renderWishlistDrawerItems();
+    }
+
+    function updateWishlistBadges() {
+      const badge = document.getElementById('wishlistCountBadge');
+      const drawerCount = document.getElementById('wishlistDrawerCount');
+      const count = wishlistIds.length;
+
+      drawerCount.innerText = count;
+      if (count > 0) {
+        badge.innerText = count;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function toggleWishlistDrawer() {
+      const drawer = document.getElementById('wishlistDrawer');
+      const isOpen = !drawer.classList.contains('translate-x-full');
+      if (isOpen) {
+        drawer.classList.add('translate-x-full');
+      } else {
+        renderWishlistDrawerItems();
+        drawer.classList.remove('translate-x-full');
+      }
+    }
+
+    function renderWishlistDrawerItems() {
+      const container = document.getElementById('wishlistItemsContainer');
+      const savedPhones = phonesData.filter(p => wishlistIds.includes(p.id));
+
+      if (savedPhones.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 text-center text-slate-400">
+            <i class="ph ph-heart-break text-3xl mb-2"></i>
+            <p class="text-xs">No saved devices yet.<br/>Click the heart icon on any phone card to bookmark it.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = savedPhones.map(p => `
+        <div class="py-3 flex items-center justify-between gap-3">
+          <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+            <img src="${p.images[0]}" class="w-full h-full object-contain mix-blend-multiply">
+          </div>
+          <div class="flex-1 min-w-0 cursor-pointer" onclick="toggleWishlistDrawer(); openProductModal('${p.id}')">
+            <h5 class="text-xs font-bold text-slate-900 truncate">${p.model}</h5>
+            <p class="text-[11px] text-slate-500">${p.storage} &bull; ${p.batteryHealth}% Battery</p>
+            <p class="text-xs font-extrabold text-brand-700">₹${p.price.toLocaleString('en-IN')}</p>
+          </div>
+          <button onclick="toggleWishlist('${p.id}')" class="text-slate-400 hover:text-rose-500 p-1">
+            <i class="ph-bold ph-trash text-sm"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function clearAllWishlist() {
+      wishlistIds = [];
+      saveWishlistToStorage();
+      renderWishlistDrawerItems();
+      applyFilters();
+      showToast('Wishlist cleared');
+    }
+
+    /* ==========================================================
+       SEARCH & CITY FILTER HANDLERS
+       ========================================================== */
+    function handleSearch(val) {
+      searchQuery = val;
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (val.trim() !== '') {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      applyFilters();
+    }
+
+    function clearSearch() {
+      searchQuery = '';
+      document.getElementById('globalSearchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      applyFilters();
+    }
+
+    function handleCityFilter(city) {
+      activeCityFilter = city;
+      document.getElementById('cityFilterSelect').value = city;
+      applyFilters();
+    }
+
+    function resetAllFilters() {
+      activeBrandFilter = 'All';
+      activeCityFilter = 'All';
+      searchQuery = '';
+      document.getElementById('globalSearchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      document.getElementById('cityFilterSelect').value = 'All';
+      document.getElementById('verifiedOnlyToggle').checked = false;
+      document.getElementById('conditionFilterSelect').value = 'All';
+      document.getElementById('storageFilterSelect').value = 'All';
+      document.getElementById('sortSelect').value = 'featured';
+      renderBrandTabs();
+      applyFilters();
+      showToast('Filters cleared');
+    }
+
+    /* ==========================================================
+       TOAST NOTIFICATION COMPONENT
+       ========================================================== */
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 transform transition-all duration-300 translate-y-3 opacity-0 pointer-events-auto border border-slate-700';
+      toast.innerHTML = `
+        <i class="ph-bold ph-info text-brand-400 text-base"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-3', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-3');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
