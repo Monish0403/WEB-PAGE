@@ -1,0 +1,308 @@
+# OmniForex Desk: Enterprise Multi-Counter Currency Exchange System
+
+**Document Version:** 4.1.0
+
+**Classification:** Financial Technology Software Engineering & Architecture Specification
+
+**Standard Compliance:** ISO 20022, FATF Recommendation 10/16, Bank for International Settlements (BIS) Sound Practices
+
+---
+
+## Module 1: System Vision & Problem Formulation
+
+### 1.1 Over-the-Counter (OTC) Foreign Exchange Inefficiencies
+
+Physical currency exchange operations (such as airport exchange hubs, commercial bank branch tellers, border trading posts, and luxury hospitality desks) face distinct operational vulnerabilities compared to purely digital trading platforms:
+
+* **Manual Cross-Rate Computation Errors:** Tellers calculating non-base crosses manually or relying on outdated whiteboards expose bureaus to arbitrage losses and calculation drift.
+* **Cash Drawer Discrepancies:** Mismatches between ledger-recorded balances and physical cash drawers (across multiple denominations like $100, $50, $20, €500) go undetected until end-of-day reconciliation.
+* **Anti-Money Laundering (AML) Compliance Gaps:** Failure to spot "smurfing" or structured transactions below mandatory reporting limits (e.g., $10,000 statutory currency transaction report thresholds) creates regulatory risk under Financial Action Task Force (FATF) and Bank Secrecy Act guidelines.
+* **Counter Queuing Latency:** High friction in customer onboarding and rate locking leads to counter abandoned transactions and customer churn.
+
+### 1.2 The OmniForex Desk Architecture
+
+**OmniForex Desk** is a centralized, multi-counter Point-of-Sale (POS) and Enterprise Resource Planning (ERP) platform designed for physical foreign currency bureaus and treasury desks. The system coordinates specialized physical stations under unified ledger governance:
+
+```
++---------------------------------------------------------------------------------------+
+|                                    CENTRAL VAULT ERP                                  |
+|                 Real-Time Interbank Rate Ingestion (FIX 4.4 / REST)                   |
+|                 Global Ledger & AML Compliance Engine                                |
++---------------------------------------------------------------------------------------+
+           ▲                               ▲                               ▲
+           │                               │                               │
+           ▼                               ▼                               ▼
++---------------------+         +---------------------+         +---------------------+
+|  COUNTER 1: RETAIL  |         |  COUNTER 2: VIP/HNW |         | COUNTER 3: EXPRESS  |
+|  - Standard Spreads |         |  - Tight Spreads    |         |  - Pre-Order Pickup |
+|  - Cash Balancer    |         |  - Wire/Escrow      |         |  - Fast Token Scan  |
+|  - KYC Slip Print   |         |  - Manager Auth     |         |  - Zero Wait Queue  |
++---------------------+         +---------------------+         +---------------------+
+
+```
+
+---
+
+## Module 2: Multi-Station Personas & Operational Roles
+
+| Actor / Station | Target Volume | Primary Functions | Access Permissions & Controls |
+| --- | --- | --- | --- |
+| **Retail Counter (#C-01)** | Low–Medium ($100 – $5,000) | Walk-in currency exchange, physical banknote verification, standard KYC capture | Level 1: Standard transactions, basic receipt generation, drawer count entry. |
+| **VIP / Wealth Desk (#C-02)** | High ($5,000 – $100,000+) | Institutional exchange, negotiated wholesale spreads, multi-currency bundling | Level 2: Custom spread adjustments, corporate KYC verification, ledger audit access. |
+| **Corporate Remittance (#C-03)** | High ($10,000 – $500,000) | Cross-border trade remittances, wire instructions, dual-currency invoicing | Level 2: Wire initiation, beneficiary account sanction screening, tax invoicing. |
+| **Express Order Station (#C-04)** | Varied ($200 – $2,500) | Instant fulfillment of online pre-orders, rate-lock redemption via QR / Token | Level 1: Token redemption, package release, digital signature capture. |
+| **Chief Cashier / Auditor** | Platform-Wide | Vault transfers, teller cash replenishment, daily EOD reconciliation | Level 3: Dual-key overrides, AML file export, vault reserve adjustments. |
+
+---
+
+## Module 3: Functional & Non-Functional System Requirements
+
+### 3.1 Functional Requirements (FR)
+
+* **FR-01 (Multi-Currency Cross-Rate Engine):** Dynamic real-time calculation of indirect and direct quote conventions with automated bid/ask spread margins.
+* **FR-02 (Physical Denomination Breakdown):** An interactive matrix tracking inbound and outbound physical currency inventory by bill denomination ($100, $50, $20, $10, $5, $1) to maintain exact drawer parity.
+* **FR-03 (Automated AML & Sanctions Monitoring):** Real-time evaluation of cumulative transaction size; transactions $\ge \$10,000$ trigger mandatory Customer Due Diligence (CDD) workflows and require cryptographic manager authorization.
+* **FR-04 (Algorithmic Rate Locking):** Digital token generator establishing a binding 60-minute rate lock window for queue tickets and web pre-orders.
+* **FR-05 (Audit Deal Slip & Barcode Generation):** Immutable generation of cryptographically indexed transaction receipts detailing teller ID, mid-market rate, spread margin, applied GST/tax, and physical denomination counts.
+
+### 3.2 Non-Functional Requirements (NFR)
+
+* **NFR-01 (Throughput & Response Latency):** In-memory conversion calculation and drawer parity verification must execute in $< 5\text{ ms}$.
+* **NFR-02 (Data Integrity & ACID Guarantees):** Atomic multi-currency balance transfers: debiting one currency inventory and crediting another must be committed within a single database transaction.
+* **NFR-03 (Financial Accuracy):** No IEEE-754 floating-point rounding errors. All monetary balances must be computed using arbitrary-precision arithmetic or scaled integers (cents/basis points).
+* **NFR-04 (Offline Operation Continuity):** In the event of primary connection loss, counters must operate in an isolated cached state with pre-configured maximum rate volatility corridors ($\pm 1.5\%$).
+
+---
+
+## Module 4: Mathematical Models & Financial Engineering
+
+### 4.1 Quotation Conventions & Triangular Cross-Rates
+
+Currency quotes are maintained relative to a base currency ($USD$). For any currency pair $A/B$ not directly traded against cash reserves, the system derives the synthetic cross-rate:
+
+$$\text{Mid}_{A/B} = \frac{\text{Mid}_{USD/B}}{\text{Mid}_{USD/A}}$$
+
+### 4.2 Dynamic Spread Derivation
+
+The desk establishes Counter-Specific Bid ($P_{\text{Buy}}$) and Ask ($P_{\text{Sell}}$) rates by adjusting the live Interbank Mid-Market rate ($P_{\text{mid}}$) against volatility ($\sigma$), station profile ($M_{\text{profile}}$), and local inventory scarcity ($\theta_{\text{reserve}}$):
+
+$$P_{\text{Buy}} = P_{\text{mid}} \times \left(1 - \frac{S_{\text{total}}}{2}\right)$$
+
+$$P_{\text{Sell}} = P_{\text{mid}} \times \left(1 + \frac{S_{\text{total}}}{2}\right)$$
+
+Where total spread $S_{\text{total}}$ is defined as:
+
+$$S_{\text{total}} = S_{\text{base}} + M_{\text{profile}} + \kappa \cdot \sigma_{24\text{h}} + \theta_{\text{reserve}}$$
+
+* $S_{\text{base}}$: Base operational spread (e.g., $1.2\%$ for liquid G10 currencies; $3.5\%$ for exotic currencies).
+* $M_{\text{profile}}$: Desk margin ($0.0\%$ for VIP desks; $+0.6\%$ for standard retail; $+1.1\%$ for airport/express counters).
+* $\kappa \cdot \sigma_{24\text{h}}$: Volatility buffer based on rolling standard deviation of 1-minute price ticks.
+* $\theta_{\text{reserve}}$: Inventory penalty function. When a counter's target currency balance drops below safety thresholds ($R < R_{\text{min}}$), $P_{\text{Buy}}$ increases to encourage inflows, or $P_{\text{Sell}}$ increases to dampen outflows:
+
+$$\theta_{\text{reserve}} = \max\left(0, \;\alpha \cdot \frac{R_{\text{target}} - R_{\text{actual}}}{R_{\text{target}}}\right)$$
+
+### 4.3 Denomination Parity Formula
+
+To eliminate cash drawer reconciliation drift, every counter execution enforces an invariant constraint:
+
+$$\sum_{i=1}^{n} (D_i \times Q_{\text{in}, i}) - \text{Amount}_{\text{Inbound}} = 0$$
+
+$$\sum_{j=1}^{m} (D_j \times Q_{\text{out}, j}) - \text{Amount}_{\text{Outbound}} = 0$$
+
+Where $D$ is the face value of the denomination bill, and $Q$ is the count of physical notes received or dispensed.
+
+---
+
+## Module 5: Database Schema Design (3NF Relational Model)
+
+```
++------------------------+       +------------------------+       +------------------------+
+|        COUNTERS        |       |         USERS          |       |      TRANSACTIONS      |
++------------------------+       +------------------------+       +------------------------+
+| PK counter_id (VARCHAR)| 1   * | PK user_id (UUID)      | 1   * | PK tx_id (UUID)        |
+|    counter_name        +-------+    username (VARCHAR)  +-------+ FK counter_id (VARCHAR)|
+|    station_type (ENUM) |       |    role (ENUM)         |       | FK teller_id (UUID)    |
+|    max_drawer_limit    |       |    pass_hash (VARCHAR) |       | FK customer_id (UUID)  |
+|    is_active (BOOLEAN) |       |    created_at          |       |    base_currency       |
++------------------------+       +------------------------+       |    quote_currency      |
+            | 1                                                   |    mid_market_rate     |
+            | *                                                   |    executed_rate       |
++------------------------+       +------------------------+       |    inbound_amount      |
+|    DRAWER_INVENTORY    |       |       CUSTOMERS        |       |    outbound_amount     |
++------------------------+       +------------------------+       |    fee_total           |
+| PK inventory_id (UUID) |       | PK customer_id (UUID)  |       |    created_at          |
+| FK counter_id (VARCHAR)|       |    full_name (VARCHAR) |       +-----------+------------+
+|    currency_code       |       |    doc_type (ENUM)     |                   | 1
+|    denomination_val    |       |    doc_number (VARCHAR)|                   | *
+|    bill_count (INT)    |       |    risk_tier (ENUM)    |       +-----------+------------+
+|    last_audited_at     |       |    sanction_cleared    |       |   DENOMINATION_AUDIT   |
++------------------------+       +-----------+------------+       +------------------------+
+                                             | 1                  | PK audit_id (UUID)     |
+                                             | *                  | FK tx_id (UUID)        |
+                                 +-----------+------------+       |    currency_code       |
+                                 |       AML_ALERTS       |       |    flow_direction      |
+                                 +------------------------+       |    denomination_value  |
+                                 | PK alert_id (UUID)     |       |    note_count (INT)    |
+                                 | FK customer_id (UUID)  |       +------------------------+
+                                 | FK tx_id (UUID)        |
+                                 |    alert_reason        |
+                                 |    override_by (UUID)  |
+                                 |    status (ENUM)       |
+                                 +------------------------+
+
+```
+
+### 5.1 Data Dictionary & Schema Constraints
+
+* **`TRANSACTIONS.executed_rate`:** Stored as `DECIMAL(18, 8)` to eliminate precision loss on high-value pairings (e.g., JPY, KWD).
+* **`DRAWER_INVENTORY.bill_count`:** Constrained with check condition `CHECK (bill_count >= 0)`. Negative inventories are structurally prevented at the database constraint layer.
+* **`AML_ALERTS.status`:** State-machine constrained to: `PENDING_SUPERVISOR_OVERRIDE`, `APPROVED`, `BLOCKED_SAR_FILED`.
+
+---
+
+## Module 6: AML/KYC Regulatory Framework & State Machine
+
+Every physical cash trade moves through a deterministic compliance state machine:
+
+```
+                      [Initiate Transaction]
+                                │
+                                ▼
+                   {Amount >= $10,000 Equiv?}
+                                │
+               ┌────────────────┴────────────────┐
+               │ YES                             │ NO
+               ▼                                 ▼
+    [Mandatory KYC Triggered]            {Customer in Watchlist?}
+    - National ID / Passport                       │
+    - Purpose of Exchange                          ├──────────────┐
+    - Occupation & Source                          ▼ YES          ▼ NO
+               │                        [BLOCK & FILE SAR]  [Standard Execution]
+               ▼                                                  │
+    [Chief Teller Review]                                         ▼
+    - Verify Physical ID                                    [Generate Receipt]
+    - Sanctions List Screening                                    │
+               │                                                  ▼
+     ┌─────────┴─────────┐                                [Update Vault Ledger]
+     │ Approve           │ Reject
+     ▼                   ▼
+[Supervisor Auth]   [Halt Trade &
+- Sign-off Token     Log Flag]
+
+```
+
+### 6.1 Regulatory Thresholds
+
+1. **Simplified Due Diligence (SDD):** $<\$1,000$. Standard receipt issued; minimal identification required.
+2. **Customer Due Diligence (CDD):** $\$1,000 \le \text{Amount} < \$10,000$. Government identification logged into system; name checked against local PEP (Politically Exposed Persons) databases.
+3. **Enhanced Due Diligence (EDD):** $\ge \$10,000$. Mandatory Currency Transaction Report (CTR) file generated. Proof of funds documentation captured and dual-key chief teller sign-off required.
+
+---
+
+## Module 7: Cash Drawer Balancer & Audit Trail Mechanics
+
+Physical currency management requires a continuous dual-entry ledger mechanism for physical drawers:
+
+```
+   [ PHYSICAL WORLD ]                          [ DIGITAL LEDGER ]
+   Teller counts physical notes:                Ledger computes balance:
+   10 x $100 = $1,000                           Opening Balance:      $2,500
+   20 x  $50 = $1,000                           Inbound Trades:     + $1,200
+   10 x  $20 =   $200                           Outbound Trades:    - $1,500
+   ------------------                           ----------------------------
+   Total:      $2,200                           Theoretical Balance:  $2,200
+         │                                            │
+         └─────────────► [ PARITY ENGINE ] ◄──────────┘
+                                │
+                     Difference = $0.00
+                     Status: BALANCED (PASS)
+
+```
+
+If physical count $\ne$ theoretical balance, the platform blocks counter closure, generates an automatic discrepancy event, and flags the Chief Cashier for an immediate physical audit.
+
+---
+
+## Module 8: System Implementation Details (Frontend & State Engine)
+
+### 8.1 Single-File Architecture Rationale
+
+The standalone application combines presentation (HTML5/Tailwind), state management (reactive JavaScript modules), visual graphing (HTML5 Canvas vector charts), and sound synthesis (Web Audio API) without external bundle dependencies.
+
+```
++---------------------------------------------------------------------------------------+
+|                                    APPLICATION RUNTIME                                |
++---------------------------------------------------------------------------------------+
+|  1. State Store (`appState`)                                                          |
+|     - Active Station Pointer (`retail`, `vip`, `corporate`, `express`)                |
+|     - FX Pair Dictionary (EUR/USD, GBP/USD, USD/JPY, etc.) with Mid/Spread/Trend      |
+|     - Drawer Inventory Matrix (Currency x Denomination counts)                        |
+|     - Transaction Ledger History & Token Queue Queue Stack                            |
++---------------------------------------------------------------------------------------+
+|  2. Calculation Service Layer                                                         |
+|     - `calculateExchange()`: Parses amounts, fees, and spread margins                 |
+|     - `updateDenominationCount()`: Enforces drawer balance constraints                |
+|     - `evaluateAML()`: Evaluates risk metrics based on customer data & trade size      |
++---------------------------------------------------------------------------------------+
+|  3. Presentation & Audio Engine                                                        |
+|     - Dynamic DOM renderer with localized number formatters                           |
+|     - Canvas 2D engine rendering real-time historical micro-charts                    |
+|     - Web Audio API Sound Synthesizer (audible frequency chime alerts)                |
++---------------------------------------------------------------------------------------+
+
+```
+
+### 8.2 Security Considerations for Counter Terminals
+
+* **Cross-Site Scripting (XSS) Sanitization:** All customer-supplied inputs (names, passport numbers, trade purposes) are escaped through DOM text-node injection rather than unescaped `innerHTML`.
+* **Session Locking:** Inactivity timers lock counter interfaces after 120 seconds of idle time, requiring cashier biometric or PIN re-entry to prevent unauthorized trades while away from the desk.
+
+---
+
+## Module 9: Verification, Testing & QA Matrix
+
+| Test Suite | Scenario | Test Input | Expected Behavior |
+| --- | --- | --- | --- |
+| **VAL-FX-01** | Non-base Cross Rate | Buy JPY using EUR | System derives synthetic EUR/JPY rate; spread matches counter profile. |
+| **AML-TH-02** | Large Cash Detection | Inbound $12,500 USD Cash | Trigger warning modal; block completion until supervisor credential verified. |
+| **DEN-BAL-03** | Incomplete Bill Count | Dispensing €500 with empty drawer | UI shows zero denomination options; highlights drawer deficit alert. |
+| **TKN-EXP-04** | Queue Token Expiry | Token submitted at 61 min | System voids guaranteed rate; updates to current live interbank spot rate. |
+| **RND-ERR-05** | Penny Rounding Drift | €33.33333 conversion | Rounded to currency subdivision (2 decimals: 33.33); residual routed to spread margin. |
+
+---
+
+## Module 10: Enterprise Scalability & Deployment Blueprint
+
+For deployment across a regional banking network or international airport transit hub:
+
+```
+[ Airport Passenger Concourse ]
+   ├─ Counter #1 (Terminal A - Retail)  ───┐
+   ├─ Counter #2 (Terminal B - Retail)  ───┤
+   ├─ Counter #3 (VIP Lounge - Wealth)  ───┤
+   └─ Self-Service Pre-order Kiosk      ───┤
+                                           ▼
+                                [ Edge API Gateway ]
+                                [ WAF / Mutual TLS ]
+                                           │
+                                           ▼
+                       +───────────────────────────────────────+
+                       |    Core Treasury Trading Cluster      |
+                       |  - Real-Time Rate Distributor (Redis) |
+                       |  - Ledger Transaction Engine (Go)     |
+                       |  - Compliance Screening (Python)      |
+                       +───────────────────────────────────────+
+                                           │
+                                           ▼
+                       +───────────────────────────────────────+
+                       |      Distributed Database Layer       |
+                       |  - CockroachDB (Multi-Region ACID)    |
+                       |  - Immutable Audit Vault (WORM Store) |
+                       +───────────────────────────────────────+
+
+```
+
+### 10.1 Regulatory Audit Compliance Features
+
+* **Write Once, Read Many (WORM) Storage:** Every finalized transaction slip and denomination snapshot is hashed via SHA-256 and committed to tamper-evident audit storage.
+* **Central Bank Reporting Feed:** End-of-day data pipelines compile aggregate foreign currency inflows and outflows into standardized ISO 20022 XML formats ready for regulatory dispatch.
