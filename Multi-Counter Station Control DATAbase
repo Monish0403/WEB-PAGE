@@ -1,0 +1,250 @@
+Here is a complete, step-by-step explanation of how the database works for **OmniForex Desk**, how the data flows, and how you can actually set it up and connect it to your website.
+
+---
+
+## 1. Database Architecture: What Data We Store
+
+In a multi-counter foreign exchange bureau, you cannot simply update an account balance; you must maintain an **immutable audit trail** (every single bill and cent must be accounted for).
+
+The database consists of **6 core tables**:
+
+```
++------------------+         +--------------------+         +--------------------+
+|     COUNTERS     | 1     * |    TRANSACTIONS    | *     1 |     CUSTOMERS      |
++------------------+---------+--------------------+---------+--------------------+
+| counter_id (PK)  |         | tx_id (PK)         |         | customer_id (PK)   |
+| counter_name     |         | counter_id (FK)    |         | full_name          |
+| station_type     |         | teller_id (FK)     |         | id_type, id_number |
+| max_cash_limit   |         | customer_id (FK)   |         | risk_level         |
+| status           |         | from_currency      |         +--------------------+
++------------------+         | to_currency        |                    | 1
+         | 1                 | exchange_rate      |                    | *
+         | *                 | inbound_amount     |         +--------------------+
++------------------+         | outbound_amount    |         |     AML_ALERTS     |
+| DRAWER_INVENTORY |         | total_fee          |         +--------------------+
++------------------+         | created_at         |         | alert_id (PK)      |
+| inventory_id(PK) |         +--------------------+         | customer_id (FK)   |
+| counter_id (FK)  |                   | 1                  | tx_id (FK)         |
+| currency_code    |                   | *                  | alert_reason       |
+| denomination     |         +--------------------+         | status             |
+| note_count       |         | DENOMINATION_AUDIT |         | manager_override_by|
++------------------+         +--------------------+         +--------------------+
+                             | audit_id (PK)      |
+                             | tx_id (FK)         |
+                             | currency_code      |
+                             | denomination       |
+                             | count_in / out     |
+                             +--------------------+
+
+```
+
+### Table Breakdowns
+
+1. **`COUNTERS`**: Defines your physical desks (Counter 1: Retail, Counter 2: VIP, Counter 3: Corporate, Counter 4: Express Pickup).
+2. **`DRAWER_INVENTORY`**: Tracks how many physical bills of each denomination ($100, $50, $20, €100, etc.) are physically inside each counter's cash drawer at any given second.
+3. **`CUSTOMERS`**: Stores customer profiles, passport/national ID details, nationality, and compliance risk ratings.
+4. **`TRANSACTIONS`**: The financial deal slip. Logs who exchanged what, the base interbank rate, the spread margin, the counter used, and the teller who handled it.
+5. **`DENOMINATION_AUDIT`**: Logs the exact breakdown of physical bills handed in by the customer and handed out by the cashier for every single transaction.
+6. **`AML_ALERTS`**: Created automatically when a transaction exceeds the statutory limit (e.g., $\ge \$10,000$) or matches a flagged identity. Requires a supervisor override before the transaction can be finalized.
+
+---
+
+## 2. Ready-to-Run SQL Schema (PostgreSQL / MySQL)
+
+You can copy and run this script directly in PostgreSQL or MySQL:
+
+```sql
+-- 1. Create Counters Table
+CREATE TABLE counters (
+    counter_id VARCHAR(10) PRIMARY KEY, -- e.g., 'C-01'
+    counter_name VARCHAR(100) NOT NULL,
+    station_type VARCHAR(50) NOT NULL,  -- 'RETAIL', 'VIP', 'CORPORATE', 'EXPRESS'
+    max_cash_limit NUMERIC(15, 2) DEFAULT 50000.00,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- 2. Create Drawer Inventory (Tracks physical cash per counter)
+CREATE TABLE drawer_inventory (
+    inventory_id SERIAL PRIMARY KEY,
+    counter_id VARCHAR(10) REFERENCES counters(counter_id) ON DELETE CASCADE,
+    currency_code VARCHAR(3) NOT NULL,  -- 'USD', 'EUR', 'GBP'
+    denomination_value INT NOT NULL,    -- 100, 50, 20, 10
+    bill_count INT NOT NULL DEFAULT 0 CHECK (bill_count >= 0),
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Create Customers Table
+CREATE TABLE customers (
+    customer_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    full_name VARCHAR(150) NOT NULL,
+    id_type VARCHAR(50) NOT NULL,       -- 'PASSPORT', 'NATIONAL_ID', 'DRIVERS_LICENSE'
+    id_number VARCHAR(100) NOT NULL UNIQUE,
+    nationality VARCHAR(50) NOT NULL,
+    risk_level VARCHAR(20) DEFAULT 'LOW' -- 'LOW', 'MEDIUM', 'HIGH'
+);
+
+-- 4. Create Transactions Table (ACID Ledger)
+CREATE TABLE transactions (
+    tx_id VARCHAR(20) PRIMARY KEY,      -- e.g., 'TX-89214'
+    counter_id VARCHAR(10) REFERENCES counters(counter_id),
+    customer_id UUID REFERENCES customers(customer_id),
+    teller_username VARCHAR(100) NOT NULL,
+    from_currency VARCHAR(3) NOT NULL,
+    to_currency VARCHAR(3) NOT NULL,
+    inbound_amount NUMERIC(15, 2) NOT NULL,
+    outbound_amount NUMERIC(15, 2) NOT NULL,
+    exchange_rate NUMERIC(18, 8) NOT NULL,
+    fee_amount NUMERIC(10, 2) DEFAULT 0.00,
+    status VARCHAR(20) DEFAULT 'COMPLETED', -- 'PENDING', 'COMPLETED', 'FLAGGED'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 5. Create Denomination Audit Table (Tracks exact notes exchanged)
+CREATE TABLE denomination_audit (
+    audit_id SERIAL PRIMARY KEY,
+    tx_id VARCHAR(20) REFERENCES transactions(tx_id) ON DELETE CASCADE,
+    currency_code VARCHAR(3) NOT NULL,
+    direction VARCHAR(5) NOT NULL,      -- 'IN' (customer gave) or 'OUT' (teller dispensed)
+    denomination_val INT NOT NULL,
+    notes_count INT NOT NULL
+);
+
+-- 6. Create AML / KYC Alerts Table
+CREATE TABLE aml_alerts (
+    alert_id SERIAL PRIMARY KEY,
+    tx_id VARCHAR(20) REFERENCES transactions(tx_id),
+    customer_id UUID REFERENCES customers(customer_id),
+    alert_reason VARCHAR(255) NOT NULL, -- e.g., 'Threshold exceeded ($10,000+)'
+    status VARCHAR(20) DEFAULT 'PENDING', -- 'PENDING', 'APPROVED', 'REJECTED'
+    approved_by VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+```
+
+---
+
+## 3. How to Connect and Use It in Your Project
+
+Currently, the single-file prototype stores state inside JavaScript objects in memory. To make it a live, production-grade system with a real database, connect it in 3 simple steps:
+
+### Step A: Set Up a Backend API (Node.js / Express Example)
+
+Create a small backend service that receives trades from your frontend and runs an ACID database transaction:
+
+```javascript
+// server.js (Node.js + pg)
+const express = require('express');
+const { Pool } = require('pg');
+const app = express();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+app.use(express.json());
+
+// Endpoint: Process a Counter Exchange
+app.post('/api/exchange', async (req, res) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN'); // Start ACID transaction
+
+    const { txId, counterId, customer, trade, denominations } = req.body;
+
+    // 1. Insert or find customer
+    let custRes = await client.query(
+      `INSERT INTO customers (full_name, id_type, id_number, nationality)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (id_number) DO UPDATE SET full_name = EXCLUDED.full_name
+       RETURNING customer_id`,
+      [customer.name, customer.idType, customer.idNumber, customer.nationality]
+    );
+    const customerId = custRes.rows[0].customer_id;
+
+    // 2. Check AML Threshold ($10,000+)
+    const isFlagged = trade.inboundUSD >= 10000;
+    const txStatus = isFlagged ? 'FLAGGED' : 'COMPLETED';
+
+    // 3. Insert Transaction
+    await client.query(
+      `INSERT INTO transactions (tx_id, counter_id, customer_id, teller_username, from_currency, to_currency, inbound_amount, outbound_amount, exchange_rate, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      [txId, counterId, customerId, 'Chief Teller', trade.from, trade.to, trade.inbound, trade.outbound, trade.rate, txStatus]
+    );
+
+    // 4. Update Cash Drawer Inventory (Add inbound bills, subtract outbound bills)
+    for (const item of denominations.inbound) {
+      await client.query(
+        `UPDATE drawer_inventory 
+         SET bill_count = bill_count + $1, last_updated = NOW()
+         WHERE counter_id = $2 AND currency_code = $3 AND denomination_value = $4`,
+        [item.count, counterId, trade.from, item.denom]
+      );
+    }
+
+    if (isFlagged) {
+      await client.query(
+        `INSERT INTO aml_alerts (tx_id, customer_id, alert_reason, status)
+         VALUES ($1, $2, 'Exceeded mandatory $10,000 regulatory limit', 'PENDING')`,
+        [txId, customerId]
+      );
+    }
+
+    await client.query('COMMIT'); // Commit all changes safely
+    res.json({ success: true, txId, status: txStatus });
+  } catch (err) {
+    await client.query('ROLLBACK'); // Roll back changes if any error occurs
+    res.status(500).json({ error: err.message });
+  } finally {
+    client.release();
+  }
+});
+
+app.listen(3000, () => console.log('OmniForex API running on port 3000'));
+
+```
+
+### Step B: Connect Your Website Frontend to the Database
+
+In the frontend's `executeTrade()` function, replace local memory updates with a simple `fetch` call to your API:
+
+```javascript
+async function executeTrade() {
+  const payload = {
+    txId: "TX-" + Math.floor(10000 + Math.random() * 90000),
+    counterId: appState.activeStation.toUpperCase(),
+    customer: {
+      name: document.getElementById('cust-name').value,
+      idType: document.getElementById('cust-id-type').value,
+      idNumber: document.getElementById('cust-id-val').value,
+      nationality: document.getElementById('cust-country').value
+    },
+    trade: {
+      from: appState.fromCurrency,
+      to: appState.toCurrency,
+      inbound: appState.inboundAmount,
+      outbound: calculatedOutbound,
+      rate: activeRate
+    },
+    denominations: {
+      inbound: getDenominationArray()
+    }
+  };
+
+  const response = await fetch('/api/exchange', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  const result = await response.json();
+  if (result.success) {
+    showToast(`Transaction ${result.txId} saved to database!`, 'success');
+  }
+}
+
+```
+
+### Step C: Recommended Hosting & Database Options
+
+* **Database**: Use a managed PostgreSQL database on **Supabase**, **Neon.tech**, or **Railway** (all have free tiers).
+* **Backend**: Deploy the Node.js/Express app on **Render**, **Railway**, or as serverless functions on **Vercel**.
+* **Frontend**: Deploy the single HTML/JS frontend on **Vercel**, **Netlify**, or **GitHub Pages**.
