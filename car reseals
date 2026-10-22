@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURELIA // Fine Vintage Automobiles & Auctions</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Tone.js for elegant audio feedback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            onyx: '#08090C',
+            obsidian: '#0E1015',
+            surface: '#151821',
+            surfaceLight: '#1E2330',
+            gold: {
+              300: '#F9E2AF',
+              400: '#E7C885',
+              500: '#D4AF37',
+              600: '#B8860B',
+              700: '#996515',
+            },
+            crimson: '#8B1822',
+            emeraldBadge: '#10B981'
+          },
+          fontFamily: {
+            serif: ['Cinzel', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08090C;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2a3142;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4AF37;
+    }
+
+    /* Luxury Shimmer Effect */
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF1CA 0%, #D4AF37 50%, #AA771C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gold-border-gradient {
+      border-image: linear-gradient(to right, #D4AF37, #5c4516, #D4AF37) 1;
+    }
+    .glass-panel {
+      background: rgba(21, 24, 33, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(212, 175, 55, 0.18);
+    }
+    .glass-panel-elevated {
+      background: rgba(28, 33, 46, 0.88);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Keyframe Animations */
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+      50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.55); }
+    }
+    .live-glow {
+      animation: pulseGlow 2.5s infinite;
+    }
+    @keyframes bidFlash {
+      0% { background-color: rgba(212, 175, 55, 0.4); transform: scale(1.02); }
+      100% { background-color: transparent; transform: scale(1); }
+    }
+    .bid-flash {
+      animation: bidFlash 0.7s ease-out;
+    }
+  </style>
+</head>
+<body class="bg-onyx text-slate-200 font-sans antialiased selection:bg-gold-500 selection:text-black min-h-screen flex flex-col">
+
+  <!-- TOP STATUS BANNER (VIP NOTIFICATION & CURRENT EXCHANGE) -->
+  <div class="bg-gradient-to-r from-obsidian via-surface to-obsidian border-b border-gold-500/20 text-xs py-2 px-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-slate-400">
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-red-950/80 text-red-400 border border-red-500/30">
+          <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-red-500 animate-ping"></span> Live Session
+        </span>
+        <span class="hidden sm:inline text-slate-300">Monaco Autumn Grand Marquee Auction // Monterey Hall VII</span>
+      </div>
+      <div class="flex items-center space-x-4 text-xs">
+        <span class="hidden md:inline"><i class="fa-solid fa-shield-halved text-gold-500 mr-1.5"></i> Escrow Secured by Sotheby's Financial Services</span>
+        <div id="authStatusPill" class="flex items-center gap-1.5 text-gold-400 cursor-pointer hover:underline" onclick="openVipModal()">
+          <i class="fa-solid fa-crown text-xs"></i>
+          <span id="navTierName">Guest Explorer (Unverified)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-onyx/90 backdrop-blur-md border-b border-white/5 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-lg border border-gold-500/60 bg-surface flex items-center justify-center shadow-lg shadow-gold-500/10 group-hover:border-gold-400 transition-colors">
+          <i class="fa-solid fa-award text-gold-500 text-lg group-hover:scale-110 transition-transform"></i>
+        </div>
+        <div>
+          <span class="font-serif text-xl sm:text-2xl font-bold tracking-widest text-white block">AURELIA</span>
+          <span class="text-[9px] uppercase tracking-[0.3em] text-gold-400 block -mt-1 font-semibold">Fine Collector Auctions</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav links -->
+      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+        <a href="#featured-live" class="text-white hover:text-gold-400 transition-colors tracking-wide flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-red-500"></span> Live Lot
+        </a>
+        <a href="#catalogue" class="text-slate-300 hover:text-gold-400 transition-colors tracking-wide">The Vault Collection</a>
+        <a href="#calculator" class="text-slate-300 hover:text-gold-400 transition-colors tracking-wide">Valuation Engine</a>
+        <a href="#provenance" class="text-slate-300 hover:text-gold-400 transition-colors tracking-wide">Provenance & Audit</a>
+      </nav>
+
+      <!-- Action Group -->
+      <div class="flex items-center space-x-3">
+        <!-- Watchlist trigger -->
+        <button onclick="toggleWatchlistModal()" class="relative p-2.5 rounded-lg border border-white/10 hover:border-gold-500/50 bg-surface/80 text-slate-300 hover:text-gold-400 transition-all text-sm">
+          <i class="fa-regular fa-bookmark"></i>
+          <span id="watchlistCountBadge" class="absolute -top-1 -right-1 bg-gold-500 text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </button>
+
+        <!-- VIP Membership Action Button -->
+        <button id="vipMembershipBtn" onclick="openVipModal()" class="relative group overflow-hidden px-4 sm:px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold tracking-wide border border-gold-500/60 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-400 text-black shadow-lg shadow-gold-500/20 hover:shadow-gold-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
+          <i class="fa-solid fa-id-card-clip text-black"></i>
+          <span id="vipBtnText">Register as VIP Bidder</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <!-- HERO SECTION -->
+    <section class="relative overflow-hidden border-b border-gold-500/10">
+      <!-- Background Ambient Glow -->
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(212,175,55,0.12),transparent_70%)] pointer-events-none"></div>
+      <div class="absolute -top-24 -left-24 w-96 h-96 bg-gold-600/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-gold-500/30 bg-gold-500/5 text-gold-400 text-xs font-semibold uppercase tracking-wider">
+              <i class="fa-solid fa-gem text-[10px]"></i> Curated Historical Masterpieces
+            </div>
+            
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-black tracking-tight text-white leading-tight">
+              Where Automotive Legend Meets <span class="gold-gradient-text">Private Prestige</span>
+            </h1>
+            
+            <p class="text-slate-400 text-base sm:text-lg max-w-xl font-light leading-relaxed">
+              Step into the world's most discreet collector salon. Certified chassis records, authentic race histories, and high-stakes real-time private floor bidding for vetted international connoisseurs.
+            </p>
+
+            <div class="pt-4 flex flex-wrap gap-4 items-center">
+              <a href="#featured-live" class="px-7 py-3.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-black font-semibold text-sm tracking-wide transition-all duration-200 shadow-xl shadow-gold-500/25 flex items-center gap-2">
+                <span>Enter Live Auction Floor</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </a>
+              <button onclick="openVipModal()" class="px-6 py-3.5 rounded-lg border border-gold-500/40 hover:border-gold-400 bg-surface hover:bg-surfaceLight text-slate-200 font-semibold text-sm tracking-wide transition-all flex items-center gap-2">
+                <i class="fa-solid fa-fingerprint text-gold-500"></i>
+                <span>Bidder Identity Verification</span>
+              </button>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="pt-8 grid grid-cols-3 gap-6 border-t border-white/10 max-w-lg">
+              <div>
+                <p class="text-2xl font-serif font-bold text-white tracking-tight">$184M+</p>
+                <p class="text-xs text-slate-400 uppercase tracking-wider mt-0.5">Historical Volume</p>
+              </div>
+              <div>
+                <p class="text-2xl font-serif font-bold text-gold-400 tracking-tight">100%</p>
+                <p class="text-xs text-slate-400 uppercase tracking-wider mt-0.5">Verified Chassis</p>
+              </div>
+              <div>
+                <p class="text-2xl font-serif font-bold text-white tracking-tight">Tier-1</p>
+                <p class="text-xs text-slate-400 uppercase tracking-wider mt-0.5">VIP Escrow Hub</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Spotlight Card -->
+          <div class="lg:col-span-5">
+            <div class="glass-panel-elevated rounded-2xl p-6 relative overflow-hidden group">
+              <div class="absolute top-4 right-4 z-20">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-600/90 text-white shadow-lg backdrop-blur-md">
+                  <span class="w-2 h-2 rounded-full bg-white mr-2 animate-ping"></span> HIGHEST LOT TODAY
+                </span>
+              </div>
+              
+              <!-- Car Visual Hero Image -->
+              <div class="relative h-64 sm:h-72 w-full rounded-xl overflow-hidden bg-onyx mb-5">
+                <img id="heroImagePreview" 
+                     src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80" 
+                     alt="1961 Ferrari 250 GT California Spyder" 
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+                <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                  <div>
+                    <span class="text-[11px] font-bold uppercase tracking-widest text-gold-400">LOT #42</span>
+                    <h3 class="text-lg font-serif font-bold text-white">1961 Ferrari 250 GT California SWB</h3>
+                  </div>
+                  <span class="text-xs px-2.5 py-1 bg-black/70 border border-gold-500/40 rounded text-gold-400 font-mono">VIN #2871GT</span>
+                </div>
+              </div>
+
+              <!-- Quick Stats Grid -->
+              <div class="grid grid-cols-3 gap-2.5 mb-5 text-center">
+                <div class="p-2.5 rounded-lg bg-surface/90 border border-white/5">
+                  <span class="block text-[10px] text-slate-400 uppercase tracking-wider">Engine</span>
+                  <span class="text-xs font-semibold text-white">3.0L Colombo V12</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-surface/90 border border-white/5">
+                  <span class="block text-[10px] text-slate-400 uppercase tracking-wider">Condition</span>
+                  <span class="text-xs font-semibold text-emerald-400">99.4 Concours</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-surface/90 border border-white/5">
+                  <span class="block text-[10px] text-slate-400 uppercase tracking-wider">Est. Value</span>
+                  <span class="text-xs font-semibold text-gold-400">$16.5M - $18M</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 border-t border-white/10">
+                <div>
+                  <span class="text-[11px] text-slate-400 block uppercase">Current High Standing</span>
+                  <span class="text-2xl font-serif font-black text-white" id="heroLiveBid">$15,400,000</span>
+                </div>
+                <button onclick="scrollToLiveLot(1)" class="px-5 py-2.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-black font-bold text-xs uppercase tracking-wider transition-all shadow-md">
+                  Bid On This Lot
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE AUCTION SALON / REAL-TIME BIDDING CONSOLE -->
+    <section id="featured-live" class="py-16 bg-surface/40 border-b border-gold-500/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-white/10 gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              </span>
+              <span class="text-xs font-bold uppercase tracking-widest text-red-500">Official Live Bidding Floor</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-serif font-bold text-white">Active Marquee Session</h2>
+            <p class="text-sm text-slate-400">Bids made here are legally binding under international private auction statutes.</p>
+          </div>
+
+          <!-- Switch Live Active Lot Dropdown -->
+          <div class="flex items-center gap-3">
+            <label for="lotSelector" class="text-xs text-slate-400 font-medium whitespace-nowrap">Switch Lot Floor:</label>
+            <select id="lotSelector" onchange="switchLiveLot(this.value)" class="bg-surface border border-gold-500/30 text-gold-400 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-gold-500">
+              <!-- populated in JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- The Bidding Theater Board -->
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- Car Visual & Tabbed Intelligence (8 Cols) -->
+          <div class="lg:col-span-8 space-y-6">
+            <div class="glass-panel rounded-2xl overflow-hidden p-1 sm:p-2">
+              <!-- Main Gallery Frame -->
+              <div class="relative h-80 sm:h-[420px] rounded-xl overflow-hidden bg-black">
+                <img id="liveCarMainImage" src="" alt="Live car" class="w-full h-full object-cover transition-opacity duration-300">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
+
+                <!-- Overlaid Badges -->
+                <div class="absolute top-4 left-4 flex flex-wrap gap-2">
+                  <span id="liveCarLotBadge" class="px-3 py-1 rounded bg-black/80 border border-gold-500/40 text-gold-400 text-xs font-mono font-bold">LOT #--</span>
+                  <span id="liveCarReserveBadge" class="px-3 py-1 rounded bg-emerald-950/90 border border-emerald-500/50 text-emerald-400 text-xs font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-xs"></i> Reserve Met
+                  </span>
+                  <span class="px-3 py-1 rounded bg-surface/80 border border-white/10 text-slate-300 text-xs">Certified Matching Numbers</span>
+                </div>
+
+                <div class="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                  <div>
+                    <h3 id="liveCarTitle" class="text-xl sm:text-2xl lg:text-3xl font-serif font-black text-white">Car Name</h3>
+                    <p id="liveCarSubtitle" class="text-xs sm:text-sm text-gold-400 font-medium">Coachwork by Scaglietti • Chassis 2871GT</p>
+                  </div>
+                  <button onclick="toggleWatchlistCurrentLot()" id="liveBookmarkBtn" class="p-3 rounded-xl bg-black/60 border border-white/20 text-white hover:text-gold-400 transition-colors">
+                    <i class="fa-regular fa-bookmark"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Interactive Tabs Section -->
+              <div class="p-4 sm:p-6">
+                <!-- Tab Headers -->
+                <div class="flex border-b border-white/10 space-x-6 text-sm font-semibold mb-6 overflow-x-auto pb-1">
+                  <button onclick="switchTab('specs')" id="tabBtn-specs" class="tab-btn pb-2 border-b-2 border-gold-500 text-gold-400 transition-colors">Chassis Specs</button>
+                  <button onclick="switchTab('provenance')" id="tabBtn-provenance" class="tab-btn pb-2 border-b-2 border-transparent text-slate-400 hover:text-white transition-colors">Provenance & Lineage</button>
+                  <button onclick="switchTab('condition')" id="tabBtn-condition" class="tab-btn pb-2 border-b-2 border-transparent text-slate-400 hover:text-white transition-colors">Inspection & Audit</button>
+                  <button onclick="switchTab('documents')" id="tabBtn-documents" class="tab-btn pb-2 border-b-2 border-transparent text-slate-400 hover:text-white transition-colors">Verified Docs (VIP)</button>
+                </div>
+
+                <!-- Tab 1: Specs -->
+                <div id="tabContent-specs" class="tab-pane space-y-4">
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="liveSpecsGrid">
+                    <!-- Populated dynamically -->
+                  </div>
+                  <p id="liveCarDescription" class="text-sm text-slate-300 leading-relaxed pt-2"></p>
+                </div>
+
+                <!-- Tab 2: Provenance -->
+                <div id="tabContent-provenance" class="tab-pane hidden space-y-3">
+                  <h4 class="text-xs uppercase font-bold text-gold-400 tracking-wider">Documented Ownership Chain</h4>
+                  <div id="liveProvenanceTimeline" class="space-y-3 border-l-2 border-gold-500/30 pl-4 ml-1">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+
+                <!-- Tab 3: Condition -->
+                <div id="tabContent-condition" class="tab-pane hidden space-y-4">
+                  <div class="flex flex-col sm:flex-row items-center justify-between p-4 rounded-xl bg-surface border border-gold-500/20 gap-4">
+                    <div class="flex items-center gap-4">
+                      <div class="w-14 h-14 rounded-full border-2 border-gold-500 flex items-center justify-center font-serif text-lg font-bold text-gold-400" id="conditionScoreBadge">
+                        99.2
+                      </div>
+                      <div>
+                        <h4 class="text-sm font-bold text-white">Concours d'Elegance Grade Certification</h4>
+                        <p class="text-xs text-slate-400">Inspected by FIVA Master Evaluators on October 2026</p>
+                      </div>
+                    </div>
+                    <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs rounded-full">Factory Original Engine & Gearbox</span>
+                  </div>
+                  <div class="grid sm:grid-cols-3 gap-3 text-xs" id="conditionAspectsGrid">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+
+                <!-- Tab 4: Verified Documents (VIP) -->
+                <div id="tabContent-documents" class="tab-pane hidden space-y-4">
+                  <div class="p-4 rounded-xl bg-gradient-to-r from-surface to-surfaceLight border border-gold-500/30 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div>
+                      <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-shield text-gold-400"></i> Dossier de Vente & Restoration Archival Records
+                      </h4>
+                      <p class="text-xs text-slate-400 mt-1">Includes high-resolution dynamometer charts, frame alignment laser scans & customs clearances.</p>
+                    </div>
+                    <button onclick="downloadConditionReport()" class="px-4 py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-black text-xs font-bold uppercase tracking-wider flex items-center gap-2 whitespace-nowrap">
+                      <i class="fa-solid fa-download"></i> Access Dossier
+                    </button>
+                  </div>
+                  <p class="text-[11px] text-slate-500 italic">* Full unredacted telemetry and previous title deeds are reserved exclusively for Verified Collector tier members.</p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Real-Time Bid Engine & Action Terminal (4 Cols) -->
+          <div class="lg:col-span-4 space-y-5">
+            
+            <!-- Bid Cockpit Card -->
+            <div class="glass-panel-elevated rounded-2xl p-6 relative overflow-hidden" id="liveBidPanel">
+              <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Time Remaining</span>
+                <!-- Anti-sniping Dynamic Countdown -->
+                <div class="flex items-center gap-1.5 font-mono text-base font-bold text-red-400" id="lotCountdownDisplay">
+                  <i class="fa-regular fa-clock text-xs"></i>
+                  <span id="timerMin">04</span>:<span id="timerSec">32</span>
+                </div>
+              </div>
+
+              <!-- Current Valuation Highlight -->
+              <div class="mb-5">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider block font-medium">Current Highest Bid</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <span id="currentBidPriceDisplay" class="text-3xl sm:text-4xl font-serif font-black text-gold-400 transition-all duration-300">
+                    $15,400,000
+                  </span>
+                  <span class="text-xs text-slate-400 font-mono">USD</span>
+                </div>
+                <div class="flex items-center justify-between mt-2 text-xs">
+                  <span class="text-slate-400">Reserve: <strong class="text-emerald-400" id="reserveText">MET</strong></span>
+                  <span class="text-slate-400">Bids Placed: <strong class="text-white" id="totalBidsCount">27</strong></span>
+                </div>
+              </div>
+
+              <!-- Quick Increment Fast-Action Buttons -->
+              <div class="space-y-2.5 mb-6">
+                <span class="text-[11px] font-semibold text-slate-300 block uppercase tracking-wider">Quick Increment:</span>
+                <div class="grid grid-cols-3 gap-2">
+                  <button onclick="placeQuickBid(10000)" class="py-2.5 px-2 rounded-lg bg-surfaceLight hover:bg-gold-500/20 border border-gold-500/30 text-gold-300 font-mono text-xs font-bold transition-all hover:border-gold-400">
+                    +$10,000
+                  </button>
+                  <button onclick="placeQuickBid(25000)" class="py-2.5 px-2 rounded-lg bg-surfaceLight hover:bg-gold-500/20 border border-gold-500/30 text-gold-300 font-mono text-xs font-bold transition-all hover:border-gold-400">
+                    +$25,000
+                  </button>
+                  <button onclick="placeQuickBid(50000)" class="py-2.5 px-2 rounded-lg bg-surfaceLight hover:bg-gold-500/20 border border-gold-500/30 text-gold-300 font-mono text-xs font-bold transition-all hover:border-gold-400">
+                    +$50,000
+                  </button>
+                </div>
+
+                <!-- Custom Bid Input -->
+                <div class="pt-2">
+                  <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 font-mono">$</span>
+                    <input type="number" id="customBidInput" placeholder="Enter custom bid..." class="w-full bg-surface border border-gold-500/30 rounded-lg pl-8 pr-24 py-2.5 text-sm text-white focus:outline-none focus:border-gold-400 font-mono">
+                    <button onclick="placeCustomBid()" class="absolute right-1 top-1 bottom-1 px-3 bg-gold-500/20 hover:bg-gold-500 hover:text-black text-gold-300 border border-gold-500/30 rounded text-xs font-bold transition-all">
+                      Bid Custom
+                    </button>
+                  </div>
+                  <span id="minNextBidHelper" class="block text-[10px] text-slate-400 mt-1 font-mono">Minimum next allowed bid: $15,410,000</span>
+                </div>
+              </div>
+
+              <!-- Main Execution CTA with Sound & Feedback -->
+              <button onclick="executeTopFloorBid()" class="w-full py-4 rounded-xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 text-black font-serif font-black text-base uppercase tracking-widest hover:brightness-110 active:scale-[0.98] shadow-xl shadow-gold-500/20 transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-gavel"></i>
+                <span id="ctaBidButtonText">Place Next Bid ($15,410,000)</span>
+              </button>
+
+              <!-- Verification Notice -->
+              <div class="mt-4 p-3 rounded-lg bg-onyx/60 border border-white/5 flex items-start gap-2.5 text-[11px] text-slate-400">
+                <i class="fa-solid fa-shield text-gold-500 mt-0.5"></i>
+                <span>All bids are secured with 5% escrow hold. Instant biometric / SMS verification simulated on submission.</span>
+              </div>
+            </div>
+
+            <!-- Live Floor Activity Stream (Audio Ticker) -->
+            <div class="glass-panel rounded-2xl p-5">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-white">Live Floor Ticker</h4>
+                </div>
+                <span class="text-[10px] text-slate-400 font-mono">Saleroom + Internet</span>
+              </div>
+
+              <!-- Stream scroll container -->
+              <div id="liveBidLogList" class="space-y-2 max-h-56 overflow-y-auto pr-1 text-xs">
+                <!-- Log entries injected by JS -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- THE VAULT: VINTAGE CAR CATALOGUE & FILTERS -->
+    <section id="catalogue" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Title -->
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-serif uppercase tracking-[0.25em] text-gold-400">The Private Reserve</span>
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white mt-2">Iconic Vintage Masterworks</h2>
+        <p class="text-slate-400 text-sm mt-3 font-light">From Pre-War aeronautical engineering to 1960s Le Mans homologation legends, inspect verified vehicles currently cataloged in our international vaults.</p>
+      </div>
+
+      <!-- Filter & Search Control Bar -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-surface/70 border border-white/10 mb-10">
+        <!-- Era Filter Pills -->
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto" id="eraFilterContainer">
+          <button onclick="filterCars('all', this)" class="filter-pill px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gold-500 text-black border border-gold-400 transition-all">All Eras</button>
+          <button onclick="filterCars('pre-war', this)" class="filter-pill px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-white/10 text-slate-300 hover:text-white hover:border-gold-500/50 transition-all">Pre-War (1930s)</button>
+          <button onclick="filterCars('golden-era', this)" class="filter-pill px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-white/10 text-slate-300 hover:text-white hover:border-gold-500/50 transition-all">50s-60s Golden Era</button>
+          <button onclick="filterCars('classic-era', this)" class="filter-pill px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-white/10 text-slate-300 hover:text-white hover:border-gold-500/50 transition-all">70s-80s Homologations</button>
+        </div>
+
+        <!-- Status Filter & Search -->
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <select id="statusFilter" onchange="applyFilters()" class="bg-surface border border-white/10 text-slate-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-gold-500">
+            <option value="all">All Statuses</option>
+            <option value="live">Live in Session</option>
+            <option value="upcoming">Upcoming Auctions</option>
+            <option value="sold">Historical Archive (Sold)</option>
+          </select>
+          <div class="relative flex-grow md:w-48">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
+            <input type="text" id="carSearchInput" oninput="applyFilters()" placeholder="Search model or chassis..." class="w-full bg-surface border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-gold-500">
+          </div>
+        </div>
+      </div>
+
+      <!-- Cars Grid -->
+      <div id="carsCatalogueGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- CAR VALUATION CALCULATOR / COLLECTOR ESTIMATION TOOL -->
+    <section id="calculator" class="py-16 bg-surface/30 border-y border-gold-500/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-10 items-center">
+          
+          <div class="lg:col-span-5 space-y-4">
+            <span class="text-xs font-bold uppercase tracking-widest text-gold-400 font-mono">Algorithmic Appraisal Engine</span>
+            <h2 class="text-3xl font-serif font-bold text-white">Automotive Value Predictor</h2>
+            <p class="text-sm text-slate-400 leading-relaxed font-light">
+              Utilize our multi-decade econometric database synthesizing historic gavel results, Hagerty indices, provenance weight, matching numbers status, and FIVA condition score to generate instant indicative market bands.
+            </p>
+            <div class="p-4 rounded-xl bg-onyx/80 border border-white/10 space-y-2 text-xs text-slate-300">
+              <div class="flex items-center gap-2 text-gold-400 font-semibold">
+                <i class="fa-solid fa-circle-info"></i> Appraisal Accuracy Standard
+              </div>
+              <p>Calibrated against over 2,400 marquee sales at Pebble Beach, Villa d'Este, and Goodwood Revival auctions.</p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="glass-panel-elevated rounded-2xl p-6 sm:p-8 space-y-6">
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs uppercase text-slate-300 font-semibold mb-2">Vehicle Category / Marque</label>
+                  <select id="calcMarque" onchange="recalculateValuation()" class="w-full bg-surface border border-white/10 text-white rounded-lg px-3 py-2.5 text-sm focus:border-gold-500 focus:outline-none">
+                    <option value="ferrari-v12">Ferrari 1950-1965 Colombo V12</option>
+                    <option value="mercedes-sl">Mercedes-Benz 300 SL (Gullwing/Roadster)</option>
+                    <option value="aston-db">Aston Martin DB Series (DB4/DB5/DB6)</option>
+                    <option value="porsche-rs">Porsche Air-Cooled RS / 911 S</option>
+                    <option value="bugatti-prewar">Pre-War Grand Marque (Bugatti / Alfa Romeo)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs uppercase text-slate-300 font-semibold mb-2">Chassis Condition Grade</label>
+                  <select id="calcCondition" onchange="recalculateValuation()" class="w-full bg-surface border border-white/10 text-white rounded-lg px-3 py-2.5 text-sm focus:border-gold-500 focus:outline-none">
+                    <option value="concours">Tier 1: 98-100 Concours d'Elegance (Pristine)</option>
+                    <option value="excellent">Tier 2: 90-97 Excellent Older Restoration</option>
+                    <option value="driver">Tier 3: 80-89 Highly Original / Patinated Driver</option>
+                    <option value="project">Tier 4: Barn Find / Candidate for Restoration</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Sliders & Checkbox -->
+              <div class="space-y-4 pt-2">
+                <div>
+                  <div class="flex justify-between text-xs mb-1.5">
+                    <span class="text-slate-300 font-medium">Recorded Mileage / Kilometer Accrual</span>
+                    <span class="text-gold-400 font-mono" id="mileageLabel">24,000 Miles</span>
+                  </div>
+                  <input type="range" id="calcMileage" min="1000" max="100000" step="1000" value="24000" oninput="updateMileageLabel(this.value); recalculateValuation();" class="w-full accent-gold-500 h-1.5 bg-surfaceLight rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-3 pt-2">
+                  <label class="flex items-center gap-2.5 p-3 rounded-lg bg-surface border border-white/5 cursor-pointer hover:border-gold-500/30">
+                    <input type="checkbox" id="calcMatchingNumbers" checked onchange="recalculateValuation()" class="rounded accent-gold-500 w-4 h-4">
+                    <span class="text-xs text-slate-200">Certified Matching Numbers Engine</span>
+                  </label>
+                  <label class="flex items-center gap-2.5 p-3 rounded-lg bg-surface border border-white/5 cursor-pointer hover:border-gold-500/30">
+                    <input type="checkbox" id="calcRaceHistory" checked onchange="recalculateValuation()" class="rounded accent-gold-500 w-4 h-4">
+                    <span class="text-xs text-slate-200">Documented Period Race/Celebrity Pedigree</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Estimated Output Box -->
+              <div class="p-5 rounded-xl bg-onyx border border-gold-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Indicative Auction Gavel Projection</span>
+                  <div class="text-2xl sm:text-3xl font-serif font-black text-gold-400 mt-1" id="calculatedEstimateOutput">
+                    $14,200,000 - $16,800,000
+                  </div>
+                </div>
+                <button onclick="requestConsignmentAudit()" class="px-5 py-2.5 rounded-lg bg-surface border border-gold-500/50 hover:bg-gold-500 hover:text-black text-gold-400 text-xs font-bold uppercase tracking-wider transition-all">
+                  Request Official Consignment
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PROVENANCE & ESCROW ASSURANCE -->
+    <section id="provenance" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <h2 class="text-3xl font-serif font-bold text-white">The Aurelia Guarantee</h2>
+        <p class="text-slate-400 text-sm mt-2">Every machine presented under our banner undergoes rigorous mechanical and archival forensics prior to lot assignment.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 hover:border-gold-500/30 transition-all">
+          <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-fingerprint"></i>
+          </div>
+          <h3 class="text-lg font-serif font-bold text-white mb-2">Metallurgical & VIN Forensics</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Stampings, tube gauge thickness, and crankcase casting serials are cross-referenced with factory build sheets and marque registries.</p>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 hover:border-gold-500/30 transition-all">
+          <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-vault"></i>
+          </div>
+          <h3 class="text-lg font-serif font-bold text-white mb-2">Escrow Protected Settlements</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Transactions flow through premier sovereign escrow institutions with multi-currency SWIFT wire execution and bonded international transport.</p>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 hover:border-gold-500/30 transition-all">
+          <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-user-secret"></i>
+          </div>
+          <h3 class="text-lg font-serif font-bold text-white mb-2">Discreet Identity Masking</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">VIP Bidder identities are shielded behind encrypted paddle identifiers to preserve absolute privacy in international collector circles.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER CALLOUT FOR VIP MEMBERSHIP -->
+    <section class="py-16 bg-gradient-to-b from-surface to-onyx border-t border-gold-500/20">
+      <div class="max-w-4xl mx-auto px-4 text-center space-y-6">
+        <span class="inline-block p-2 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs uppercase font-mono px-4">Exclusive Private Registry</span>
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white">Acquire Extraordinary History with Confidence</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto">Elevate your collector status. Gain direct phone-bid privileges, unredacted provenance folders, and private viewings at Villa d'Este and Pebble Beach.</p>
+        <button onclick="openVipModal()" class="px-8 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-black font-serif font-bold text-sm uppercase tracking-wider transition-all shadow-xl shadow-gold-500/20">
+          Unlock VIP Bidder Access
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-black border-t border-white/5 py-10 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-serif text-slate-300 font-bold tracking-widest">AURELIA</span>
+        <span>© 2026 Aurelia Fine Collector Auctions Ltd. Monaco • London • Geneva • Monterey.</span>
+      </div>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-gold-400">Escrow Security</a>
+        <a href="#" class="hover:text-gold-400">FIVA Inspection Terms</a>
+        <a href="#" class="hover:text-gold-400">Anti-Money Laundering (AML)</a>
+        <a href="#" class="hover:text-gold-400">Consignment Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================= MODALS ======================= -->
+
+  <!-- 1. VIP MEMBERSHIP & BIDDER VERIFICATION MODAL ('PAID PORTION') -->
+  <div id="vipModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-panel-elevated max-w-4xl w-full rounded-2xl overflow-hidden border border-gold-500/40 transform scale-95 transition-transform duration-300 max-h-[90vh] flex flex-col" id="vipModalCard">
+      
+      <!-- Modal Header -->
+      <div class="p-6 bg-surface border-b border-gold-500/20 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gold-500/10 border border-gold-500/40 text-gold-400 flex items-center justify-center">
+            <i class="fa-solid fa-crown text-base"></i>
+          </div>
+          <div>
+            <h3 class="font-serif text-xl font-bold text-white">VIP Verified Bidder & Collector Club</h3>
+            <p class="text-xs text-slate-400">Unlock live bidding privileges and certified provenance dossiers</p>
+          </div>
+        </div>
+        <button onclick="closeVipModal()" class="text-slate-400 hover:text-white text-lg p-2">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body: Scrollable -->
+      <div class="p-6 overflow-y-auto space-y-6">
+        
+        <!-- Tier Selection -->
+        <div class="grid md:grid-cols-3 gap-4" id="membershipTiersGrid">
+          
+          <!-- Free Explorer Tier -->
+          <div class="tier-card p-5 rounded-xl border border-white/10 bg-surface/50 hover:border-gold-500/30 flex flex-col justify-between transition-all">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Complimentary</span>
+              <h4 class="text-base font-serif font-bold text-white mt-1">Guest Explorer</h4>
+              <p class="text-2xl font-serif font-black text-slate-300 my-2">$0 <span class="text-xs font-normal text-slate-500">/ forever</span></p>
+              <ul class="text-xs text-slate-400 space-y-2 mb-4">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-slate-400 text-[10px]"></i> Browse Vault & Live Streams</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-slate-400 text-[10px]"></i> Valuation Estimator Tool</li>
+                <li class="flex items-center gap-2 text-slate-600"><i class="fa-solid fa-xmark text-[10px]"></i> Live Bidding Privileges</li>
+                <li class="flex items-center gap-2 text-slate-600"><i class="fa-solid fa-xmark text-[10px]"></i> Unredacted Dossier Access</li>
+              </ul>
+            </div>
+            <button onclick="selectTier('explorer')" class="w-full py-2 rounded-lg bg-surface border border-white/20 text-xs font-bold text-slate-300 hover:text-white hover:border-white transition-all">
+              Current Tier
+            </button>
+          </div>
+
+          <!-- Verified Collector Tier (PAID PRIMARY) -->
+          <div class="tier-card p-5 rounded-xl border-2 border-gold-500 bg-surface/90 relative flex flex-col justify-between shadow-lg shadow-gold-500/10">
+            <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-bold bg-gold-500 text-black uppercase tracking-wider shadow">
+              Most Popular
+            </span>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-gold-400">Accredited Bidder</span>
+              <h4 class="text-base font-serif font-bold text-white mt-1">Verified Collector</h4>
+              <p class="text-2xl font-serif font-black text-gold-400 my-2">$299 <span class="text-xs font-normal text-slate-400">/ year</span></p>
+              <ul class="text-xs text-slate-300 space-y-2 mb-4">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400 text-[10px]"></i> <strong>Instant Live Auction Bidding</strong></li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400 text-[10px]"></i> Full Dossier & Inspection Downloads</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400 text-[10px]"></i> $2.5M Initial Bidding Ceiling</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400 text-[10px]"></i> Anonymous Encrypted Paddle ID</li>
+              </ul>
+            </div>
+            <button onclick="startVerificationCheckout('collector', 299)" class="w-full py-2.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-black text-xs font-bold uppercase tracking-wider transition-all shadow">
+              Upgrade & Verify Now
+            </button>
+          </div>
+
+          <!-- Prestige Consignor Tier (PAID TOP) -->
+          <div class="tier-card p-5 rounded-xl border border-gold-500/40 bg-surface/50 hover:border-gold-500 flex flex-col justify-between transition-all">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-gold-300">Connoisseur Patrons</span>
+              <h4 class="text-base font-serif font-bold text-white mt-1">Prestige Connoisseur</h4>
+              <p class="text-2xl font-serif font-black text-white my-2">$999 <span class="text-xs font-normal text-slate-500">/ year</span></p>
+              <ul class="text-xs text-slate-400 space-y-2 mb-4">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400 text-[10px]"></i> <strong>Unlimited Bidding Credit Limit</strong></li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400 text-[10px]"></i> Dedicated Phone Concierge Specialist</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400 text-[10px]"></i> Priority Consignment Commission (0%)</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400 text-[10px]"></i> VIP Lounge at Villa d'Este & Goodwood</li>
+              </ul>
+            </div>
+            <button onclick="startVerificationCheckout('prestige', 999)" class="w-full py-2.5 rounded-lg bg-surface border border-gold-500/60 text-gold-400 hover:bg-gold-500 hover:text-black text-xs font-bold uppercase tracking-wider transition-all">
+              Join Prestige Club
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Simulated Checkout Area (Shown when tier chosen) -->
+        <div id="checkoutStepContainer" class="p-5 rounded-xl bg-onyx/90 border border-gold-500/30 space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
+            <div>
+              <h4 class="text-sm font-bold text-white" id="checkoutPlanTitle">Upgrading to Verified Collector ($299/yr)</h4>
+              <p class="text-xs text-slate-400">KYC Bidder Background Verification + Instant Escrow Activation</p>
+            </div>
+            <button onclick="cancelCheckout()" class="text-xs text-slate-400 hover:text-white">Cancel</button>
+          </div>
+
+          <form id="checkoutForm" onsubmit="processMembershipPayment(event)" class="space-y-4">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Full Legal Collector Name</label>
+                <input type="text" id="billingName" required placeholder="Lord Julian Vance" class="w-full bg-surface border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-gold-500">
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Passport / National ID # (KYC)</label>
+                <input type="text" id="billingKyc" required placeholder="GBR-99218201-A" class="w-full bg-surface border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-gold-500">
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] text-slate-400 mb-1">Payment Method (Card / Amex Centurion)</label>
+                <div class="relative">
+                  <input type="text" id="billingCard" required placeholder="4242 •••• •••• 9012" class="w-full bg-surface border border-white/10 rounded-lg pl-3 pr-10 py-2 text-xs font-mono text-white focus:outline-none focus:border-gold-500">
+                  <i class="fa-brands fa-cc-amex absolute right-3 top-2.5 text-gold-400 text-sm"></i>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Expiry / CVV</label>
+                <input type="text" id="billingCvv" required placeholder="12/28 • 888" class="w-full bg-surface border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-gold-500">
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs text-slate-400">
+              <input type="checkbox" id="termsCheck" required class="accent-gold-500 rounded">
+              <label for="termsCheck">I agree to international auction binding rules and anti-sniping terms.</label>
+            </div>
+
+            <button type="submit" id="paySubmitBtn" class="w-full py-3 rounded-lg bg-gradient-to-r from-gold-500 to-gold-400 text-black font-serif font-black text-xs uppercase tracking-widest hover:brightness-110 flex items-center justify-center gap-2 shadow-lg">
+              <i class="fa-solid fa-lock text-xs"></i>
+              <span id="paySubmitText">Confirm & Activate VIP Membership</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-surface border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield text-gold-500"></i> AML & FINCEN Certified Escrow</span>
+        <span>Questions? <strong class="text-gold-400 cursor-pointer">concierge@aurelia-auctions.com</strong></span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. WATCHLIST MODAL -->
+  <div id="watchlistModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-panel-elevated max-w-xl w-full rounded-2xl overflow-hidden border border-gold-500/40 p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bookmark text-gold-500"></i>
+          <h3 class="font-serif text-lg font-bold text-white">Your Saved Vault Watchlist</h3>
+        </div>
+        <button onclick="toggleWatchlistModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div id="watchlistItemsList" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+        <!-- Rendered in JS -->
+      </div>
+
+      <div class="pt-2 text-right">
+        <button onclick="toggleWatchlistModal()" class="px-4 py-2 rounded-lg bg-surface text-xs text-slate-300 hover:text-white">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CAR DETAIL INSPECTION MODAL (FULL CAR VIEW) -->
+  <div id="carDetailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-panel-elevated max-w-3xl w-full rounded-2xl overflow-hidden border border-gold-500/40 max-h-[90vh] flex flex-col">
+      <div class="p-5 bg-surface border-b border-white/10 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-gold-400 font-mono font-bold uppercase tracking-wider" id="modalCarEraLot">LOT #42</span>
+          <h3 class="font-serif text-xl font-bold text-white" id="modalCarName">Car Model Name</h3>
+        </div>
+        <button onclick="closeCarDetailModal()" class="text-slate-400 hover:text-white text-lg p-2"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="p-6 overflow-y-auto space-y-6">
+        <div class="h-64 sm:h-80 w-full rounded-xl overflow-hidden bg-black">
+          <img id="modalCarImage" src="" class="w-full h-full object-cover">
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-3 text-center">
+          <div class="p-3 rounded-lg bg-surface border border-white/5">
+            <span class="block text-[10px] text-slate-400 uppercase">Engine</span>
+            <span class="text-xs font-bold text-white" id="modalCarEngine">--</span>
+          </div>
+          <div class="p-3 rounded-lg bg-surface border border-white/5">
+            <span class="block text-[10px] text-slate-400 uppercase">Chassis / VIN</span>
+            <span class="text-xs font-bold text-gold-400 font-mono" id="modalCarVin">--</span>
+          </div>
+          <div class="p-3 rounded-lg bg-surface border border-white/5">
+            <span class="block text-[10px] text-slate-400 uppercase">Estimated Gavel</span>
+            <span class="text-xs font-bold text-white" id="modalCarEst">--</span>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="text-xs uppercase font-bold text-gold-400 tracking-wider">Historical Provenance & Curatorial Notes</h4>
+          <p class="text-xs text-slate-300 leading-relaxed" id="modalCarFullStory">--</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-onyx border border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div>
+            <span class="text-xs text-slate-400">Status</span>
+            <h5 class="text-sm font-bold text-white" id="modalCarStatusNote">Auction Active</h5>
+          </div>
+          <button id="modalActionBtn" class="px-6 py-2.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-black font-bold text-xs uppercase tracking-wider transition-all">
+            Action
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    /* ==========================================================================
+       1. DATA STRUCTURES & DATABASE (VINTAGE AUTOMOBILE CATALOGUE)
+       ========================================================================== */
+    const VINTAGE_VAULT = [
+      {
+        id: 1,
+        lotNumber: 42,
+        title: "1961 Ferrari 250 GT California SWB Spyder",
+        subtitle: "Scaglietti Coachwork • Factory Classiche Certified",
+        era: "golden-era",
+        eraLabel: "50s-60s Golden Era",
+        status: "live",
+        statusLabel: "Live Auction",
+        image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80",
+        engine: "3.0L Colombo Tipo 168 V12",
+        horsepower: "280 HP @ 7,000 RPM",
+        transmission: "4-Speed Synchromesh Manual",
+        vin: "2871GT",
+        mileage: "18,420 Miles",
+        conditionScore: 99.4,
+        reserveMet: true,
+        estimateRange: "$16,500,000 - $18,500,000",
+        currentBid: 15400000,
+        bidsCount: 27,
+        timerSeconds: 272, // 4m 32s
+        description: "One of only 56 short-wheelbase California Spyders ever constructed. Delivered new to Milan in Grigio Argento over Nero leather, retaining its original numbers-matching Colombo V12 block and gearbox certified by Ferrari Classiche.",
+        provenance: [
+          { year: "1961", text: "Delivered new via Garage Francorchamps to Italian industrialist Conte C. di Frassineto." },
+          { year: "1974", text: "Acquired by renowned Swiss collector Jean-Pierre Marceau; dry stored in Geneva vault." },
+          { year: "2018", text: "Exhaustive nut-and-bolt Concours restoration by Paul Russell & Company ($620,000 documented)." },
+          { year: "2024", text: "Awarded Best in Class at Villa d'Este Concorso d'Eleganza." }
+        ],
+        conditionAspects: [
+          { item: "Bodywork & Paint", rating: "100/100", note: "Original alloy panels laser gauged" },
+          { item: "Engine & Mechanicals", rating: "99/100", note: "Triple Weber 40 DCL6 overhauled" },
+          { item: "Interior Trim", rating: "99.2/100", note: "Connolly Vaumol VM 8500 hide" }
+        ],
+        recentBids: [
+          { bidder: "Paddle #804 (Zurich)", amount: 15400000, time: "Just now" },
+          { bidder: "Paddle #112 (Monaco)", amount: 15350000, time: "1 min ago" },
+          { bidder: "Internet VIP #519", amount: 15300000, time: "3 mins ago" },
+          { bidder: "Phone Bidder G-4", amount: 15200000, time: "4 mins ago" }
+        ]
+      },
+      {
+        id: 2,
+        lotNumber: 18,
+        title: "1954 Mercedes-Benz 300 SL Gullwing Coupe",
+        subtitle: "Original Lightweight Alloy Intake • Rudge Knock-Off Wheels",
+        era: "golden-era",
+        eraLabel: "50s-60s Golden Era",
+        status: "live",
+        statusLabel: "Live Auction",
+        image: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80",
+        engine: "3.0L M198 SOHC Inline-6 (Direct Injection)",
+        horsepower: "240 HP @ 6,100 RPM",
+        transmission: "4-Speed Manual",
+        vin: "198.040-4500129",
+        mileage: "31,190 Miles",
+        conditionScore: 98.7,
+        reserveMet: true,
+        estimateRange: "$2,200,000 - $2,600,000",
+        currentBid: 2450000,
+        bidsCount: 38,
+        timerSeconds: 390,
+        description: "An exceptional early-production Gullwing in quintessential Silbergrau Metallic over blue plaid cloth. Fitted from factory with the coveted NSL camshaft and sports suspension setup.",
+        provenance: [
+          { year: "1954", text: "Special order delivery via Max Hoffman's Park Avenue dealership, New York." },
+          { year: "1982", text: "Maintained in the private collection of Indianapolis 500 team principal." },
+          { year: "2021", text: "Complete mechanical recommissioning by Kienle Automobiltechnik, Stuttgart." }
+        ],
+        conditionAspects: [
+          { item: "Tubular Spaceframe", rating: "100/100", note: "Zero rust, original zinc primer intact" },
+          { item: "Bosch Mechanical FI", rating: "98/100", note: "Bench calibrated and dyno balanced" },
+          { item: "Gullwing Doors", rating: "99/100", note: "Torsion balance springs within factory spec" }
+        ],
+        recentBids: [
+          { bidder: "Paddle #401 (Tokyo)", amount: 2450000, time: "Just now" },
+          { bidder: "Paddle #982 (London)", amount: 2425000, time: "2 mins ago" }
+        ]
+      },
+      {
+        id: 3,
+        lotNumber: 59,
+        title: "1963 Aston Martin DB5 Saloon",
+        subtitle: "Vantage Specification Upgrade • Silver Birch Livery",
+        era: "golden-era",
+        eraLabel: "50s-60s Golden Era",
+        status: "upcoming",
+        statusLabel: "Upcoming Oct 28",
+        image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+        engine: "4.0L Tadek Marek All-Alloy DOHC Straight-6",
+        horsepower: "325 HP (Triple Weber 45DCOE)",
+        transmission: "ZF 5-Speed All-Synchromesh",
+        vin: "DB5/1489/R",
+        mileage: "42,100 Miles",
+        conditionScore: 97.9,
+        reserveMet: false,
+        estimateRange: "$1,100,000 - $1,350,000",
+        currentBid: 950000,
+        bidsCount: 14,
+        timerSeconds: 14200,
+        description: "The definitive gentleman's GT coupe. Finished in the immortal James Bond livery of Silver Birch over black Connolly hide. Documented by Aston Martin Heritage Trust Certificate.",
+        provenance: [
+          { year: "1963", text: "Sold through Brooklands of Bond Street to film producer in Mayfair." },
+          { year: "2015", text: "Engine expanded to 4.2L Fast-Road spec by Aston Engineering Ltd." }
+        ],
+        conditionAspects: [
+          { item: "Superleggera Frame", rating: "98/100", note: "Inspected endoscope scan, flawless" },
+          { item: "ZF 5-Speed Gearbox", rating: "97/100", note: "Clutch renewed 800 miles ago" }
+        ],
+        recentBids: [
+          { bidder: "Paddle #229 (London)", amount: 950000, time: "18 mins ago" }
+        ]
+      },
+      {
+        id: 4,
+        lotNumber: 12,
+        title: "1936 Bugatti Type 57SC Atlantic Coupe",
+        subtitle: "Aerolithe Riveted Magnesium-Alloy Homage • Ex-Lord Rothschild Pedigree",
+        era: "pre-war",
+        eraLabel: "Pre-War Era",
+        status: "upcoming",
+        statusLabel: "Marquee Gala Nov 2",
+        image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80",
+        engine: "3.3L Supercharged Twin-Cam Inline-8",
+        horsepower: "210 HP @ 5,500 RPM",
+        transmission: "4-Speed Manual Center Shift",
+        vin: "57374-SC",
+        mileage: "9,800 Km",
+        conditionScore: 99.8,
+        reserveMet: true,
+        estimateRange: "$35,000,000 - $45,000,000",
+        currentBid: 32000000,
+        bidsCount: 9,
+        timerSeconds: 88400,
+        description: "Jean Bugatti’s ultimate Art Deco sculptural triumph. Featuring the distinctive dorsal rivet seam constructed from lightweight Elektron alloy. One of the crown jewels of pre-war human engineering.",
+        provenance: [
+          { year: "1936", text: "Bespoke commission for European banking dynasty." },
+          { year: "1967", text: "Preserved in private chateau museum in Alsace." },
+          { year: "2019", text: "Pebble Beach Concours d'Elegance Best of Show Winner." }
+        ],
+        conditionAspects: [
+          { item: "Roots Supercharger", rating: "100/100", note: "Original Molsheim stamping #42" },
+          { item: "Dorsal Seam Rivets", rating: "100/100", note: "Original magnesium riveted seam intact" }
+        ],
+        recentBids: [
+          { bidder: "Paddle #001 (Private Sovereign)", amount: 32000000, time: "Yesterday" }
+        ]
+      },
+      {
+        id: 5,
+        lotNumber: 77,
+        title: "1969 Porsche 911 S 2.0 Targa",
+        subtitle: "Short Wheelbase Final Year • Fuchs Forged Alloys",
+        era: "classic-era",
+        eraLabel: "70s-80s Classics",
+        status: "sold",
+        statusLabel: "Sold $315,000",
+        image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+        engine: "2.0L Air-Cooled Flat-6 (Type 901/02)",
+        horsepower: "170 HP @ 6,800 RPM",
+        transmission: "5-Speed Dogleg 901 Manual",
+        vin: "119310244",
+        mileage: "52,400 Miles",
+        conditionScore: 96.5,
+        reserveMet: true,
+        estimateRange: "$280,000 - $340,000",
+        currentBid: 315000,
+        bidsCount: 42,
+        timerSeconds: 0,
+        description: "The purest early 911 variant with stainless-steel Targa hoop and high-revving 2.0L flat-six on Weber 40 IDS carburetors. Finished in iconic Tangerine (Blood Orange) over Pepita houndstooth.",
+        provenance: [
+          { year: "1969", text: "Delivered new to Sonauto, Paris, France." },
+          { year: "2023", text: "Sold to Tokyo classic rally enthusiast." }
+        ],
+        conditionAspects: [
+          { item: "Magnesium Crankcase", rating: "96/100", note: "Zero line-bore distortion" },
+          { item: "Targa Roof Panel", rating: "98/100", note: "Original grain vinyl renewed" }
+        ],
+        recentBids: [
+          { bidder: "Paddle #309 (Kyoto)", amount: 315000, time: "Sold" }
+        ]
+      },
+      {
+        id: 6,
+        lotNumber: 88,
+        title: "1931 Alfa Romeo 8C 2300 Monza Spyder",
+        subtitle: "Scuderia Ferrari Team Provenance • Mille Miglia Veteran",
+        era: "pre-war",
+        eraLabel: "Pre-War Era",
+        status: "upcoming",
+        statusLabel: "Upcoming Dec 10",
+        image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80",
+        engine: "2.3L DOHC Supercharged Straight-8",
+        horsepower: "178 HP @ 5,400 RPM",
+        transmission: "4-Speed Crash Box",
+        vin: "2111043",
+        mileage: "14,900 Km",
+        conditionScore: 98.9,
+        reserveMet: true,
+        estimateRange: "$12,000,000 - $15,000,000",
+        currentBid: 11800000,
+        bidsCount: 16,
+        timerSeconds: 52000,
+        description: "Engineered by Vittorio Jano. Raced during the golden age of Grand Prix with Scuderia Ferrari's Prancing Horse emblem hand-painted on the cowl. Eligible for Mille Miglia Storica, Goodwood, and Monaco Historique.",
+        provenance: [
+          { year: "1931", text: "Campaigned at Targa Florio under Enzo Ferrari's team direction." },
+          { year: "1955", text: "Sold to British privateer racer; featured in Motorsport Magazine." }
+        ],
+        conditionAspects: [
+          { item: "Roots Supercharger", rating: "99/100", note: "Re-machined bronze gears" },
+          { item: "Cable Brakes", rating: "97/100", note: "Finely synchronized 15-inch drums" }
+        ],
+        recentBids: [
+          { bidder: "Paddle #770 (Geneva)", amount: 11800000, time: "3 hrs ago" }
+        ]
+      }
+    ];
+
+    /* ==========================================================================
+       2. USER MEMBERSHIP STATE (PAID PORTION SIMULATION)
+       ========================================================================== */
+    let userState = {
+      tier: "explorer", // 'explorer' | 'collector' ($299) | 'prestige' ($999)
+      name: "Guest Collector",
+      isVerified: false,
+      bidderPaddle: null,
+      creditLimit: 0,
+      watchlist: [1, 2] // pre-saved lots
+    };
+
+    let activeLiveLotId = 1;
+    let countdownInterval = null;
+
+    /* Sound Synthesizer via Tone.js */
+    let audioReady = false;
+    async function playLuxuryChime(type = 'bid') {
+      try {
+        if (!audioReady) {
+          await Tone.start();
+          audioReady = true;
+        }
+        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        synth.volume.value = -8;
+        
+        if (type === 'bid') {
+          // Dignified auction bell chord
+          synth.triggerAttackRelease(["C5", "G5", "C6"], "16n");
+        } else if (type === 'gavel') {
+          synth.triggerAttackRelease(["D4", "A4"], "8n");
+        } else if (type === 'success') {
+          synth.triggerAttackRelease(["E5", "G#5", "B5", "E6"], "8n");
+        }
+      } catch (err) {
+        // Fallback gracefully without throwing
+      }
+    }
+
+    /* ==========================================================================
+       3. INITIALIZATION
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Populate Lot Selector in Live Floor
+      const selector = document.getElementById('lotSelector');
+      selector.innerHTML = '';
+      VINTAGE_VAULT.forEach(car => {
+        const opt = document.createElement('option');
+        opt.value = car.id;
+        opt.textContent = `Lot #${car.lotNumber}: ${car.title.substring(0, 32)}...`;
+        selector.appendChild(opt);
+      });
+
+      // 2. Render Live Lot
+      renderLiveLot(activeLiveLotId);
+
+      // 3. Render Catalogue Grid
+      renderCatalogue(VINTAGE_VAULT);
+
+      // 4. Update UI State & Watchlist badges
+      updateUserStateUI();
+      updateWatchlistBadge();
+
+      // 5. Start live countdown clock
+      startLiveCountdown();
+
+      // 6. Run initial valuation engine calculation
+      recalculateValuation();
+    });
+
+    /* ==========================================================================
+       4. LIVE FLOOR RENDERING & BID CONTROLLER
+       ========================================================================== */
+    function renderLiveLot(carId) {
+      const car = VINTAGE_VAULT.find(c => c.id == carId);
+      if (!car) return;
+
+      activeLiveLotId = car.id;
+      document.getElementById('lotSelector').value = car.id;
+
+      // Imagery & Headers
+      const imgEl = document.getElementById('liveCarMainImage');
+      imgEl.src = car.image;
+      imgEl.alt = car.title;
+
+      document.getElementById('liveCarLotBadge').textContent = `LOT #${car.lotNumber}`;
+      document.getElementById('liveCarTitle').textContent = car.title;
+      document.getElementById('liveCarSubtitle').textContent = car.subtitle;
+
+      // Reserve Met indicator
+      const reserveBadge = document.getElementById('liveCarReserveBadge');
+      if (car.reserveMet) {
+        reserveBadge.className = "px-3 py-1 rounded bg-emerald-950/90 border border-emerald-500/50 text-emerald-400 text-xs font-bold flex items-center gap-1.5";
+        reserveBadge.innerHTML = `<i class="fa-solid fa-circle-check text-xs"></i> Reserve Met`;
+        document.getElementById('reserveText').textContent = "MET";
+        document.getElementById('reserveText').className = "text-emerald-400 font-bold";
+      } else {
+        reserveBadge.className = "px-3 py-1 rounded bg-amber-950/90 border border-amber-500/50 text-amber-400 text-xs font-bold flex items-center gap-1.5";
+        reserveBadge.innerHTML = `<i class="fa-solid fa-hourglass-half text-xs"></i> Reserve Pending`;
+        document.getElementById('reserveText').textContent = "PENDING";
+        document.getElementById('reserveText').className = "text-amber-400 font-bold";
+      }
+
+      // Specs Tab
+      const specsGrid = document.getElementById('liveSpecsGrid');
+      specsGrid.innerHTML = `
+        <div class="p-3 rounded-lg bg-surface border border-white/5">
+          <span class="block text-[10px] text-slate-400 uppercase">Engine</span>
+          <span class="text-xs font-semibold text-white">${car.engine}</span>
+        </div>
+        <div class="p-3 rounded-lg bg-surface border border-white/5">
+          <span class="block text-[10px] text-slate-400 uppercase">Power Output</span>
+          <span class="text-xs font-semibold text-white">${car.horsepower}</span>
+        </div>
+        <div class="p-3 rounded-lg bg-surface border border-white/5">
+          <span class="block text-[10px] text-slate-400 uppercase">Chassis Serial</span>
+          <span class="text-xs font-mono font-semibold text-gold-400">${car.vin}</span>
+        </div>
+        <div class="p-3 rounded-lg bg-surface border border-white/5">
+          <span class="block text-[10px] text-slate-400 uppercase">Gearbox</span>
+          <span class="text-xs font-semibold text-white">${car.transmission}</span>
+        </div>
+      `;
+      document.getElementById('liveCarDescription').textContent = car.description;
+
+      // Provenance Tab
+      const provTimeline = document.getElementById('liveProvenanceTimeline');
+      provTimeline.innerHTML = car.provenance.map(p => `
+        <div class="relative">
+          <span class="text-xs font-serif font-bold text-gold-400">${p.year}</span>
+          <p class="text-xs text-slate-300 mt-0.5">${p.text}</p>
+        </div>
+      `).join('');
+
+      // Condition Tab
+      document.getElementById('conditionScoreBadge').textContent = car.conditionScore;
+      const condGrid = document.getElementById('conditionAspectsGrid');
+      condGrid.innerHTML = car.conditionAspects.map(c => `
+        <div class="p-3 rounded-lg bg-surface border border-white/5">
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-semibold text-slate-200">${c.item}</span>
+            <span class="font-mono text-gold-400">${c.rating}</span>
+          </div>
+          <p class="text-[11px] text-slate-400">${c.note}</p>
+        </div>
+      `).join('');
+
+      // Bookmark button state
+      updateBookmarkButtonState(car.id);
+
+      // Pricing & Bids
+      updateLiveBidDisplay(car);
+      renderBidLogs(car);
+    }
+
+    function switchLiveLot(lotId) {
+      renderLiveLot(lotId);
+      showToast(`Switched active live auction floor to Lot #${lotId}`, "info");
+    }
+
+    function scrollToLiveLot(lotId) {
+      renderLiveLot(lotId);
+      document.getElementById('featured-live').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function updateLiveBidDisplay(car) {
+      document.getElementById('currentBidPriceDisplay').textContent = formatCurrency(car.currentBid);
+      document.getElementById('totalBidsCount').textContent = car.bidsCount;
+      
+      const nextMin = car.currentBid + 10000;
+      document.getElementById('minNextBidHelper').textContent = `Minimum next allowed bid: ${formatCurrency(nextMin)}`;
+      document.getElementById('ctaBidButtonText').textContent = `Place Next Bid (${formatCurrency(nextMin)})`;
+      document.getElementById('customBidInput').placeholder = `Min ${formatCurrency(nextMin)}`;
+    }
+
+    function renderBidLogs(car) {
+      const container = document.getElementById('liveBidLogList');
+      container.innerHTML = car.recentBids.map((b, i) => `
+        <div class="flex items-center justify-between p-2 rounded bg-surface/70 border border-white/5 ${i === 0 ? 'border-l-2 border-l-gold-500' : ''}">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-gavel text-[10px] ${i === 0 ? 'text-gold-400' : 'text-slate-500'}"></i>
+            <span class="font-medium text-slate-200">${b.bidder}</span>
+          </div>
+          <div class="text-right">
+            <span class="font-mono font-bold text-gold-400">${formatCurrency(b.amount)}</span>
+            <span class="block text-[9px] text-slate-500">${b.time}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* Tab Switching Logic */
+    function switchTab(tabKey) {
+      const tabs = ['specs', 'provenance', 'condition', 'documents'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const content = document.getElementById(`tabContent-${t}`);
+        if (t === tabKey) {
+          btn.className = "tab-btn pb-2 border-b-2 border-gold-500 text-gold-400 font-semibold";
+          content.classList.remove('hidden');
+        } else {
+          btn.className = "tab-btn pb-2 border-b-2 border-transparent text-slate-400 hover:text-white transition-colors";
+          content.classList.add('hidden');
+        }
+      });
+    }
+
+    /* Countdown Timer */
+    function startLiveCountdown() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      
+      countdownInterval = setInterval(() => {
+        const currentCar = VINTAGE_VAULT.find(c => c.id == activeLiveLotId);
+        if (!currentCar || currentCar.timerSeconds <= 0) return;
+
+        currentCar.timerSeconds--;
+        const mins = Math.floor(currentCar.timerSeconds / 60);
+        const secs = currentCar.timerSeconds % 60;
+
+        document.getElementById('timerMin').textContent = String(mins).padStart(2, '0');
+        document.getElementById('timerSec').textContent = String(secs).padStart(2, '0');
+
+        // Visual alert when time is low
+        const clockEl = document.getElementById('lotCountdownDisplay');
+        if (currentCar.timerSeconds < 60) {
+          clockEl.classList.add('animate-pulse');
+        } else {
+          clockEl.classList.remove('animate-pulse');
+        }
+      }, 1000);
+    }
+
+    /* Anti-sniping: add seconds when a bid comes late */
+    function triggerAntiSnipingBuffer(car) {
+      if (car.timerSeconds < 120) {
+        car.timerSeconds += 60; // add 1 minute
+        showToast("Anti-sniping protection activated: +60 seconds added to timer.", "warning");
+      }
+    }
+
+    /* ==========================================================================
+       5. BIDDING ACTIONS & SECURITY CHECKS (VIP GATEWAY)
+       ========================================================================== */
+    function requireVipAccess() {
+      if (!userState.isVerified) {
+        openVipModal();
+        showToast("VIP Verification Required: Please upgrade to bid on live marquee lots.", "warning");
+        return false;
+      }
+      return true;
+    }
+
+    function placeQuickBid(increment) {
+      if (!requireVipAccess()) return;
+      const car = VINTAGE_VAULT.find(c => c.id == activeLiveLotId);
+      if (!car) return;
+
+      const newBid = car.currentBid + increment;
+      commitBid(car, newBid);
+    }
+
+    function placeCustomBid() {
+      if (!requireVipAccess()) return;
+      const car = VINTAGE_VAULT.find(c => c.id == activeLiveLotId);
+      if (!car) return;
+
+      const input = document.getElementById('customBidInput');
+      const val = parseInt(input.value, 10);
+      const minRequired = car.currentBid + 10000;
+
+      if (isNaN(val) || val < minRequired) {
+        showToast(`Bid must be at least ${formatCurrency(minRequired)}`, "error");
+        return;
+      }
+
+      commitBid(car, val);
+      input.value = '';
+    }
+
+    function executeTopFloorBid() {
+      if (!requireVipAccess()) return;
+      const car = VINTAGE_VAULT.find(c => c.id == activeLiveLotId);
+      if (!car) return;
+
+      const nextMin = car.currentBid + 10000;
+      commitBid(car, nextMin);
+    }
+
+    function commitBid(car, newAmount) {
+      car.currentBid = newAmount;
+      car.bidsCount++;
+
+      // User's private masked identity
+      const bidderIdentifier = `${userState.name} (${userState.bidderPaddle || 'Paddle #889'})`;
+
+      car.recentBids.unshift({
+        bidder: bidderIdentifier,
+        amount: newAmount,
+        time: "Just now"
+      });
+
+      // Keep recent bids to max 8
+      if (car.recentBids.length > 8) car.recentBids.pop();
+
+      // Trigger Visual pulse & Audio
+      playLuxuryChime('bid');
+      triggerAntiSnipingBuffer(car);
+
+      // Flash bid panel
+      const bidPanel = document.getElementById('liveBidPanel');
+      bidPanel.classList.remove('bid-flash');
+      void bidPanel.offsetWidth; // trigger reflow
+      bidPanel.classList.add('bid-flash');
+
+      // Update UI
+      updateLiveBidDisplay(car);
+      renderBidLogs(car);
+
+      // If it's the hero lot (#1), update hero display as well
+      if (car.id === 1) {
+        document.getElementById('heroLiveBid').textContent = formatCurrency(newAmount);
+      }
+
+      showToast(`Bid Placed: ${formatCurrency(newAmount)} submitted by ${userState.bidderPaddle}!`, "success");
+
+      // Auto simulate counter-bid in 12 seconds if someone is playing
+      simulateCounterBidder(car);
+    }
+
+    // Simulated opposing international bidder response
+    function simulateCounterBidder(car) {
+      setTimeout(() => {
+        // 50% chance a rival bidder bumps by 10k or 25k
+        if (Math.random() > 0.45 && activeLiveLotId === car.id) {
+          const bump = [10000, 25000, 50000][Math.floor(Math.random() * 3)];
+          car.currentBid += bump;
+          car.bidsCount++;
+
+          const opponents = [
+            "Phone Consignor via Geneva Desk",
+            "Collector #712 (St. Moritz)",
+            "Paddle #903 (Monaco Salon)",
+            "Private Syndicate (Doha)"
+          ];
+          const rival = opponents[Math.floor(Math.random() * opponents.length)];
+
+          car.recentBids.unshift({
+            bidder: rival,
+            amount: car.currentBid,
+            time: "Just now"
+          });
+
+          playLuxuryChime('gavel');
+          updateLiveBidDisplay(car);
+          renderBidLogs(car);
+          showToast(`Floor Alert: ${rival} counter-bid ${formatCurrency(car.currentBid)}!`, "warning");
+        }
+      }, 9000);
+    }
+
+    /* ==========================================================================
+       6. PAID VIP MEMBERSHIP & VERIFICATION CHECKOUT FLOW
+       ========================================================================== */
+    let selectedTierPlan = 'collector';
+    let selectedTierPrice = 299;
+
+    function openVipModal() {
+      const modal = document.getElementById('vipModal');
+      const card = document.getElementById('vipModalCard');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closeVipModal() {
+      const modal = document.getElementById('vipModal');
+      const card = document.getElementById('vipModalCard');
+      modal.classList.add('opacity-0');
+      card.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        cancelCheckout();
+      }, 250);
+    }
+
+    function selectTier(tierName) {
+      if (tierName === 'explorer') {
+        userState.tier = 'explorer';
+        userState.isVerified = false;
+        userState.bidderPaddle = null;
+        updateUserStateUI();
+        closeVipModal();
+        showToast("Switched to Guest Explorer tier.", "info");
+      }
+    }
+
+    function startVerificationCheckout(tier, price) {
+      selectedTierPlan = tier;
+      selectedTierPrice = price;
+      
+      const container = document.getElementById('checkoutStepContainer');
+      const title = document.getElementById('checkoutPlanTitle');
+      const btnText = document.getElementById('paySubmitText');
+
+      container.classList.remove('hidden');
+      if (tier === 'collector') {
+        title.textContent = `Verified Collector Membership ($${price}/year)`;
+        btnText.textContent = `Process $${price} & Issue Paddle`;
+      } else {
+        title.textContent = `Prestige Connoisseur Patron ($${price}/year)`;
+        btnText.textContent = `Process $${price} & Unlock Unlimited Credit`;
+      }
+
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelCheckout() {
+      document.getElementById('checkoutStepContainer').classList.add('hidden');
+    }
+
+    function processMembershipPayment(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('billingName').value.trim();
+      const kycInput = document.getElementById('billingKyc').value.trim();
+      const cardInput = document.getElementById('billingCard').value.trim();
+
+      if (!nameInput || !kycInput || !cardInput) {
+        showToast("Please complete all verification fields.", "error");
+        return;
+      }
+
+      // Simulate network / KYC processing
+      const submitBtn = document.getElementById('paySubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Authenticating with AML Registry...`;
+
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-lock text-xs"></i> <span>Confirm & Activate VIP Membership</span>`;
+
+        // Update state
+        userState.tier = selectedTierPlan;
+        userState.name = nameInput;
+        userState.isVerified = true;
+        // Generate random luxury paddle
+        userState.bidderPaddle = "Paddle #" + Math.floor(100 + Math.random() * 899);
+        userState.creditLimit = selectedTierPlan === 'prestige' ? 25000000 : 2500000;
+
+        playLuxuryChime('success');
+        updateUserStateUI();
+        closeVipModal();
+
+        showToast(`Congratulations ${userState.name}! You are now an Accredited VIP Bidder (${userState.bidderPaddle}) with $${(userState.creditLimit/1000000).toFixed(1)}M limit.`, "success");
+      }, 1600);
+    }
+
+    function updateUserStateUI() {
+      const navTier = document.getElementById('navTierName');
+      const vipBtnText = document.getElementById('vipBtnText');
+      const vipBtn = document.getElementById('vipMembershipBtn');
+
+      if (userState.isVerified) {
+        const tierTitle = userState.tier === 'prestige' ? 'Prestige Patron' : 'Verified Collector';
+        navTier.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> ${tierTitle}</span> (${userState.bidderPaddle})`;
+        vipBtnText.textContent = `${userState.bidderPaddle} Active`;
+        vipBtn.className = "relative group overflow-hidden px-4 sm:px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold tracking-wide border border-emerald-500 bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition-all flex items-center gap-2";
+      } else {
+        navTier.textContent = "Guest Explorer (Unverified)";
+        vipBtnText.textContent = "Register as VIP Bidder";
+        vipBtn.className = "relative group overflow-hidden px-4 sm:px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold tracking-wide border border-gold-500/60 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-400 text-black shadow-lg shadow-gold-500/20 hover:shadow-gold-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2";
+      }
+    }
+
+    function downloadConditionReport() {
+      if (!userState.isVerified) {
+        openVipModal();
+        showToast("Full condition reports & dyno scans require Verified Collector membership.", "warning");
+        return;
+      }
+      playLuxuryChime('gavel');
+      showToast("Generating certified unredacted PDF dossier with cryptographic stamp...", "success");
+      setTimeout(() => {
+        showToast("Download started: AURELIA_LOT42_ARCHIVAL_DOSSIER.pdf", "info");
+      }, 1000);
+    }
+
+    /* ==========================================================================
+       7. CATALOGUE FILTERING & RENDERING
+       ========================================================================== */
+    let currentEraFilter = 'all';
+
+    function filterCars(era, btn) {
+      currentEraFilter = era;
+      document.querySelectorAll('#eraFilterContainer .filter-pill').forEach(b => {
+        b.className = "filter-pill px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-white/10 text-slate-300 hover:text-white hover:border-gold-500/50 transition-all";
+      });
+      btn.className = "filter-pill px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gold-500 text-black border border-gold-400 transition-all";
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const status = document.getElementById('statusFilter').value;
+      const search = document.getElementById('carSearchInput').value.toLowerCase().trim();
+
+      const filtered = VINTAGE_VAULT.filter(car => {
+        const matchesEra = (currentEraFilter === 'all' || car.era === currentEraFilter);
+        const matchesStatus = (status === 'all' || car.status === status);
+        const matchesSearch = car.title.toLowerCase().includes(search) || 
+                              car.vin.toLowerCase().includes(search) || 
+                              car.engine.toLowerCase().includes(search);
+        return matchesEra && matchesStatus && matchesSearch;
+      });
+
+      renderCatalogue(filtered);
+    }
+
+    function renderCatalogue(carsList) {
+      const grid = document.getElementById('carsCatalogueGrid');
+      if (!carsList || carsList.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-500">
+            <i class="fa-solid fa-car-tunnel text-4xl mb-3 text-gold-500/40"></i>
+            <p class="font-serif text-lg text-white">No historical machines match this filter criteria.</p>
+            <p class="text-xs mt-1">Try resetting the era or search query.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = carsList.map(car => {
+        const isLive = car.status === 'live';
+        const isSold = car.status === 'sold';
+        const isSaved = userState.watchlist.includes(car.id);
+
+        return `
+          <div class="glass-panel rounded-2xl overflow-hidden group hover:border-gold-500/50 transition-all duration-300 flex flex-col justify-between">
+            <div>
+              <!-- Image Container -->
+              <div class="relative h-56 w-full overflow-hidden bg-black">
+                <img src="${car.image}" alt="${car.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-black/30"></div>
+                
+                <!-- Lot & Status Badges -->
+                <div class="absolute top-3 left-3 flex gap-2">
+                  <span class="px-2.5 py-0.5 rounded bg-black/80 border border-gold-500/30 text-gold-400 text-[10px] font-mono font-bold">LOT #${car.lotNumber}</span>
+                  ${isLive ? '<span class="px-2.5 py-0.5 rounded bg-red-600/90 text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> Live</span>' : ''}
+                  ${isSold ? '<span class="px-2.5 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] font-bold uppercase">Sold</span>' : ''}
+                </div>
+
+                <!-- Watchlist icon -->
+                <button onclick="toggleWatchlist(${car.id})" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 border border-white/20 text-white hover:text-gold-400 flex items-center justify-center text-xs transition-colors">
+                  <i class="${isSaved ? 'fa-solid text-gold-400' : 'fa-regular'} fa-bookmark"></i>
+                </button>
+
+                <div class="absolute bottom-3 left-3 right-3 flex justify-between items-baseline">
+                  <span class="text-[10px] uppercase font-bold text-slate-300 tracking-wider font-mono">${car.vin}</span>
+                  <span class="text-xs text-gold-400 font-semibold">${car.conditionScore} Concours</span>
+                </div>
+              </div>
+
+              <!-- Content Body -->
+              <div class="p-5 space-y-3">
+                <h3 class="font-serif text-lg font-bold text-white group-hover:text-gold-400 transition-colors line-clamp-1">${car.title}</h3>
+                <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">${car.description}</p>
+                
+                <div class="pt-2 grid grid-cols-2 gap-2 text-xs border-t border-white/5 text-slate-300">
+                  <div>
+                    <span class="text-[10px] text-slate-500 block">Powertrain</span>
+                    <span class="font-medium truncate block">${car.engine.split(' ')[0]} ${car.engine.split(' ')[1] || ''}</span>
+                  </div>
+                  <div>
+                    <span class="text-[10px] text-slate-500 block">Auction Guidance</span>
+                    <span class="font-medium text-gold-400 truncate block">${car.estimateRange}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Bottom Bar -->
+            <div class="p-5 pt-0 flex gap-2">
+              <button onclick="openCarDetailModal(${car.id})" class="flex-1 py-2 rounded-lg bg-surfaceLight hover:bg-surface border border-white/10 text-xs font-semibold text-slate-200 transition-all">
+                Inspect Lot
+              </button>
+              ${isLive ? `
+                <button onclick="scrollToLiveLot(${car.id})" class="px-4 py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-black text-xs font-bold uppercase tracking-wider transition-all">
+                  Bid Live
+                </button>
+              ` : `
+                <button onclick="openCarDetailModal(${car.id})" class="px-4 py-2 rounded-lg border border-gold-500/40 text-gold-400 hover:bg-gold-500/10 text-xs font-semibold transition-all">
+                  Details
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* ==========================================================================
+       8. CAR DETAIL MODAL
+       ========================================================================== */
+    function openCarDetailModal(carId) {
+      const car = VINTAGE_VAULT.find(c => c.id == carId);
+      if (!car) return;
+
+      document.getElementById('modalCarEraLot').textContent = `LOT #${car.lotNumber} • ${car.eraLabel.toUpperCase()}`;
+      document.getElementById('modalCarName').textContent = car.title;
+      document.getElementById('modalCarImage').src = car.image;
+      document.getElementById('modalCarEngine').textContent = `${car.engine} (${car.horsepower})`;
+      document.getElementById('modalCarVin').textContent = car.vin;
+      document.getElementById('modalCarEst').textContent = car.estimateRange;
+      document.getElementById('modalCarFullStory').textContent = car.description;
+
+      const note = document.getElementById('modalCarStatusNote');
+      const actionBtn = document.getElementById('modalActionBtn');
+
+      if (car.status === 'live') {
+        note.textContent = `Live Standing: ${formatCurrency(car.currentBid)} (${car.bidsCount} bids)`;
+        actionBtn.textContent = "Take to Live Bidding Floor";
+        actionBtn.onclick = () => {
+          closeCarDetailModal();
+          scrollToLiveLot(car.id);
+        };
+      } else if (car.status === 'sold') {
+        note.textContent = `Completed: Hammer fell at ${formatCurrency(car.currentBid)}`;
+        actionBtn.textContent = "View Sale Certificate";
+        actionBtn.onclick = () => {
+          showToast("Archival certificate available to verified consignors.", "info");
+        };
+      } else {
+        note.textContent = `Upcoming Sale: Lot slated for Monterey Gala`;
+        actionBtn.textContent = "Leave Absentee Bid";
+        actionBtn.onclick = () => {
+          if (!requireVipAccess()) return;
+          showToast(`Absentee order registered for Lot #${car.lotNumber}.`, "success");
+        };
+      }
+
+      const modal = document.getElementById('carDetailModal');
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+    }
+
+    function closeCarDetailModal() {
+      const modal = document.getElementById('carDetailModal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 250);
+    }
+
+    /* ==========================================================================
+       9. WATCHLIST SYSTEM
+       ========================================================================== */
+    function toggleWatchlistCurrentLot() {
+      toggleWatchlist(activeLiveLotId);
+    }
+
+    function toggleWatchlist(carId) {
+      const idx = userState.watchlist.indexOf(carId);
+      const car = VINTAGE_VAULT.find(c => c.id == carId);
+      if (idx > -1) {
+        userState.watchlist.splice(idx, 1);
+        showToast(`Removed "${car ? car.title.substring(0, 22) : 'Car'}..." from Vault Watchlist`, "info");
+      } else {
+        userState.watchlist.push(carId);
+        showToast(`Saved "${car ? car.title.substring(0, 22) : 'Car'}..." to your Watchlist`, "success");
+      }
+      updateWatchlistBadge();
+      updateBookmarkButtonState(activeLiveLotId);
+      applyFilters(); // refresh icons on cards
+    }
+
+    function updateBookmarkButtonState(carId) {
+      const btn = document.getElementById('liveBookmarkBtn');
+      if (!btn) return;
+      const isSaved = userState.watchlist.includes(carId);
+      btn.innerHTML = `<i class="${isSaved ? 'fa-solid text-gold-400' : 'fa-regular'} fa-bookmark"></i>`;
+    }
+
+    function updateWatchlistBadge() {
+      const badge = document.getElementById('watchlistCountBadge');
+      if (badge) badge.textContent = userState.watchlist.length;
+    }
+
+    function toggleWatchlistModal() {
+      const modal = document.getElementById('watchlistModal');
+      if (modal.classList.contains('hidden')) {
+        renderWatchlistModalItems();
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } else {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 250);
+      }
+    }
+
+    function renderWatchlistModalItems() {
+      const container = document.getElementById('watchlistItemsList');
+      if (userState.watchlist.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">Your watchlist is currently empty. Bookmark lots in the Vault to monitor auction times.</p>`;
+        return;
+      }
+
+      const savedCars = VINTAGE_VAULT.filter(c => userState.watchlist.includes(c.id));
+      container.innerHTML = savedCars.map(c => `
+        <div class="flex items-center justify-between p-3 rounded-lg bg-surface border border-white/5 gap-3">
+          <img src="${c.image}" class="w-14 h-12 rounded object-cover">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-xs font-bold text-white truncate">${c.title}</h4>
+            <span class="text-[10px] text-gold-400 block font-mono">Lot #${c.lotNumber} • ${c.estimateRange}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="toggleWatchlistModal(); scrollToLiveLot(${c.id});" class="p-2 rounded bg-gold-500 hover:bg-gold-400 text-black text-xs font-bold">
+              View
+            </button>
+            <button onclick="toggleWatchlist(${c.id}); renderWatchlistModalItems();" class="text-slate-400 hover:text-red-400 p-1.5 text-xs">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ==========================================================================
+       10. VALUATION ESTIMATION ENGINE (INTERACTIVE TOOL)
+       ========================================================================== */
+    function updateMileageLabel(val) {
+      document.getElementById('mileageLabel').textContent = parseInt(val).toLocaleString() + " Miles";
+    }
+
+    function recalculateValuation() {
+      const marque = document.getElementById('calcMarque').value;
+      const condition = document.getElementById('calcCondition').value;
+      const mileage = parseInt(document.getElementById('calcMileage').value, 10);
+      const matchingNumbers = document.getElementById('calcMatchingNumbers').checked;
+      const raceHistory = document.getElementById('calcRaceHistory').checked;
+
+      // Base baselines
+      let baseLow = 2000000;
+      let baseHigh = 2600000;
+
+      if (marque === 'ferrari-v12') {
+        baseLow = 12000000;
+        baseHigh = 16000000;
+      } else if (marque === 'mercedes-sl') {
+        baseLow = 1900000;
+        baseHigh = 2400000;
+      } else if (marque === 'aston-db') {
+        baseLow = 950000;
+        baseHigh = 1300000;
+      } else if (marque === 'porsche-rs') {
+        baseLow = 280000;
+        baseHigh = 420000;
+      } else if (marque === 'bugatti-prewar') {
+        baseLow = 28000000;
+        baseHigh = 36000000;
+      }
+
+      // Condition multipliers
+      let condMultiplier = 1.0;
+      if (condition === 'concours') condMultiplier = 1.25;
+      else if (condition === 'excellent') condMultiplier = 1.05;
+      else if (condition === 'driver') condMultiplier = 0.85;
+      else if (condition === 'project') condMultiplier = 0.55;
+
+      // Mileage factor (subtle on ultra vintage)
+      const mileagePenalty = Math.max(0.85, 1 - (mileage / 350000));
+
+      // Provenance bonuses
+      const matchingMultiplier = matchingNumbers ? 1.20 : 0.80;
+      const raceMultiplier = raceHistory ? 1.30 : 1.0;
+
+      const finalLow = Math.round((baseLow * condMultiplier * mileagePenalty * matchingMultiplier * raceMultiplier) / 50000) * 50000;
+      const finalHigh = Math.round((baseHigh * condMultiplier * mileagePenalty * matchingMultiplier * raceMultiplier) / 50000) * 50000;
+
+      document.getElementById('calculatedEstimateOutput').textContent = 
+        `${formatCurrency(finalLow)} - ${formatCurrency(finalHigh)}`;
+    }
+
+    function requestConsignmentAudit() {
+      if (!userState.isVerified) {
+        openVipModal();
+        showToast("Consignment requires verified identity credentials.", "warning");
+        return;
+      }
+      showToast("Consignment docket initialized. A Senior Marque Specialist will contact you within 4 hours.", "success");
+    }
+
+    /* ==========================================================================
+       11. UTILITY FUNCTIONS (CURRENCY & TOAST SYSTEM)
+       ========================================================================== */
+    function formatCurrency(amount) {
+      return "$" + Number(amount).toLocaleString('en-US');
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+
+      let icon = 'fa-circle-info';
+      let border = 'border-gold-500/40 text-slate-200';
+      if (type === 'success') {
+        icon = 'fa-circle-check text-emerald-400';
+        border = 'border-emerald-500/50 text-slate-100';
+      } else if (type === 'error') {
+        icon = 'fa-circle-exclamation text-red-400';
+        border = 'border-red-500/50 text-slate-100';
+      } else if (type === 'warning') {
+        icon = 'fa-triangle-exclamation text-amber-400';
+        border = 'border-amber-500/50 text-slate-100';
+      }
+
+      toast.className = `p-4 rounded-xl glass-panel-elevated ${border} text-xs font-medium max-w-sm flex items-start gap-3 shadow-2xl pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icon} mt-0.5 text-sm"></i>
+        <div class="flex-1">${message}</div>
+      `;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-x-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 4200);
+    }
+  </script>
+</body>
+</html>
