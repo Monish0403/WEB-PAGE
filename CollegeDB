@@ -1,0 +1,141 @@
+```sql
+-- 1. Create and select the database
+DROP DATABASE IF EXISTS CollegeDB;
+CREATE DATABASE CollegeDB;
+USE CollegeDB;
+
+-- ============================================================================
+-- 2. CREATE TABLES (5 Tables with Foreign Key Constraints)
+-- ============================================================================
+
+-- Table 1: Departments
+CREATE TABLE Departments (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50) NOT NULL,
+    building VARCHAR(30) NOT NULL,
+    budget DECIMAL(12, 2) NOT NULL
+);
+
+-- Table 2: Faculty
+CREATE TABLE Faculty (
+    faculty_id INT PRIMARY KEY,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    hire_date DATE NOT NULL,
+    dept_id INT NOT NULL,
+    FOREIGN KEY (dept_id) REFERENCES Departments(dept_id)
+);
+
+-- Table 3: Students
+CREATE TABLE Students (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    gender CHAR(1) NOT NULL,
+    dob DATE NOT NULL,
+    dept_id INT NOT NULL,
+    FOREIGN KEY (dept_id) REFERENCES Departments(dept_id)
+);
+
+-- Table 4: Courses
+CREATE TABLE Courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL,
+    credits INT NOT NULL,
+    dept_id INT NOT NULL,
+    faculty_id INT NOT NULL,
+    FOREIGN KEY (dept_id) REFERENCES Departments(dept_id),
+    FOREIGN KEY (faculty_id) REFERENCES Faculty(faculty_id)
+);
+
+-- Table 5: Enrollments
+CREATE TABLE Enrollments (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    enrollment_date DATE NOT NULL,
+    grade CHAR(2),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+);
+
+-- ============================================================================
+-- 3. INSERT DATA (10 Rows per Table)
+-- ============================================================================
+
+-- Table 1: Departments (10 rows)
+INSERT INTO Departments (dept_id, dept_name, building, budget) VALUES
+(1, 'Computer Science', 'Turing Block', 1200000.00),
+(2, 'Information Science', 'Lovelace Hall', 950000.00),
+(3, 'Electronics & Communication', 'Tesla Wing', 1100000.00),
+(4, 'Electrical & Electronics', 'Faraday Block', 850000.00),
+(5, 'Mechanical Engineering', 'Newton Hall', 1300000.00),
+(6, 'Civil Engineering', 'Smeaton Block', 750000.00),
+(7, 'Biotechnology', 'Darwin Wing', 890000.00),
+(8, 'Mathematics', 'Euler Block', 450000.00),
+(9, 'Physics', 'Einstein Hall', 420000.00),
+(10, 'Humanities', 'Tagore Wing', 300000.00);
+
+-- Table 2: Faculty (10 rows)
+INSERT INTO Faculty (faculty_id, first_name, last_name, email, hire_date, dept_id) VALUES
+(101, 'Alan', 'Walker', 'alan.w@college.edu', '2016-08-15', 1),
+(102, 'Grace', 'Hopper', 'grace.h@college.edu', '2015-06-20', 1),
+(103, 'Claude', 'Shannon', 'claude.s@college.edu', '2017-01-10', 2),
+(104, 'Heinrich', 'Hertz', 'heinrich.h@college.edu', '2018-07-22', 3),
+(105, 'Nikola', 'Tesla', 'nikola.t@college.edu', '2014-03-12', 4),
+(106, 'James', 'Watt', 'james.w@college.edu', '2013-09-01', 5),
+(107, 'Thomas', 'Telford', 'thomas.t@college.edu', '2019-11-15', 6),
+(108, 'Rosalind', 'Franklin', 'rosalind.f@college.edu', '2020-02-01', 7),
+(109, 'Carl', 'Gauss', 'carl.g@college.edu', '2012-05-18', 8),
+(110, 'Richard', 'Feynman', 'richard.f@college.edu', '2011-08-25', 9);
+
+-- Table 3: Students (10 rows)
+INSERT INTO Students (student_id, first_name, last_name, gender, dob, dept_id) VALUES
+(1001, 'Rahul', 'Sharma', 'M', '2004-03-15', 1),
+(1002, 'Priya', 'Nair', 'F', '2004-07-22', 1),
+(1003, 'Ananya', 'Rao', 'F', '2003-11-05', 2),
+(1004, 'Karthik', 'Iyer', 'M', '2004-01-30', 3),
+(1005, 'Deepak', 'Verma', 'M', '2003-09-18', 4),
+(1006, 'Sneha', 'Patil', 'F', '2004-05-12', 5),
+(1007, 'Rohan', 'Kulkarni', 'M', '2003-12-08', 6),
+(1008, 'Meera', 'Menon', 'F', '2004-08-25', 7),
+(1009, 'Varun', 'Hegde', 'M', '2003-04-14', 1),
+(1010, 'Pooja', 'Deshmukh', 'F', '2004-10-02', 2);
+
+-- Table 4: Courses (10 rows)
+INSERT INTO Courses (course_id, course_name, credits, dept_id, faculty_id) VALUES
+(201, 'Data Structures & Algorithms', 4, 1, 101),
+(202, 'Database Management Systems', 4, 1, 102),
+(203, 'Operating Systems', 3, 2, 103),
+(204, 'Digital Signal Processing', 4, 3, 104),
+(205, 'Power Electronics', 3, 4, 105),
+(206, 'Thermodynamics', 4, 5, 106),
+(207, 'Structural Analysis', 3, 6, 107),
+(208, 'Genetic Engineering', 4, 7, 108),
+(209, 'Linear Algebra & Calculus', 4, 8, 109),
+(210, 'Quantum Physics', 3, 9, 110);
+
+-- Table 5: Enrollments (10 rows)
+INSERT INTO Enrollments (enrollment_id, student_id, course_id, enrollment_date, grade) VALUES
+(1, 1001, 201, '2026-08-01', 'A'),
+(2, 1001, 202, '2026-08-01', 'B+'),
+(3, 1002, 201, '2026-08-01', 'A+'),
+(4, 1003, 203, '2026-08-02', 'A'),
+(5, 1004, 204, '2026-08-02', 'B'),
+(6, 1005, 205, '2026-08-03', 'B+'),
+(7, 1006, 206, '2026-08-03', 'A'),
+(8, 1007, 207, '2026-08-04', 'C+'),
+(9, 1008, 208, '2026-08-04', 'A+'),
+(10, 1009, 209, '2026-08-05', 'A');
+
+-- ============================================================================
+-- 4. VERIFY DATA
+-- ============================================================================
+SELECT * FROM Departments;
+SELECT * FROM Faculty;
+SELECT * FROM Students;
+SELECT * FROM Courses;
+SELECT * FROM Enrollments;
+
+```
