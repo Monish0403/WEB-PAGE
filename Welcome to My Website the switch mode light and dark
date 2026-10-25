@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Toggler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styling for Light Mode */
+        body {
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            
+            /* Center elements vertically and horizontally */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            
+            /* Light mode colors */
+            background-color: #ffffff;
+            color: #000000;
+            
+            /* Smooth transition for the background and text color */
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        h1 {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 30px;
+            color: inherit; /* Inherits color from body to transition smoothly */
+            opacity: 0.8;
+        }
+
+        /* Button Styling */
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            border-radius: 8px; /* Rounded corners */
+            background-color: #f9f9f9;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+        }
+
+        /* Button Hover and Click Effects */
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Dark Theme Class (Toggled via JavaScript) */
+        .dark-theme {
+            background-color: #222222;
+            color: #ffffff;
+        }
+
+        /* Adjust button styling when in dark mode */
+        .dark-theme button {
+            background-color: #444444;
+            color: #ffffff;
+            border-color: #666666;
+        }
+
+        .dark-theme button:hover {
+            background-color: #555555;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Structure of the page -->
+    <h1>Welcome to My Website</h1>
+    <p>Click the button below to change the theme!</p>
+    
+    <button id="theme-btn">Switch to Dark Mode</button>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+        // 1. Grab the button and the body element from the DOM
+        const themeBtn = document.getElementById('theme-btn');
+        const bodyElement = document.body;
+
+        // 2. Add an event listener to listen for clicks on the button
+        themeBtn.addEventListener('click', function() {
+            
+            // 3. Toggle the 'dark-theme' class on the body
+            // This will add the class if it's missing, or remove it if it's there
+            bodyElement.classList.toggle('dark-theme');
+
+            // 4. Check if the body now has the dark-theme class
+            if (bodyElement.classList.contains('dark-theme')) {
+                // If it does, update the button text to offer switching back to light mode
+                themeBtn.textContent = 'Switch to Light Mode';
+            } else {
+                // If it doesn't, update the button text to offer switching to dark mode
+                themeBtn.textContent = 'Switch to Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>
