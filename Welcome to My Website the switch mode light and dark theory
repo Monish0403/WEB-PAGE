@@ -1,0 +1,124 @@
+Here is a complete guide to creating a simple, interactive website using HTML, CSS, and JavaScript. We will build a **"Theme Toggler"** website that switches between Light Mode and Dark Mode.
+
+Building a website requires three core languages working together:
+
+1. **HTML (HyperText Markup Language):** The skeleton or structure of the website (text, buttons, layout).
+2. **CSS (Cascading Style Sheets):** The skin or design (colors, fonts, spacing).
+3. **JavaScript (JS):** The brain or behavior (interactivity, clicking buttons, changing things on the fly).
+
+---
+
+### Phase 1: The HTML (Structure)
+
+Create a file named `index.html`. This tells the browser what content to display.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Interactive Website</title>
+    <!-- Links the CSS file to this HTML file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="main-title">Welcome to My Website</h1>
+    <p>Click the button below to change the theme!</p>
+    
+    <!-- A button with a specific ID so JavaScript can find it later -->
+    <button id="theme-btn">Switch to Dark Mode</button>
+
+    <!-- Links the JavaScript file at the bottom so it loads after the HTML -->
+    <script src="script.js"></script>
+</body>
+</html>
+
+```
+
+---
+
+### Phase 2: The CSS (Styling)
+
+Create a file named `style.css`. This handles how the website looks.
+
+```css
+/* Standard styling for the whole page */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+    background-color: white;
+    color: black;
+    /* Makes the color change smooth instead of instant */
+    transition: background-color 0.4s, color 0.4s; 
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* This is a special "class" we will add and remove using JavaScript */
+.dark-theme {
+    background-color: #222222;
+    color: #ffffff;
+}
+
+```
+
+---
+
+### Phase 3: The JavaScript (Interactivity & Logic)
+
+Create a file named `script.js`. This is where we write the logic to make the button actually do something.
+
+```javascript
+const themeButton = document.getElementById("theme-btn");
+const pageBody = document.body;
+
+themeButton.addEventListener("click", function() {
+    pageBody.classList.toggle("dark-theme");
+
+    if (pageBody.classList.contains("dark-theme")) {
+        themeButton.textContent = "Switch to Light Mode";
+    } else {
+        themeButton.textContent = "Switch to Dark Mode";
+    }
+});
+
+```
+
+### JavaScript: Line-by-Line Breakdown
+
+* `const themeButton = document.getElementById("theme-btn");`
+* **How it works:** This line reaches into the HTML document (`document`), looks for an element with the exact ID of `"theme-btn"`, and grabs it.
+* **`const`**: Declares a variable whose value won't change. We are storing that HTML button inside a JavaScript variable named `themeButton` so we can control it.
+
+
+* `const pageBody = document.body;`
+* **How it works:** This directly grabs the `<body>` element of the HTML page and stores it in a variable called `pageBody`. We need this because the `<body>` is what controls the background color of the whole page.
+
+
+* `themeButton.addEventListener("click", function() {`
+* **How it works:** We attach an "Event Listener" to our button. This tells the browser: *"Listen closely to this button. If a user performs a 'click' event on it, run the `function()` block of code that comes next."*
+
+
+* `pageBody.classList.toggle("dark-theme");`
+* **How it works:** This is the core magic. It looks at the class list of the `pageBody`. The `.toggle()` method is a built-in JS feature that works like a light switch. If the body does *not* have the `"dark-theme"` CSS class, it adds it. If it *already has* it, it removes it.
+* `if (pageBody.classList.contains("dark-theme")) {`
+* **How it works:** This is a conditional statement. It checks (`contains`) if the `<body>` currently has the `"dark-theme"` class applied to it. If this statement is True, it runs the next line.
+* `themeButton.textContent = "Switch to Light Mode";`
+* **How it works:** Because the page is now dark, we update the text inside the button (`textContent`) to say "Switch to Light Mode" so it makes sense to the user.
+* `} else {`
+* **How it works:** If the `if` condition was False (meaning the page is currently in Light Mode), run the next line instead.
+* `themeButton.textContent = "Switch to Dark Mode";`
+* **How it works:** Changes the button text back to its original state.
+* `});`
+* **How it works:** This simply closes the `function()` and the `addEventListener` that we opened earlier.
+How They Work Together
+
+1. You open the `index.html` file in your web browser.
+2. The browser reads the HTML to build the text and button, then reads the `style.css` to make it look nice (white background, centered text).
+3. Finally, it reads the `script.js`. The JavaScript waits silently in the background.
+4. When you click the button, the JS triggers, injects the `.dark-theme` CSS class into the HTML body, and updates the text on the button. The CSS `transition` property ensures the color change happens smoothly.
