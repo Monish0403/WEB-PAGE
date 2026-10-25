@@ -1,0 +1,24 @@
+**Algorithm for the Theme Toggler**
+
+1. **Initialization:** Load the webpage HTML structure and apply the default CSS styles (Light Mode).
+2. **Element Selection:** Locate the `<body>` element (to change the background) and the `<button>` element (to detect user interaction) in the Document Object Model (DOM).
+3. **Event Listening:** Attach a "click" listener to the button that waits passively in the background.
+4. **Trigger Execution:** When the user clicks the button, pause other background tasks and execute the toggle function.
+5. **State Toggle:** Check the `<body>` element's current class list.
+* If the `dark-theme` class is absent, inject it.
+* If the `dark-theme` class is present, remove it.
+
+
+6. **UI Update (Condition Check):**
+* If the page just became dark, change the button text to "Switch to Light Mode".
+* If the page just became light, change the button text to "Switch to Dark Mode".
+
+
+7. **Standby:** Return to step 3 and wait for the next click.
+
+**Real-World Use Cases**
+
+* **Accessibility & Eye Strain:** Platforms like Medium, Twitter, and Reddit use this exact logic to let users switch to dark mode at night, reducing blue light exposure and eye fatigue in low-light environments.
+* **Developer Tools & Dashboards:** Complex software like GitHub, Jira, or financial dashboards implement theme toggles because users stare at these screens for 8+ hours a day. Dark mode is often the preferred default for developers.
+* **Battery Conservation:** On devices with OLED or AMOLED screens (like modern smartphones), displaying pure black (`#000000`) physically turns off those specific pixels. Web apps use theme togglers to offer a battery-saving mode for mobile users.
+* **Context-Aware UIs:** E-reading applications (like Kindle Cloud Reader) use this logic to adapt to the user's environment, sometimes tying the toggle to the device's system clock (automatically switching to dark mode after sunset).
