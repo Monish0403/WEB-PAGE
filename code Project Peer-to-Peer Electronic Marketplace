@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechTrade - Electronics Resell Marketplace</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Gray-100 */
+        }
+        
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Image hover zoom effect */
+        .img-zoom-container {
+            overflow: hidden;
+        }
+        .img-zoom-container img {
+            transition: transform 0.3s ease;
+        }
+        .img-zoom-container:hover img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="resetView()">
+                    <svg class="w-8 h-8 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="font-bold text-xl tracking-tight text-gray-900">TechTrade</span>
+                </div>
+                
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden md:flex flex-1 max-w-2xl mx-8">
+                    <div class="relative w-full">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input type="text" id="searchInputDesktop" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out" placeholder="Search laptops, mobiles, accessories...">
+                    </div>
+                </div>
+
+                <!-- Post Ad Button -->
+                <div class="flex items-center">
+                    <button onclick="openModal()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        Post Ad
+                    </button>
+                </div>
+            </div>
+            <!-- Search Bar (Mobile) -->
+            <div class="md:hidden pb-3">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="text" id="searchInputMobile" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Search gadgets...">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Header & Filters -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-4 sm:mb-0">Fresh Recommendations</h1>
+            <div class="flex space-x-2">
+                <button onclick="filterCategory('All')" class="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">All</button>
+                <button onclick="filterCategory('Laptops')" class="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">Laptops</button>
+                <button onclick="filterCategory('Mobiles')" class="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">Mobiles</button>
+            </div>
+        </div>
+
+        <!-- Ads Grid -->
+        <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Ads will be injected here via JavaScript -->
+        </div>
+        
+        <!-- Empty State Container -->
+        <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center">
+            <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h3 class="text-lg font-medium text-gray-900">No gadgets found</h3>
+            <p class="mt-1 text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-500">
+            &copy; 2026 TechTrade - Academic Mini Project. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Post Ad Modal -->
+    <div id="adModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
+
+            <!-- Modal Panel -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-5" id="modal-title">
+                                Post an Ad
+                            </h3>
+                            
+                            <!-- Ad Form -->
+                            <form id="postAdForm" class="space-y-4">
+                                <div>
+                                    <label for="adTitle" class="block text-sm font-medium text-gray-700">Ad Title</label>
+                                    <input type="text" id="adTitle" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="e.g. MacBook Pro M1 2020">
+                                </div>
+                                
+                                <div>
+                                    <label for="adCategory" class="block text-sm font-medium text-gray-700">Category</label>
+                                    <select id="adCategory" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white">
+                                        <option value="Laptops">Laptops</option>
+                                        <option value="Mobiles">Mobiles</option>
+                                        <option value="Tablets">Tablets</option>
+                                        <option value="Accessories">Accessories</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="adPrice" class="block text-sm font-medium text-gray-700">Price (in USD)</label>
+                                    <div class="mt-1 relative rounded-md shadow-sm">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">$</span>
+                                        </div>
+                                        <input type="number" id="adPrice" required min="1" class="block w-full pl-7 pr-12 border border-gray-300 rounded-md py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="0.00">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="adImage" class="block text-sm font-medium text-gray-700">Image URL</label>
+                                    <input type="url" id="adImage" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="https://example.com/image.jpg">
+                                    <p class="mt-1 text-xs text-gray-500">Provide a valid web link to the image of your gadget.</p>
+                                </div>
+
+                                <div class="pt-4 flex justify-end space-x-3 border-t border-gray-200 mt-5">
+                                    <button type="button" onclick="closeModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        Post Now
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Message Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Constants & Initial Data
+        const LOCAL_STORAGE_KEY = 'techTrade_ads';
+        
+        // Mock data for initial visualization if localStorage is empty
+        const defaultAds = [
+            {
+                id: 1,
+                title: 'Apple MacBook Pro M1 8GB/256GB',
+                category: 'Laptops',
+                price: 850,
+                image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=600',
+                date: new Date().toLocaleDateString()
+            },
+            {
+                id: 2,
+                title: 'iPhone 13 Pro Max - 128GB Blue',
+                category: 'Mobiles',
+                price: 700,
+                image: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80&w=600',
+                date: new Date().toLocaleDateString()
+            },
+            {
+                id: 3,
+                title: 'Dell XPS 13 Core i7 16GB RAM',
+                category: 'Laptops',
+                price: 950,
+                image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=600',
+                date: new Date().toLocaleDateString()
+            },
+            {
+                id: 4,
+                title: 'Sony WH-1000XM4 Headphones',
+                category: 'Accessories',
+                price: 200,
+                image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=600',
+                date: new Date().toLocaleDateString()
+            }
+        ];
+
+        // State Management
+        let appAds = [];
+        let currentFilter = 'All';
+
+        // DOM Elements
+        const adsGrid = document.getElementById('adsGrid');
+        const emptyState = document.getElementById('emptyState');
+        const adModal = document.getElementById('adModal');
+        const postAdForm = document.getElementById('postAdForm');
+        const searchInputDesktop = document.getElementById('searchInputDesktop');
+        const searchInputMobile = document.getElementById('searchInputMobile');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // Initialize Application
+        function initApp() {
+            // Load from localStorage or use defaults
+            const storedAds = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (storedAds) {
+                appAds = JSON.parse(storedAds);
+            } else {
+                appAds = [...defaultAds];
+                saveToLocalStorage();
+            }
+            renderAds(appAds);
+        }
+
+        // Render Ads to the DOM
+        function renderAds(adsToRender) {
+            adsGrid.innerHTML = '';
+            
+            if (adsToRender.length === 0) {
+                adsGrid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                return;
+            }
+
+            adsGrid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+
+            // Build HTML for each ad card
+            adsToRender.forEach(ad => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full cursor-pointer';
+                
+                // Constructing inner HTML
+                card.innerHTML = `
+                    <div class="h-48 w-full bg-gray-200 img-zoom-container relative">
+                        <span class="absolute top-2 right-2 bg-white/90 text-xs font-bold px-2 py-1 rounded shadow-sm text-gray-700 z-10">
+                            ${ad.category}
+                        </span>
+                        <img src="${ad.image}" alt="${ad.title}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+Not+Found'">
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h2 class="text-lg font-bold text-gray-900 mb-1 font-semibold truncate" title="${ad.title}">${ad.title}</h2>
+                        <div class="text-2xl font-bold text-blue-600 mb-2">$${parseFloat(ad.price).toLocaleString()}</div>
+                        <div class="mt-auto flex justify-between items-center pt-3 border-t border-gray-100 text-xs text-gray-500">
+                            <span>Posted: ${ad.date}</span>
+                            <button class="text-blue-600 font-medium hover:underline">View Details</button>
+                        </div>
+                    </div>
+                `;
+                adsGrid.appendChild(card);
+            });
+        }
+
+        // Save data to browser's Local Storage
+        function saveToLocalStorage() {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appAds));
+        }
+
+        // Filter Function (by Category)
+        function filterCategory(category) {
+            currentFilter = category;
+            applyFilters();
+        }
+
+        // Search Function
+        function handleSearch(e) {
+            applyFilters();
+            // Sync both input fields (mobile and desktop)
+            const val = e.target.value;
+            if(e.target.id === 'searchInputDesktop') searchInputMobile.value = val;
+            if(e.target.id === 'searchInputMobile') searchInputDesktop.value = val;
+        }
+
+        // Combine Search and Category Filters
+        function applyFilters() {
+            const searchTerm = searchInputDesktop.value.toLowerCase();
+            
+            const filteredAds = appAds.filter(ad => {
+                const matchesCategory = currentFilter === 'All' || ad.category === currentFilter;
+                const matchesSearch = ad.title.toLowerCase().includes(searchTerm) || ad.category.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+
+            // Sort by newest first (reverse array for display)
+            renderAds(filteredAds.reverse());
+            // revert back the order for logic consistency
+            filteredAds.reverse(); 
+        }
+
+        // Reset the view to default
+        function resetView() {
+            searchInputDesktop.value = '';
+            searchInputMobile.value = '';
+            filterCategory('All');
+        }
+
+        // Modal Controls
+        function openModal() {
+            adModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            adModal.classList.add('hidden');
+            postAdForm.reset();
+        }
+
+        // Handle Form Submission
+        postAdForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent page reload
+            
+            // Extract values
+            const title = document.getElementById('adTitle').value.trim();
+            const category = document.getElementById('adCategory').value;
+            const price = document.getElementById('adPrice').value;
+            const image = document.getElementById('adImage').value.trim();
+            
+            // Validate basic constraints
+            if(!title || !category || !price || !image) {
+                showToast("Please fill all fields.", "error");
+                return;
+            }
+
+            // Create new Ad object
+            const newAd = {
+                id: Date.now(),
+                title: title,
+                category: category,
+                price: parseFloat(price),
+                image: image,
+                date: new Date().toLocaleDateString()
+            };
+
+            // Update state
+            appAds.push(newAd);
+            saveToLocalStorage();
+            
+            // Update UI
+            closeModal();
+            resetView(); // This will re-render the view
+            showToast("Your ad has been successfully posted!", "success");
+        });
+
+        // Event Listeners for Search
+        searchInputDesktop.addEventListener('input', handleSearch);
+        searchInputMobile.addEventListener('input', handleSearch);
+
+        // Toast Notification System (replaces alert())
+        function showToast(message, type = "success") {
+            const toast = document.createElement('div');
+            
+            // Styling based on type
+            const bgColor = type === "success" ? "bg-green-600" : "bg-red-500";
+            
+            toast.className = `${bgColor} text-white px-6 py-3 rounded shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 flex items-center`;
+            toast.innerHTML = `
+                ${type === 'success' ? 
+                '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : 
+                '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'}
+                ${message}
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Run application setup on load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
