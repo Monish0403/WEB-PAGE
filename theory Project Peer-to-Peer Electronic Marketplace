@@ -1,0 +1,103 @@
+Here is the expanded theoretical documentation, detailing the Use Cases and advanced algorithms required to build out a comprehensive mini-project report.
+
+**4. Use Case Specifications**
+
+**Use Case 1: Post a New Gadget Advertisement**
+
+* **Primary Actor:** Seller
+* **Preconditions:** The system has successfully loaded in the user's browser, and local storage is accessible.
+* **Main Success Scenario:**
+1. The Seller initiates the "Sell Gadget" action.
+2. The system presents a data entry form.
+3. The Seller inputs the gadget title, category (e.g., Laptop, Smartphone), price, and image URL.
+4. The Seller submits the form.
+5. The system validates the input to ensure no null values exist.
+6. The system generates a unique identifier for the ad and appends it to the persistent data array.
+7. The system updates the UI to reflect the newly added gadget.
+
+
+* **Alternative Flow (Validation Failure):** If any required field is empty, the system halts submission and triggers an error toast notification prompting the user to complete all fields.
+
+**Use Case 2: Search and Filter Inventory**
+
+* **Primary Actor:** Buyer
+* **Preconditions:** The marketplace grid is populated with at least one advertisement.
+* **Main Success Scenario:**
+1. The Buyer enters a specific keyword (e.g., "MacBook") into the search bar.
+2. The system captures the keystrokes in real-time.
+3. The system scans the database (local storage array) for matches in the title or category fields.
+4. The system dynamically clears the current grid and renders only the matched items.
+
+
+* **Postconditions:** The UI displays a filtered subset of the inventory without requiring a page reload.
+
+**Use Case 3: View Gadget Details and Contact Seller**
+
+* **Primary Actor:** Buyer
+* **Preconditions:** The Buyer is viewing the main marketplace grid.
+* **Main Success Scenario:**
+1. The Buyer clicks on a specific gadget card.
+2. The system retrieves the unique ID attached to that specific DOM element.
+3. The system queries the main array for the object matching that ID.
+4. The system opens a detailed modal displaying the high-resolution image, full description, exact price, and a "Contact Seller" button.
+
+
+
+**5. Extended Algorithms and Complexity Analysis**
+
+**Algorithm 4: Sorting by Price (Ascending/Descending)**
+*This algorithm allows users to arrange gadgets by cost.*
+
+1. **Input:** `adsArray` (List of objects), `sortOrder` (String: "LOW_TO_HIGH" or "HIGH_TO_LOW").
+2. **Process:**
+* Initialize a standard sorting function utilizing a comparison operator on the `price` attribute of the JSON objects.
+* IF `sortOrder` is "LOW_TO_HIGH":
+* Return `itemA.price - itemB.price`.
+
+
+* ELSE IF `sortOrder` is "HIGH_TO_LOW":
+* Return `itemB.price - itemA.price`.
+
+
+
+
+3. **Output:** A sorted array of objects.
+4. **Time Complexity:** $O(N \log N)$ where $N$ is the number of advertisements, utilizing the browser's native optimized sorting algorithm (typically Timsort or Quicksort).
+
+**Algorithm 5: Deleting an Advertisement**
+*This algorithm handles the removal of a specific item from the database using its unique identifier.*
+
+1. **Input:** `targetId` (Integer/String representing the ad to delete).
+2. **Process:**
+* Retrieve the current `adsArray` from `localStorage`.
+* Iterate through `adsArray` using a filter method.
+* Retain only the objects where `object.id != targetId`.
+* Overwrite the existing `gadgetAds` key in `localStorage` with the newly filtered array.
+
+
+3. **Output:** Updated persistent storage and removal of the corresponding DOM node from the UI.
+4. **Time Complexity:** $O(N)$ because the filter operation must evaluate every element in the array once.
+
+**Algorithm 6: Form Data Serialization and Sanitization**
+*This algorithm ensures data integrity before saving it to the local storage database.*
+
+1. **Input:** Raw form submission event.
+2. **Process:**
+* Call `event.preventDefault()` to stop the HTTP POST reload.
+* Extract values using the DOM `getElementById().value`.
+* Apply `.trim()` to remove leading/trailing whitespace from text inputs.
+* Parse the price input using `parseFloat()` to ensure mathematical operations (like sorting) function correctly later.
+* Construct a JSON object mapping these sanitized variables to standard keys (`title`, `price`, `category`).
+
+
+3. **Output:** A sanitized JSON object ready for array insertion.
+
+**6. Data Structure (JSON Schema)**
+To represent the Abstract Data Type for a single advertisement, the system utilizes the following schema:
+
+* `id`: String/Number (Unique Timestamp)
+* `title`: String (e.g., "Dell XPS 13")
+* `category`: String (e.g., "Laptop")
+* `price`: Float (e.g., 45000.00)
+* `image`: String (URL path)
+* `timestamp`: Date object (Date of posting)
