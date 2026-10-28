@@ -1,0 +1,71 @@
+## Presentation Outline: Digital Preservation of Mysuru Heritage
+This 10-slide structure is designed for your final project evaluation. You can copy this text directly into your PowerPoint slides
+### Slide 1: Title Slide
+* **Project Title:** Digital Preservation and Showcase of Mysuru Heritage
+* **Subtitle:** A Responsive Web Design Mini Project focusing on Temples & Dasara
+* **Submitted by:** [Your Name / Team Members]
+* **Register Number:** [Your Roll Number]
+* **Guided by:** [Professor/Guide Name]
+
+### Slide 2: Introduction
+
+* **Context:** Mysuru is the cultural capital of Karnataka, known for its royal heritage and architectural marvels.
+* **The Project:** A front-end web application built to digitally showcase the historical significance of Mysuru’s temples and the grandeur of the Nada Habba (Dasara).
+* **Core Concept:** Digital Cultural Heritage (DCH) – using modern web tools to preserve and share history.
+
+### Slide 3: Problem Statement
+
+* Information about Mysuru's heritage is often scattered across text-heavy, outdated websites.
+* Many existing local tourism pages lack responsiveness and perform poorly on mobile devices.
+* **The Gap:** There is a need for a unified, visually engaging, and responsive platform that modern users can access seamlessly across all devices.
+
+### Slide 4: Project Objectives
+
+* **Centralization:** Aggregate data on Chamundeshwari, Srikanteshwara, and Chennakesava temples, plus Dasara history, into one cohesive portal.
+* **Responsive UI:** Implement a Mobile-First approach ensuring the site looks perfect on phones, tablets, and desktops.
+* **Visual Aesthetics:** Use modern UI elements (parallax backgrounds, hover transitions) to reflect the royal theme of Mysuru.
+
+### Slide 5: Technologies Used
+
+* **HTML5:** Semantic markup (`<header>`, `<nav>`, `<section>`) for structure and SEO optimization.
+* **CSS3:** For styling, typography, and responsive layouts.
+* **Layout Modules:** CSS Flexbox (for navigation) and CSS Grid (for content cards).
+* **Design Assets:** Web-safe fonts and high-quality placeholder imagery.
+
+### Slide 6: Design Architecture
+
+* **Client-Side Execution:** The project is a static web application rendered directly by the browser engine.
+* **CSS Variables:** Implemented a unified theme using `:root` variables (Heritage Maroon `#8b0000` and Royal Gold `#d4af37`).
+* **Grid System:** Used `grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))` to create a dynamic layout that automatically adjusts to screen width without complex media queries.
+
+### Slide 7: Key Features
+
+1. **Sticky Navigation Bar:** Remains at the top of the screen during scrolling for easy access.
+2. **Parallax-style Hero Banner:** A visually striking landing area with gradient overlays to ensure text readability.
+3. **Interactive Content Cards:** Information is grouped into cards that elevate (translateY) and cast a shadow upon hover.
+4. **Highlight Banner:** A dedicated UI element to showcase current news (e.g., 2026 Jamboo Savari highlights).
+
+### Slide 8: Responsive Logic (Algorithm)
+
+* **Viewport Detection:** The browser continuously monitors the screen width.
+* **Media Queries:** When width falls below `768px` (mobile devices):
+* The horizontal navigation bar converts into a stacked vertical column (`flex-direction: column`).
+* Hero text scales down to prevent overflow.
+* The CSS Grid collapses from a 3-column layout to a 1-column layout for easy reading.
+
+
+
+### Slide 9: Project Output (Screenshots)
+
+* *(Note for presentation: Add 2-3 screenshots of your executed project here)*
+* **Image 1:** Desktop view showing the Hero Banner and Nav.
+* **Image 2:** The Temples Grid section showing hover effects.
+* **Image 3:** Mobile view showing the responsive, stacked layout.
+
+### Slide 10: Conclusion & Future Scope
+
+* **Conclusion:** The project successfully utilizes core web technologies to create an accessible, responsive, and visually appealing digital showcase of Mysuru's heritage.
+* **Future Enhancements:**
+* Add **JavaScript** for image carousels, dark mode toggling, or dynamic countdowns to the next Dasara.
+* Integrate a **Backend database** (like MySQL/PHP) to allow admins to add new temple events dynamically.
+* Add a live Google Maps integration for temple locations.
