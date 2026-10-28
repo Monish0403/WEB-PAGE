@@ -1,0 +1,119 @@
+## Project Title: Digital Preservation and Showcase of Mysuru Heritage (Temples & Dasara)
+## 1. Theoretical Background and Introduction
+
+The integration of web technologies with cultural heritage preservation serves as a critical bridge between historical traditions and modern accessibility. Mysuru, historically known as the cultural capital of Karnataka, possesses a rich tapestry of architectural marvels and world-renowned festivals, most notably the Nada Habba (Mysuru Dasara).
+
+This project operates on the theory of **Digital Cultural Heritage (DCH)**, which advocates for the use of digital media to conserve, document, and share cultural artifacts and events. By developing a dedicated web platform, the project democratizes access to information regarding Mysuru’s ancient temples (such as Chamundeshwari, Srikanteshwara, and Chennakesava) and the intricate history of the Dasara festival.
+
+Technologically, the project is grounded in **Frontend Web Development Theory**, utilizing standard markup and styling languages (HTML5 and CSS3) to create a static, responsive, and accessible user interface. The design theory prioritizes User Experience (UX) through intuitive navigation, visual hierarchy, and responsive web design (RWD) principles, ensuring the information is accessible across all device form factors without the need for complex server-side processing.
+
+## 2. Problem Statement and Objectives
+
+**Problem Statement:**
+Tourists, students, and cultural enthusiasts often struggle to find a unified, visually engaging, and easily accessible digital resource that specifically highlights the historical significance of Mysuru's temples alongside the cultural magnitude of the Dasara festival. Existing information is often scattered, text-heavy, or not optimized for modern mobile devices.
+
+**Core Objectives:**
+
+* **Centralization of Information:** To aggregate historical data, architectural details, and event timelines into a single, cohesive portal.
+* **Responsive Accessibility:** To implement CSS Flexbox and Grid layouts that guarantee seamless viewing on mobile phones, tablets, and desktop monitors.
+* **Visual Storytelling:** To utilize modern UI elements (parallax backgrounds, hover states, card-based layouts) that reflect the royal aesthetics of Mysuru.
+
+## 3. Use Case Analysis
+
+The use case model defines the interactions between the system's users (Actors) and the system itself to accomplish specific goals. For this static web application, the primary actor is the **Visitor** (Tourist, Student, or General User).
+
+### 3.1 Primary Use Cases
+
+1. **Navigate Platform:** The user interacts with the persistent navigation bar to move between different thematic sections (Home, Temples, Dasara) without reloading the page.
+2. **View Temple Heritage:** The user accesses structured cards detailing specific temples, reading historical context and architectural facts.
+3. **Explore Dasara Events:** The user views the chronological and historical breakdown of the 10-day Dasara festival, including the Jamboo Savari.
+
+### 3.2 Detailed Use Case Specification: "Explore Heritage Information"
+
+| Attribute | Description |
+| --- | --- |
+| **Use Case Name** | Explore Heritage Information |
+| **Primary Actor** | Web Visitor |
+| **Pre-conditions** | The user has accessed the web application via a standard web browser. |
+| **Main Success Scenario** | 1. System renders the Hero section and persistent navigation bar.<br>
+
+<br>2. User scrolls or clicks a navigation link (e.g., "Temples").<br>
+
+<br>3. System smoothly scrolls to the requested anchor section.<br>
+
+<br>4. User hovers over a specific information card.<br>
+
+<br>5. System triggers a CSS transformation, elevating the card to highlight the content. |
+| **Alternative Flows** | 1a. User accesses the site on a mobile device.<br>
+
+<br>1b. System detects viewport width and reorganizes the CSS Grid from a multi-column layout to a single-column layout for readability. |
+| **Post-conditions** | The user successfully consumes the cultural information and can seamlessly navigate to another section. |
+
+## 4. System Architecture and Design Principles
+
+The architecture follows a **Static Client-Side Application Model**. All resources (markup, styles, and text) are delivered directly to the client's browser, which parses the Document Object Model (DOM) and applies the Cascading Style Sheets Object Model (CSSOM) to render the visual interface.
+
+* **Semantic HTML5:** The structure utilizes semantic tags (`<header>`, `<nav>`, `<section>`, `<footer>`) to improve Search Engine Optimization (SEO) and screen-reader accessibility.
+* **CSS Custom Properties (Variables):** The project uses a defined color palette mapped to variables (e.g., `--primary-color: #8b0000`) to maintain design consistency—reflecting the royal maroon and gold associated with Mysuru.
+* **CSS Grid & Flexbox:** The architecture moves away from legacy positioning. The navigation utilizes Flexbox for 1D alignment, while the content cards utilize CSS Grid for responsive 2D layouts (`grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))`).
+
+## 5. Algorithm and Logic Flow
+
+While static web projects do not rely on traditional backend computational algorithms (like sorting or searching algorithms), they do follow a strict **Rendering and Interaction Algorithm** executed by the browser engine, as well as layout adjustment logic.
+
+### Algorithm 1: Page Initialization and DOM Rendering
+
+**Input:** User requests `index.html` via browser.
+**Output:** Fully rendered UI with attached CSS styling.
+
+```text
+Step 1: Initialize parsing of the HTML document from top to bottom.
+Step 2: Encounter <head> tag; pause DOM construction to fetch external/internal CSS.
+Step 3: Build the CSSOM (CSS Object Model) establishing the color variables, typography, and grid rules.
+Step 4: Resume DOM construction.
+        4.1 Render <nav> element as a sticky header (z-index: 1000).
+        4.2 Render <header> element with parallax background image.
+        4.3 Render <section id="temples"> and map child elements into a CSS Grid container.
+        4.4 Render <section id="dasara"> and map child elements into a CSS Grid container.
+        4.5 Render <footer> element.
+Step 5: Merge DOM and CSSOM to create the Render Tree.
+Step 6: Execute layout algorithm calculating exact pixel geometry based on the user's current viewport width.
+Step 7: Paint pixels to the screen.
+
+```
+
+### Algorithm 2: Responsive Layout Adjustment (Media Queries)
+
+**Event Trigger:** Window resize or initial load on a mobile device.
+
+```text
+Step 1: Browser engine detects the current viewport width (W).
+Step 2: IF W <= 768px THEN
+            Apply Mobile CSS Rules:
+            - Set <nav> flex-direction to 'column'.
+            - Reduce hero typography size (h2 font-size = 2.5rem).
+            - CSS Grid 'auto-fit' automatically collapses columns into a single vertical stack.
+Step 3: ELSE (W > 768px)
+            Apply Desktop CSS Rules:
+            - Set <nav> flex-direction to 'row' with 'space-between' justification.
+            - Expand hero typography size.
+            - CSS Grid calculates available space and renders 3 columns horizontally.
+Step 4: Repaint screen to reflect the updated layout geometry.
+
+```
+
+### Algorithm 3: User Interaction and Hover States
+
+**Event Trigger:** User's cursor enters the boundary of a `.card` element.
+
+```text
+Step 1: System listens for 'mouseenter' event on the DOM element with class '.card'.
+Step 2: Execute CSS transition properties attached to the class.
+Step 3: Apply transform function: translateY(-10px) to move the card upward.
+Step 4: Apply updated box-shadow property to increase depth (0 8px 25px rgba(0,0,0,0.2)).
+Step 5: System listens for 'mouseleave' event.
+Step 6: Reverse transformations and return the element to its resting state over 0.3 seconds.
+
+```
+
+The resulting project successfully achieves the objective of digital cultural preservation. By combining semantic markup with responsive, algorithmically defined grid layouts, the application provides an educational, visually appealing, and highly accessible platform. The use of modern web standards ensures that the information regarding Mysuru's heritage remains scalable, easily updatable, and accessible to a global audience.
