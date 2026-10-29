@@ -1,0 +1,45 @@
+CREATE TABLE groceries (
+    id SERIAL PRIMARY KEY,
+    item_name VARCHAR(255) NOT NULL,
+    quantity INTEGER DEFAULT 1,
+    is_purchased BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+// server.js
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const app = express();
+
+app.use(express.json()); // Allows the server to read JSON data
+
+// Connect to SQLite Database
+const db = new sqlite3.Database('./groceries.db', (err) => {
+    if (err) console.error(err.message);
+    console.log('Connected to the groceries database.');
+});
+
+// Create a new grocery item (POST request)
+app.post('/api/groceries', (req, res) => {
+    const { itemName, quantity } = req.body;
+    const sql = `INSERT INTO groceries (item_name, quantity) VALUES (?, ?)`;
+    
+    db.run(sql, [itemName, quantity], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(201).json({ id: this.lastID, itemName, quantity });
+    });
+});
+
+// Fetch all grocery items (GET request)
+app.get('/api/groceries', (req, res) => {
+    const sql = `SELECT * FROM groceries ORDER BY created_at DESC`;
+    db.all(sql, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ data: rows });
+    });
+});
+
+app.listen(3000, () => {
+    console.log('Server running on http://localhost:3000');
+});
