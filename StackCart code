@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Grocery Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="app-container">
+        <header class="app-header">
+            <h1>Grocery Inventory</h1>
+            <p>Manage your essential home supplies</p>
+        </header>
+        
+        <section class="input-section">
+            <input type="text" id="item-name" placeholder="e.g., Organic Milk, 1L" />
+            <input type="number" id="item-qty" placeholder="Qty" min="1" />
+            <button id="add-btn">Add to List</button>
+        </section>
+
+        <ul class="grocery-list" id="grocery-list">
+            <!-- Items injected here via JavaScript -->
+            <li class="grocery-item">
+                <div class="item-details">
+                    <span class="item-name">Whole Wheat Bread</span>
+                    <span class="item-qty">Qty: 2</span>
+                </div>
+                <input type="checkbox" class="item-check" />
+            </li>
+        </ul>
+    </main>
+</body>
+</html>
+
+
+/* Base variables for a professional, Outlook-inspired palette */
+:root {
+    --primary-bg: #e2e8f0;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --accent-color: #0ea5e9; /* Professional Blue */
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: rgba(148, 163, 184, 0.3);
+}
+
+/* Unique background texture using layered gradients */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-bg);
+    /* Subtle dot texture overlay */
+    background-image: 
+        radial-gradient(var(--border-color) 1px, transparent 1px),
+        radial-gradient(var(--border-color) 1px, transparent 1px);
+    background-position: 0 0, 20px 20px;
+    background-size: 40px 40px;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 500px;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px); /* Glassmorphism texture */
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.app-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    color: var(--text-main);
+}
+
+.app-header p {
+    margin: 0 0 2rem 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.input-section {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.input-section input {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.9);
+    transition: border-color 0.3s;
+}
+
+.input-section input:focus {
+    border-color: var(--accent-color);
+}
+
+#item-name { flex: 2; }
+#item-qty { flex: 1; }
+
+button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s, transform 0.1s;
+}
+
+button:hover {
+    background: #0284c7;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.grocery-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.grocery-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.grocery-item:last-child {
+    border-bottom: none;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-name {
+    font-weight: 500;
+}
+
+.item-qty {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
