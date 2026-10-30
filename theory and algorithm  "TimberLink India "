@@ -1,0 +1,57 @@
+The core logic of TimberLink India relies on a state-driven pricing model that dynamically recalculates totals 
+based on user authorization and logistics preferences.
+
+**Algorithm: Dynamic Pricing & Cart Management**
+
+* **State Initialization:** Load the product catalog array containing `basePrice` (₹), `dealerDiscount` (%), and 
+`stockStatus`.
+* **Event Listening:** Monitor the "Dealer Mode" toggle and "Add to Cart" button actions.
+* **Price Computation:** When a user switches to Dealer Mode, apply the discount formula: 
+`displayPrice = basePrice - (basePrice * dealerDiscount)`. Simultaneously unhide the "Special Dealer" UI tags.
+* **Cart Aggregation:** Push selected items to a cart array. If the item already exists in the cart,
+increment the quantity instead of duplicating the entry.
+* **Checkout Calculation:** Sum the active prices of all cart items. If the user selects the 
+"Home Delivery" toggle, append a fixed freight fee to the final total.
+* **DOM Rendering:** Update the user interface using `Intl.NumberFormat('en-IN')`
+to ensure accurate Indian Rupee formatting (e.g., ₹1,50,000).
+
+**Primary Use Case: Local B2B Procurement**
+This platform bridges the gap between wholesale timber yards and local 
+furniture shop owners or independent carpenters.
+
+A local carpenter needs bulk premium Teak wood for a custom wardrobe. Instead of
+physically visiting multiple sawmills, they open the platform and activate their verified dealer 
+profile. This instantly drops the retail price of Teak from ₹3,500 to a wholesale rate of ₹2,900 and flags
+it with a special discount tag. The carpenter adds 50 units to their cart, selects the home delivery option to
+have the heavy materials shipped directly to their workshop, and checks out in a single streamlined workflow.
+
+
+The system flow for TimberLink India follows a dual-branch navigation structure separating standard retail
+users from verified business dealers.
+
+**Core Navigation Flow**
+
+* **Landing Page:** Entry point featuring current timber stock, promotional banners, and the primary 
+call-to-action for local shop owners to apply for dealer status.
+* **Authentication Module:** Standard login for retail users, alongside a specialized verification
+portal where local shop owners submit business credentials for B2B approval.
+* **Dynamic Catalog:** The central inventory grid where wood varieties are displayed. The UI 
+dynamically alters price tags and reveals special discount labels if a verified dealer session is active.
+* **Cart & Logistics System:** The checkout pipeline that calculates final Indian Rupee (₹)
+totals, applies wholesale discounts, and processes the user's choice between warehouse pickup
+or home delivery routing.
+* **User Dashboard:** A personalized hub tracking active orders, past invoices, saved delivery
+workshop addresses, and real-time shipment status.
+* **Admin Control Panel:** A secure backend interface for the marketplace owner to manage wood 
+inventory, approve pending dealer accounts, and dispatch delivery vehicles.
+
+**Development Roadmap**
+
+* **Phase 1: Prototyping:** Build the single-file UI combining HTML, CSS, and vanilla JavaScript
+with the glassmorphism aesthetic and dark slate blue/vibrant teal palette.
+* **Phase 2: Database Integration:** Connect the frontend to a Firestore database to persistently
+store product details, base prices, and dealer discount percentages.
+* **Phase 3: State & Authentication:** Implement secure login protocols to manage the global state,
+ensuring retail users cannot force access to the wholesale pricing algorithm.
+* **Phase 4: Payment & Logistics:** Integrate an INR-compatible payment gateway and connect local
+freight APIs to calculate dynamic home delivery costs based on distance and load weight.
