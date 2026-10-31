@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouteShare | Intercity Carpooling</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind Config for Custom Colors/Fonts -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles to hide scrollbar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hero-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-800 bg-slate-50 selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <div class="bg-brand-600 text-white p-2 rounded-xl">
+                        <i class="ph ph-car-profile text-2xl"></i>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-slate-900">RouteShare</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-slate-600 hover:text-brand-600 font-medium transition-colors flex items-center gap-2">
+                        <i class="ph ph-magnifying-glass"></i> Find a ride
+                    </a>
+                    <a href="#" class="text-slate-600 hover:text-brand-600 font-medium transition-colors flex items-center gap-2">
+                        <i class="ph ph-plus-circle"></i> Offer a ride
+                    </a>
+                    <div class="w-px h-6 bg-slate-300"></div>
+                    <a href="#" class="text-slate-600 hover:text-slate-900 font-medium transition-colors">Log in</a>
+                    <button class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-sm">
+                        Sign up
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-600 hover:text-slate-900 focus:outline-none p-2">
+                        <i class="ph ph-list text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden hero-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
+                    Your Intercity Journey,<br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-emerald-400">Shared Together.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed">
+                    Going from Bangalore to Mysore? Don't travel with empty seats. Connect with verified passengers, share the costs, and travel comfortably.
+                </p>
+            </div>
+
+            <!-- Search Interface Card -->
+            <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-3 max-w-5xl mx-auto border border-slate-100 transform transition-all hover:shadow-2xl hover:shadow-slate-200/60">
+                <form class="flex flex-col md:flex-row gap-3">
+                    
+                    <!-- Leaving From -->
+                    <div class="relative flex-1 group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="ph-fill ph-map-pin text-slate-400 group-focus-within:text-brand-600 transition-colors text-xl"></i>
+                        </div>
+                        <input type="text" placeholder="Leaving from (e.g. Bangalore)" class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-slate-900 font-medium placeholder:font-normal placeholder:text-slate-500">
+                    </div>
+
+                    <!-- Separator Icon (Hidden on mobile) -->
+                    <div class="hidden md:flex items-center justify-center -mx-5 z-10">
+                        <div class="bg-white p-2 rounded-full shadow-sm border border-slate-100 text-slate-400">
+                            <i class="ph ph-arrows-left-right text-lg"></i>
+                        </div>
+                    </div>
+
+                    <!-- Going To -->
+                    <div class="relative flex-1 group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="ph-fill ph-map-pin text-slate-400 group-focus-within:text-brand-600 transition-colors text-xl"></i>
+                        </div>
+                        <input type="text" placeholder="Going to (e.g. Mysore)" class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-slate-900 font-medium placeholder:font-normal placeholder:text-slate-500">
+                    </div>
+
+                    <!-- Date -->
+                    <div class="relative flex-1 md:max-w-[200px] group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="ph-fill ph-calendar-blank text-slate-400 group-focus-within:text-brand-600 transition-colors text-xl"></i>
+                        </div>
+                        <input type="date" class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-slate-900 font-medium">
+                    </div>
+
+                    <!-- Passengers -->
+                    <div class="relative flex-1 md:max-w-[150px] group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="ph-fill ph-user text-slate-400 group-focus-within:text-brand-600 transition-colors text-xl"></i>
+                        </div>
+                        <select class="w-full pl-12 pr-8 py-4 bg-slate-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-slate-900 font-medium appearance-none cursor-pointer">
+                            <option>1 seat</option>
+                            <option>2 seats</option>
+                            <option>3 seats</option>
+                            <option>4 seats</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                            <i class="ph ph-caret-down text-slate-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Search Button -->
+                    <button type="button" class="md:w-auto w-full bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-2xl font-semibold transition-all shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2">
+                        <span>Search</span>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="mt-8 flex justify-center items-center gap-4">
+                <span class="text-sm text-slate-500 font-medium">Popular:</span>
+                <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-sm text-slate-600 cursor-pointer hover:border-brand-500 hover:text-brand-600 transition-colors">BLR &rarr; MYS</span>
+                <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-sm text-slate-600 cursor-pointer hover:border-brand-500 hover:text-brand-600 transition-colors">HYD &rarr; BLR</span>
+                <span class="hidden sm:inline-block px-3 py-1 bg-white border border-slate-200 rounded-full text-sm text-slate-600 cursor-pointer hover:border-brand-500 hover:text-brand-600 transition-colors">CHE &rarr; BLR</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us / Quick Actions -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Driver Card -->
+                <div class="bg-brand-50 rounded-3xl p-8 lg:p-12 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 -mt-8 -mr-8 w-48 h-48 bg-brand-100 rounded-full blur-3xl opacity-50"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-brand-600 text-2xl mb-6">
+                            <i class="ph-fill ph-steering-wheel"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4">Driving somewhere?</h2>
+                        <p class="text-slate-600 mb-8 text-lg leading-relaxed">
+                            Don't let those empty seats go to waste. Publish your ride in seconds, select who travels with you, and save significantly on your fuel and toll costs.
+                        </p>
+                        <button class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md inline-flex items-center gap-2">
+                            Offer a ride <i class="ph-bold ph-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Passenger Card -->
+                <div class="bg-blue-50 rounded-3xl p-8 lg:p-12 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 -mt-8 -mr-8 w-48 h-48 bg-blue-100 rounded-full blur-3xl opacity-50"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-blue-600 text-2xl mb-6">
+                            <i class="ph-fill ph-armchair"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4">Looking for a ride?</h2>
+                        <p class="text-slate-600 mb-8 text-lg leading-relaxed">
+                            Book a comfortable seat at a fraction of the cost of a cab or train. Choose from thousands of verified drivers heading your way.
+                        </p>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md inline-flex items-center gap-2">
+                            Find a ride <i class="ph-bold ph-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security & Trust Section (CRITICAL FOCUS) -->
+    <section class="py-24 bg-slate-900 text-white relative overflow-hidden">
+        <!-- Abstract Background shapes -->
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brand-400 font-semibold tracking-wider uppercase text-sm mb-3 block">Enterprise-Grade Security</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Built on Trust, Secured by Engineering</h2>
+                <p class="text-slate-300 text-lg leading-relaxed">
+                    We take your safety as seriously as your journey. Our platform is built upon professional software engineering standards to ensure your data and physical security are never compromised.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Security Feature 1 -->
+                <div class="bg-slate-800/50 backdrop-blur-lg border border-slate-700 p-8 rounded-3xl hover:bg-slate-800 transition-colors">
+                    <div class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 mb-6 border border-emerald-500/20">
+                        <i class="ph-fill ph-lock-key text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Strict HTTPS Security</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">
+                        All communication between you and our servers is encrypted using bank-grade 256-bit TLS/SSL certificates. Your payment details and personal chat data remain strictly confidential and impossible to intercept.
+                    </p>
+                </div>
+
+                <!-- Security Feature 2 -->
+                <div class="bg-slate-800/50 backdrop-blur-lg border border-slate-700 p-8 rounded-3xl hover:bg-slate-800 transition-colors">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mb-6 border border-blue-500/20">
+                        <i class="ph-fill ph-shield-check text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Verified Identities</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">
+                        Say goodbye to anonymous travel. Every user profile is manually and algorithmically verified using Government-issued ID (Aadhar/PAN for India), phone numbers, and strict email verification protocols.
+                    </p>
+                </div>
+
+                <!-- Security Feature 3 -->
+                <div class="bg-slate-800/50 backdrop-blur-lg border border-slate-700 p-8 rounded-3xl hover:bg-slate-800 transition-colors">
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 mb-6 border border-purple-500/20">
+                        <i class="ph-fill ph-code text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Robust Architecture</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">
+                        Engineered by professionals for 99.99% uptime. Our scalable cloud infrastructure ensures real-time location tracking and instant matching works seamlessly, even during peak festive travel seasons.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">How RouteShare Works</h2>
+                <p class="text-slate-600 text-lg max-w-2xl mx-auto">It only takes a few minutes to set up an account and hit the road.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                <!-- Connecting Line (Desktop only) -->
+                <div class="hidden md:block absolute top-1/2 left-1/6 right-1/6 h-0.5 bg-slate-200 -translate-y-1/2 z-0" style="width: 66%; left: 16.5%;"></div>
+
+                <!-- Step 1 -->
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-slate-50 flex items-center justify-center text-2xl font-bold text-slate-900 mb-6 group-hover:border-brand-500 transition-colors">
+                        1
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Search or Post</h3>
+                    <p class="text-slate-600 px-4">Enter your departure and arrival points. Drivers post their route, passengers book their seats.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-slate-50 flex items-center justify-center text-2xl font-bold text-slate-900 mb-6 group-hover:border-brand-500 transition-colors">
+                        2
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Review & Connect</h3>
+                    <p class="text-slate-600 px-4">Check verified profiles, ratings, and vehicle details. Chat securely in-app to coordinate pickup.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-slate-50 flex items-center justify-center text-2xl font-bold text-slate-900 mb-6 group-hover:border-brand-500 transition-colors">
+                        3
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Travel Together</h3>
+                    <p class="text-slate-600 px-4">Meet at the agreed spot, enjoy the comfortable ride, and save money while making new connections.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="bg-brand-600 text-white p-1.5 rounded-lg">
+                            <i class="ph ph-car-profile text-xl"></i>
+                        </div>
+                        <span class="font-bold text-xl text-slate-900">RouteShare</span>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                        Making intercity travel affordable, eco-friendly, and secure. Built for the modern traveler.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-slate-400 hover:text-brand-600 transition-colors"><i class="ph-fill ph-twitter-logo text-2xl"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-brand-600 transition-colors"><i class="ph-fill ph-instagram-logo text-2xl"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-brand-600 transition-colors"><i class="ph-fill ph-linkedin-logo text-2xl"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-4">Top Routes</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Bangalore &rarr; Mysore</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Chennai &rarr; Bangalore</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Hyderabad &rarr; Pune</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Delhi &rarr; Chandigarh</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-4">About</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">How it works</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Trust & Safety</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Engineering & Security</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Press</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-4">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Cookie Policy</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-brand-600 text-sm transition-colors">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-400 text-sm text-center md:text-left">
+                    &copy; 2026 RouteShare Technologies. All rights reserved. Secured by HTTPS.
+                </p>
+                <div class="flex items-center gap-2 text-slate-400 text-sm">
+                    <i class="ph-fill ph-lock-key"></i> 256-bit SSL Encrypted
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JS for Sticky Header Shadow -->
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 10) {
+                nav.classList.add('shadow-sm');
+            } else {
+                nav.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body>
+</html>
