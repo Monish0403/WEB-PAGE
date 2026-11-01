@@ -1,0 +1,240 @@
+Implementing a guest-facing booking platform for a 3-star hotel requires a unified interface handling both room reservations and dining reservations (breakfast, lunch, dinner) alongside a modern customer support architecture.
+
+To implement an AI-driven voice agent for customer care, you must move beyond text-based chatbots and integrate real-time telephony. This is achieved by routing incoming calls through a voice API like Twilio or Vonage. The voice provider converts speech to text and streams it via WebSockets to a conversational AI model (like the Gemini Realtime API or OpenAI's Realtime API). The AI processes the intent—such as modifying a booking or checking menu options—and generates a text response, which is immediately converted back to synthesized speech and played to the caller. The AI must also be connected to your booking database via function calling to check availability and create reservations during the live call.
+
+Below is the complete, single-file HTML and CSS architecture for the booking interface. It utilizes a glassmorphic design system with slate blue and vibrant teal aesthetics to create a premium user experience.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Horizon - Reservations</title>
+    <style>
+        :root {
+            --slate-blue: #1e293b;
+            --slate-dark: #0f172a;
+            --vibrant-teal: #14b8a6;
+            --teal-hover: #0d9488;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-light: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--slate-blue), var(--slate-dark));
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--vibrant-teal);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .booking-container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-panel h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--vibrant-teal);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--vibrant-teal);
+        }
+
+        /* Webkit specific styling for date pickers to match dark theme */
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--vibrant-teal);
+            color: var(--slate-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.1s ease;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: var(--teal-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .ai-support-widget {
+            margin-top: 3rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--vibrant-teal);
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .ai-support-widget:hover {
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.4);
+        }
+
+        .pulsing-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--vibrant-teal);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Grand Horizon</h1>
+        <p>Premium Stays & Culinary Experiences</p>
+    </header>
+
+    <div class="booking-container">
+        <!-- Room Booking Panel -->
+        <div class="glass-panel">
+            <h2>Reserve a Room</h2>
+            <form>
+                <div class="form-group">
+                    <label>Check-in Date</label>
+                    <input type="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Check-out Date</label>
+                    <input type="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Room Category</label>
+                    <select required>
+                        <option value="standard">Executive Suite</option>
+                        <option value="deluxe">Deluxe King</option>
+                        <option value="premium">Premium Twin</option>
+                    </select>
+                </div>
+                <button type="button">Book Room</button>
+            </form>
+        </div>
+
+        <!-- Dining & Table Booking Panel -->
+        <div class="glass-panel">
+            <h2>Reserve a Table</h2>
+            <form>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Dining Service (Launches)</label>
+                    <select required>
+                        <option value="breakfast">Breakfast (7:00 AM - 10:30 AM)</option>
+                        <option value="lunch">Lunch (12:30 PM - 3:30 PM)</option>
+                        <option value="dinner">Dinner (7:00 PM - 11:00 PM)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Guest Count</label>
+                    <input type="number" min="1" max="20" value="2" required>
+                </div>
+                <button type="button">Book Table</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- AI Voice Agent Call-to-Action -->
+    <div class="ai-support-widget" onclick="alert('Initiating WebRTC call to AI Voice Agent...')">
+        <div class="pulsing-dot"></div>
+        <span>Speak to our AI Concierge</span>
+    </div>
+
+</body>
+</html>
+
+```
