@@ -1,0 +1,59 @@
+-- 1. Global Branches (Multi-tenancy foundation)
+CREATE TABLE branches (
+    branch_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    city VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    timezone VARCHAR(50) NOT NULL,
+    currency_code VARCHAR(3) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Internal Staff (RBAC enforcement)
+CREATE TABLE staff (
+    staff_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    branch_id UUID REFERENCES branches(branch_id),
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    role VARCHAR(50) NOT NULL, -- e.g., 'Front Desk', 'Manager', 'Analyst'
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- 3. Room Inventory
+CREATE TABLE rooms (
+    room_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    branch_id UUID REFERENCES branches(branch_id),
+    room_number VARCHAR(10) NOT NULL,
+    room_type VARCHAR(50) NOT NULL,
+    status VARCHAR(20) DEFAULT 'Available', -- 'Available', 'Occupied', 'Maintenance'
+    cleaning_status VARCHAR(20) DEFAULT 'Clean'
+);
+
+-- 4. Internal Operations & Bookings Log (Staff input only)
+CREATE TABLE operations_log (
+    log_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    branch_id UUID REFERENCES branches(branch_id),
+    processed_by_staff_id UUID REFERENCES staff(staff_id),
+    room_id UUID REFERENCES rooms(room_id),
+    guest_reference_name VARCHAR(100) NOT NULL,
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    total_revenue DECIMAL(12, 2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'Checked-In'
+);
+
+-- 5. Analytics Materialized View (For fast dashboard querying)
+CREATE MATERIALIZED VIEW global_revenue_analytics AS
+SELECT 
+    b.country,
+    b.city,
+    DATE_TRUNC('month', o.check_in_date) AS revenue_month,
+    SUM(o.total_revenue) AS total_monthly_revenue,
+    COUNT(o.log_id) AS total_occupancies
+FROM 
+    operations_log o
+JOIN 
+    branches b ON o.branch_id = b.branch_id
+WHERE 
+    o.status IN ('Checked-Out', 'Completed')
+GROUP BY 
+    b.country, b.city, revenue_month;
