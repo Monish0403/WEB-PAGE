@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a linked list node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Insert a new node at the end of the list
+void insertData(struct Node** head_ref, int new_data) {
+    // Allocate memory for the new node
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* last = *head_ref;
+
+    // Assign data and set next to NULL
+    new_node->data = new_data;
+    new_node->next = NULL;
+
+    // If the list is empty, make the new node the head
+    if (*head_ref == NULL) {
+        *head_ref = new_node;
+        return;
+    }
+
+    // Otherwise, traverse to the last node
+    while (last->next != NULL) {
+        last = last->next;
+    }
+
+    // Link the new node at the end
+    last->next = new_node;
+}
+
+// Delete the first occurrence of a specific value
+void deleteData(struct Node** head_ref, int key) {
+    struct Node *temp = *head_ref, *prev = NULL;
+
+    // If the head node itself holds the key
+    if (temp != NULL && temp->data == key) {
+        *head_ref = temp->next; // Change head
+        free(temp);             // Free old head
+        return;
+    }
+
+    // Search for the key to be deleted, keeping track of the previous node
+    while (temp != NULL && temp->data != key) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    // If the key was not present in the list
+    if (temp == NULL) {
+        printf("Value %d not found in the list.\n", key);
+        return;
+    }
+
+    // Unlink the node and free memory
+    prev->next = temp->next;
+    free(temp);
+}
+
+// Display the linked list in a formatted table
+void displayTable(struct Node* node) {
+    printf("\n| Node Address | Data | Next Pointer |\n");
+    printf("|--------------|------|--------------|\n");
+    
+    if (node == NULL) {
+        printf("|          List is empty             |\n");
+    }
+    
+    while (node != NULL) {
+        // Print the current node's address, its data, and the next node's address
+        printf("| %-12p | %-4d | %-12p |\n", (void*)node, node->data, (void*)node->next);
+        node = node->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    // Initialize an empty linked list
+    struct Node* head = NULL;
+
+    printf("Inserting 10, 20, 30, and 40 into the list...\n");
+    insertData(&head, 10);
+    insertData(&head, 20);
+    insertData(&head, 30);
+    insertData(&head, 40);
+    displayTable(head);
+
+    printf("Deleting 20 from the list...\n");
+    deleteData(&head, 20);
+    displayTable(head);
+
+    printf("Deleting 10 (the head node) from the list...\n");
+    deleteData(&head, 10);
+    displayTable(head);
+
+    return 0;
+}
