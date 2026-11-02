@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a doubly linked list node
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+
+// Insert a new node at the end of the doubly linked list
+void insertData(struct Node** head_ref, int new_data) {
+    // 1. Allocate memory for the new node
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* last = *head_ref;
+
+    // 2. Assign data and set next to NULL (since it will be the last node)
+    new_node->data = new_data;
+    new_node->next = NULL;
+
+    // 3. If the list is empty, make the new node the head
+    if (*head_ref == NULL) {
+        new_node->prev = NULL; // Head node's prev is always NULL
+        *head_ref = new_node;
+        return;
+    }
+
+    // 4. Otherwise, traverse to the last node
+    while (last->next != NULL) {
+        last = last->next;
+    }
+
+    // 5. Link the new node at the end
+    last->next = new_node;
+    new_node->prev = last; // Point new_node's prev to the old last node
+}
+
+// Delete the first occurrence of a specific value
+void deleteData(struct Node** head_ref, int key) {
+    struct Node* temp = *head_ref;
+
+    // 1. Search for the node containing the key
+    while (temp != NULL && temp->data != key) {
+        temp = temp->next;
+    }
+
+    // 2. If the key was not found
+    if (temp == NULL) {
+        printf("Value %d not found in the list.\n", key);
+        return;
+    }
+
+    // 3. If the node to be deleted is the head node
+    if (*head_ref == temp) {
+        *head_ref = temp->next;
+    }
+
+    // 4. Update the next node's prev pointer (if temp is not the last node)
+    if (temp->next != NULL) {
+        temp->next->prev = temp->prev;
+    }
+
+    // 5. Update the previous node's next pointer (if temp is not the first node)
+    if (temp->prev != NULL) {
+        temp->prev->next = temp->next;
+    }
+
+    // 6. Free the memory allocated for the node
+    free(temp);
+}
+
+// Display the doubly linked list in a formatted table
+void displayTable(struct Node* node) {
+    printf("\n| Node Address | Prev Pointer | Data | Next Pointer |\n");
+    printf("|--------------|--------------|------|--------------|\n");
+    
+    if (node == NULL) {
+        printf("|                        List is empty                      |\n");
+    }
+    
+    while (node != NULL) {
+        // Print current address, prev address, data, and next address
+        printf("| %-12p | %-12p | %-4d | %-12p |\n", 
+               (void*)node, (void*)node->prev, node->data, (void*)node->next);
+        node = node->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    // Initialize an empty doubly linked list
+    struct Node* head = NULL;
+
+    printf("Inserting 10, 20, 30, and 40 into the doubly linked list...\n");
+    insertData(&head, 10);
+    insertData(&head, 20);
+    insertData(&head, 30);
+    insertData(&head, 40);
+    displayTable(head);
+
+    printf("Deleting 30 from the list (middle node)...\n");
+    deleteData(&head, 30);
+    displayTable(head);
+
+    printf("Deleting 10 from the list (head node)...\n");
+    deleteData(&head, 10);
+    displayTable(head);
+    
+    printf("Deleting 40 from the list (tail node)...\n");
+    deleteData(&head, 40);
+    displayTable(head);
+
+    return 0;
+}
