@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// 1. Create a blueprint for the node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// 2. Function to print the linked list
+void printList(struct Node* head) {
+    struct Node* current = head;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    // 3. Allocate memory for 3 nodes
+    struct Node* head = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* second = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* third = (struct Node*)malloc(sizeof(struct Node));
+
+    // 4. Put data in the nodes and link them together
+    head->data = 10;      // Assign data to first node
+    head->next = second;  // Link first node to second node
+
+    second->data = 20;    // Assign data to second node
+    second->next = third; // Link second node to third node
+
+    third->data = 30;     // Assign data to third node
+    third->next = NULL;   // End of the list
+
+    // 5. Display the list
+    printList(head);
+
+    return 0;
+}
