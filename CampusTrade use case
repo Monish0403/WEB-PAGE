@@ -1,0 +1,70 @@
+Hyper-Local Service Aggregators: Develop a directory focusing on unorganized local sectors, 
+such as a platform connecting independent tradespeople, specialized tutors, or regional event 
+vendors in specific growing corridors like Bengaluru and Mysuru. Monetize by charging vendors 
+a monthly retainer or a per-lead referral fee.
+
+## Primary Use Cases
+
+* **Academic Material Transfer:** Graduating seniors or students moving to the next semester can list used textbooks, engineering drawing instruments, and printed lab manuals for incoming juniors to purchase at discounted rates.
+* **Electronics & Hardware Trading:** Engineering students can buy, sell, or trade reusable microcontrollers (like STM32 boards), sensors, multimeters, and soldering kits required for specific semester mini-projects.
+* **Hostel & Apartment Relocation:** Students moving in or out of campus hostels or local PGs can easily trade bulky items like study tables, mattresses, and desk lamps without the hassle of transporting them long distances.
+* **Exam Prep Material Circulation:** Alumni or seniors can pass down preparation materials for competitive exams (like GATE or DCET) directly to interested juniors within the same college ecosystem.
+
+---
+
+## Core Application Algorithm
+
+This algorithm outlines the logic for the client-side, `localStorage`-driven platform.
+
+**Phase 1: Initialization & Data Loading**
+
+1. Start the application when the DOM fully loads.
+2. Check browser `localStorage` for a specific key (e.g., `campusTradeItems`).
+3. If the key exists:
+* Parse the JSON string into a JavaScript array of objects.
+
+
+4. If the key does not exist (first-time load):
+* Initialize a default array containing mock data (sample textbooks, electronics).
+* Convert the array to a JSON string and save it to `localStorage`.
+
+
+5. Pass the loaded array to the `RenderItems` function.
+
+**Phase 2: Rendering the UI (`RenderItems`)**
+
+1. Clear the current HTML contents of the main item display container.
+2. Iterate through the array of item objects.
+3. For each object, create an HTML template card containing:
+* Item Title
+* Price (Formatted in INR)
+* Category Tag
+* Condition Tag
+* Description
+
+
+4. Append the generated HTML card to the main container.
+
+**Phase 3: Adding a New Item**
+
+1. Listen for a `submit` event on the "Add Item" form.
+2. Prevent default form submission behavior (page reload).
+3. Extract values from input fields (Title, Price, Category, Condition, Description).
+4. **Validation:** Check if required fields are empty. If empty, display an error and halt.
+5. Create a new JavaScript object containing the extracted values, plus a newly generated unique ID (using `Date.now()`) and timestamp.
+6. Retrieve the current items array from `localStorage` and parse it.
+7. Push the new item object to the beginning of the array.
+8. Convert the updated array back to a JSON string and overwrite the `localStorage` key.
+9. Call `RenderItems` to update the UI.
+10. Clear the form inputs and close the modal.
+
+**Phase 4: Searching and Filtering**
+
+1. Listen for `input` events on the search bar or `change` events on category dropdowns.
+2. Retrieve the search keyword (convert to lowercase) and selected category.
+3. Retrieve the main items array from `localStorage`.
+4. Create a `filteredArray` by looping through the main array:
+* Include the item if the item's title or description contains the search keyword AND matches the selected category (or if "All Categories" is selected).
+
+
+5. Pass the `filteredArray` to the `RenderItems` function to update the display.
