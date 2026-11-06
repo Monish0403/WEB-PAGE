@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngiTrade | Student Resale Network</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Strict palette enforcement
+                        slate: {
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        teal: {
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Background styling for glassmorphism pop */
+        body {
+            background-color: #0f172a; /* Deep Slate Blue Base */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(45, 212, 191, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(45, 212, 191, 0.2), transparent 25%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.6); /* Slate 800 with transparency */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 212, 191, 0.2); /* Teal 400 with transparency */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(45, 212, 191, 0.1);
+            transition: transform 0.2s ease-in-out, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(45, 212, 191, 0.4);
+            box-shadow: 0 10px 40px -10px rgba(45, 212, 191, 0.3);
+        }
+
+        .glass-input {
+            background: rgba(15, 23, 42, 0.5); /* Slate 900 */
+            border: 1px solid rgba(45, 212, 191, 0.2);
+            color: white;
+            transition: border-color 0.2s;
+        }
+        
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(45, 212, 191, 0.8);
+            box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2dd4bf; }
+        
+        /* Modal hiding utility */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="antialiased selection:bg-teal-500 selection:text-slate-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-40 w-full glass-panel border-b border-teal-500/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <svg class="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                    </svg>
+                    <span class="font-bold text-xl tracking-tight text-white">Engi<span class="text-teal-400">Trade</span></span>
+                </div>
+                <!-- Actions -->
+                <div>
+                    <button id="open-modal-btn" class="bg-teal-500 hover:bg-teal-400 text-slate-900 font-semibold py-2 px-4 rounded-lg shadow-[0_0_15px_rgba(45,212,191,0.3)] transition-all duration-200 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Post Item
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <!-- Header -->
+        <div class="mb-10 text-center sm:text-left">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">Campus Resale Network</h1>
+            <p class="text-slate-300 max-w-2xl">Find or sell used engineering textbooks, microcontrollers, and dorm furniture. Connect with your peers instantly.</p>
+        </div>
+
+        <!-- Items Grid -->
+        <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Items will be injected here via JavaScript -->
+        </div>
+        
+        <!-- Empty State (Hidden by default) -->
+        <div id="empty-state" class="hidden text-center py-20 glass-panel rounded-2xl mt-10">
+            <svg class="w-16 h-16 mx-auto text-teal-500/50 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+            <h3 class="text-xl font-medium text-white mb-2">No items listed yet</h3>
+            <p class="text-slate-400">Be the first to post an item to the marketplace!</p>
+        </div>
+    </main>
+
+    <!-- Post Item Modal Overlay -->
+    <div id="post-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
+        <!-- Modal Content -->
+        <div class="glass-panel w-full max-w-md rounded-2xl shadow-2xl border border-teal-500/30 overflow-hidden transform transition-all">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-2xl font-bold text-white">Post a New Item</h2>
+                    <button id="close-modal-btn" class="text-slate-400 hover:text-teal-400 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <form id="post-item-form" class="space-y-4">
+                    <!-- Title -->
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-slate-300 mb-1">Item Title</label>
+                        <input type="text" id="title" required class="glass-input w-full rounded-lg px-4 py-2.5 placeholder-slate-500" placeholder="e.g. Raspberry Pi 4 Model B">
+                    </div>
+                    
+                    <!-- Category & Condition Row -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-slate-300 mb-1">Category</label>
+                            <select id="category" required class="glass-input w-full rounded-lg px-4 py-2.5 appearance-none">
+                                <option value="Books">Textbooks</option>
+                                <option value="Electronics">Electronics & Kits</option>
+                                <option value="Furniture">Student Furniture</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="condition" class="block text-sm font-medium text-slate-300 mb-1">Condition</label>
+                            <select id="condition" required class="glass-input w-full rounded-lg px-4 py-2.5 appearance-none">
+                                <option value="New">Brand New</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Good">Good</option>
+                                <option value="Fair">Fair / Worn</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div>
+                        <label for="price" class="block text-sm font-medium text-slate-300 mb-1">Price (₹)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-teal-400 sm:text-sm">₹</span>
+                            </div>
+                            <input type="number" id="price" required min="0" step="1" class="glass-input w-full rounded-lg pl-8 pr-4 py-2.5 placeholder-slate-500" placeholder="0">
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-slate-300 mb-1">Description</label>
+                        <textarea id="description" required rows="3" class="glass-input w-full rounded-lg px-4 py-2.5 placeholder-slate-500 resize-none" placeholder="Provide details about the item..."></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-3 px-4 rounded-lg shadow-[0_0_15px_rgba(45,212,191,0.2)] hover:shadow-[0_0_25px_rgba(45,212,191,0.4)] transition-all duration-200">
+                            List Item on Market
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration & State
+            const STORAGE_KEY = 'engitrade_items';
+            const mockData = [
+                {
+                    id: 'item-1',
+                    title: 'M3 Engineering Mathematics Textbook',
+                    category: 'Books',
+                    price: '450',
+                    condition: 'Good',
+                    description: 'BS Grewal, latest edition. Used for one semester. Minor highlights in the calculus section, otherwise perfect condition.',
+                    image: 'https://placehold.co/600x400/1e293b/2dd4bf?text=M3+Math+Textbook',
+                    date: new Date(Date.now() - 86400000 * 2).toISOString() // 2 days ago
+                },
+                {
+                    id: 'item-2',
+                    title: 'STM32 Microcontroller Kit',
+                    category: 'Electronics',
+                    price: '1200',
+                    condition: 'Like New',
+                    description: 'STM32F401 Development board. Complete kit including breadboard, jumper wires, and original USB cable. Barely used.',
+                    image: 'https://placehold.co/600x400/1e293b/2dd4bf?text=STM32+Kit',
+                    date: new Date(Date.now() - 86400000 * 5).toISOString() // 5 days ago
+                },
+                {
+                    id: 'item-3',
+                    title: 'Study Desk (Compact)',
+                    category: 'Furniture',
+                    price: '800',
+                    condition: 'Fair',
+                    description: 'Wooden folding desk, perfect for small dorm rooms. Has some scratches on the surface but structurally very sound.',
+                    image: 'https://placehold.co/600x400/1e293b/2dd4bf?text=Study+Desk',
+                    date: new Date().toISOString() // Today
+                }
+            ];
+
+            let items = [];
+
+            // DOM Elements
+            const gridEl = document.getElementById('items-grid');
+            const emptyStateEl = document.getElementById('empty-state');
+            const modalEl = document.getElementById('post-modal');
+            const openModalBtn = document.getElementById('open-modal-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const formEl = document.getElementById('post-item-form');
+
+            // Initialization
+            function init() {
+                loadItems();
+                renderItems();
+                setupEventListeners();
+            }
+
+            // Load data from LocalStorage or seed mock data
+            function loadItems() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    try {
+                        items = JSON.parse(stored);
+                    } catch (e) {
+                        console.error('Failed to parse stored items, falling back to mock data', e);
+                        items = [...mockData];
+                        saveItems();
+                    }
+                } else {
+                    // Seed initial data
+                    items = [...mockData];
+                    saveItems();
+                }
+                
+                // Sort by date (newest first)
+                items.sort((a, b) => new Date(b.date) - new Date(a.date));
+            }
+
+            // Save data to LocalStorage
+            function saveItems() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            }
+
+            // Generate an image placeholder URL based on the title
+            function generateImagePlaceholder(title) {
+                const encodedTitle = encodeURIComponent(title.split(' ').slice(0, 3).join(' ')); // Max 3 words for clarity
+                return `https://placehold.co/600x400/1e293b/2dd4bf?text=${encodedTitle}`;
+            }
+
+            // Format date relative to now (e.g., "2 days ago")
+            function timeAgo(dateString) {
+                const date = new Date(dateString);
+                const seconds = Math.floor((new Date() - date) / 1000);
+                
+                let interval = seconds / 31536000;
+                if (interval > 1) return Math.floor(interval) + " years ago";
+                interval = seconds / 2592000;
+                if (interval > 1) return Math.floor(interval) + " months ago";
+                interval = seconds / 86400;
+                if (interval > 1) return Math.floor(interval) + " days ago";
+                interval = seconds / 3600;
+                if (interval > 1) return Math.floor(interval) + " hours ago";
+                interval = seconds / 60;
+                if (interval > 1) return Math.floor(interval) + " minutes ago";
+                return "Just now";
+            }
+
+            // Render the items to the DOM
+            function renderItems() {
+                gridEl.innerHTML = '';
+                
+                if (items.length === 0) {
+                    gridEl.classList.add('hidden');
+                    emptyStateEl.classList.remove('hidden');
+                    return;
+                }
+
+                gridEl.classList.remove('hidden');
+                emptyStateEl.classList.add('hidden');
+
+                items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-card rounded-xl overflow-hidden flex flex-col h-full';
+                    
+                    // Determine condition badge color
+                    let conditionColor = 'bg-slate-700 text-slate-300';
+                    if (item.condition === 'New' || item.condition === 'Like New') conditionColor = 'bg-teal-500/20 text-teal-300 border border-teal-500/30';
+                    if (item.condition === 'Fair') conditionColor = 'bg-orange-500/20 text-orange-300 border border-orange-500/30';
+                    
+                    card.innerHTML = `
+                        <div class="relative h-48 w-full overflow-hidden bg-slate-800">
+                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110" onerror="this.src='https://placehold.co/600x400/1e293b/2dd4bf?text=No+Image'">
+                            <div class="absolute top-3 right-3 ${conditionColor} text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-md">
+                                ${item.condition}
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-4 pt-12">
+                                <span class="text-teal-400 font-bold text-xl drop-shadow-md">₹${parseInt(item.price).toLocaleString('en-IN')}</span>
+                            </div>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col">
+                            <div class="flex items-center gap-2 mb-2 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                                <span>${item.category}</span>
+                                <span>•</span>
+                                <span>${timeAgo(item.date)}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-2 leading-tight">${item.title}</h3>
+                            <p class="text-sm text-slate-300 line-clamp-3 mb-4 flex-grow">${item.description}</p>
+                            
+                            <button class="w-full mt-auto bg-slate-700/50 hover:bg-teal-500 hover:text-slate-900 text-teal-400 border border-teal-500/30 font-medium py-2 rounded-lg transition-all duration-200">
+                                Contact Seller
+                            </button>
+                        </div>
+                    `;
+                    gridEl.appendChild(card);
+                });
+            }
+
+            // Modal Management
+            function openModal() {
+                modalEl.classList.remove('hidden');
+                // Small delay to allow display:block to apply before animating opacity if we were adding complex animations
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+
+            function closeModal() {
+                modalEl.classList.add('hidden');
+                document.body.style.overflow = '';
+                formEl.reset();
+            }
+
+            // Event Listeners Setup
+            function setupEventListeners() {
+                openModalBtn.addEventListener('click', openModal);
+                
+                closeModalBtn.addEventListener('click', closeModal);
+                
+                // Close modal on clicking outside
+                modalEl.addEventListener('click', (e) => {
+                    if (e.target === modalEl) {
+                        closeModal();
+                    }
+                });
+
+                // Handle Form Submission
+                formEl.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const title = document.getElementById('title').value.trim();
+                    const category = document.getElementById('category').value;
+                    const price = document.getElementById('price').value;
+                    const condition = document.getElementById('condition').value;
+                    const description = document.getElementById('description').value.trim();
+                    
+                    const newItem = {
+                        id: 'item-' + Date.now(),
+                        title,
+                        category,
+                        price,
+                        condition,
+                        description,
+                        image: generateImagePlaceholder(title),
+                        date: new Date().toISOString()
+                    };
+                    
+                    // Add to beginning of array
+                    items.unshift(newItem);
+                    
+                    // Save & Re-render
+                    saveItems();
+                    renderItems();
+                    
+                    // Close Modal
+                    closeModal();
+                    
+                    // Optional: Scroll to top to see new item
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            // Run app
+            init();
+        });
+    </script>
+</body>
+</html>
