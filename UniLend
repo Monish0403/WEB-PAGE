@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent & Return | Campus Hub</title>
+    <style>
+        /* Slate Blue Background & General Styling */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #f8fafc;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        /* Live Search Bar */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1.1rem;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border: 1px solid #14b8a6; /* Vibrant Teal */
+        }
+
+        /* Glassmorphic Grid */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Frosted Glass Cards */
+        .item-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .item-category {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+        }
+
+        .item-title {
+            font-size: 1.25rem;
+            margin: 0.5rem 0;
+            color: #fff;
+        }
+
+        .item-price {
+            font-size: 1.1rem;
+            color: #14b8a6; /* Vibrant Teal */
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .item-deposit {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-left: 5px;
+        }
+
+        /* Teal Primary Action Button */
+        .rent-btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background: #14b8a6;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .rent-btn:hover {
+            background: #0d9488;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Rent & Return</h1>
+        <p>Peer-to-Peer Campus Gear Exchange</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for calculators, kits, cameras..." onkeyup="filterItems()">
+    </div>
+
+    <div class="inventory-grid" id="inventoryGrid">
+        <!-- Items will be injected here by JavaScript -->
+    </div>
+
+    <script>
+        // Mock Database mimicking the MySQL/Java backend response
+        const items = [
+            { id: 1, title: "Arduino Uno R3 Kit", category: "Electronics", rate: 50, deposit: 500 },
+            { id: 2, title: "Casio FX-991EX", category: "Academics", rate: 20, deposit: 300 },
+            { id: 3, title: "Mini Drafter & Board", category: "Academics", rate: 30, deposit: 250 },
+            { id: 4, title: "Canon EOS 1500D", category: "Photography", rate: 300, deposit: 2000 },
+            { id: 5, title: "Raspberry Pi 4", category: "Electronics", rate: 80, deposit: 800 }
+        ];
+
+        const grid = document.getElementById('inventoryGrid');
+
+        // Function to render glassmorphic cards
+        function renderItems(data) {
+            grid.innerHTML = '';
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <div class="item-category">${item.category}</div>
+                    <div class="item-title">${item.title}</div>
+                    <div class="item-price">₹${item.rate} / day <span class="item-deposit">(₹${item.deposit} deposit)</span></div>
+                    <button class="rent-btn" onclick="initiateRental(${item.id})">Request Rental</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Live Search Filter (Zero-Friction Exploration)
+        function filterItems() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = items.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.category.toLowerCase().includes(query)
+            );
+            renderItems(filtered);
+        }
+
+        // Mock Micro-Interaction for Rental
+        function initiateRental(id) {
+            const item = items.find(i => i.id === id);
+            alert(`Initiating Escrow for ${item.title}.\nPlease scan lender's QR code to transfer ₹${item.rate + item.deposit} and start the timer.`);
+        }
+
+        // Initial Load
+        renderItems(items);
+    </script>
+</body>
+</html>
