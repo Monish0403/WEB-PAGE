@@ -1,0 +1,41 @@
+package com.campushub.rentals.controller;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/rentals")
+@CrossOrigin(origins = "*") // Allows your frontend to communicate with this backend
+public class RentalController {
+
+    // In a full application, this would interface with your MySQL database via Spring Data JPA
+    private final ItemRepository itemRepository;
+
+    public RentalController(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
+
+    @GetMapping("/inventory")
+    public ResponseEntity<List<Item>> getAvailableItems() {
+        List<Item> availableItems = itemRepository.findByIsAvailableTrue();
+        return ResponseEntity.ok(availableItems);
+    }
+
+    @PostMapping("/checkout/{itemId}")
+    public ResponseEntity<String> processRental(
+            @PathVariable Long itemId, 
+            @RequestParam String borrowerId) {
+        
+        Item item = itemRepository.findById(itemId).orElse(null);
+        
+        if (item != null && item.isAvailable()) {
+            item.setAvailable(false);
+            // Logic to deduct deposit from borrower wallet goes here
+            itemRepository.save(item);
+            return ResponseEntity.ok("Transaction secured. Generate QR Code for physical handoff.");
+        }
+        
+        return ResponseEntity.badRequest().body("Item is currently unavailable.");
+    }
+}
