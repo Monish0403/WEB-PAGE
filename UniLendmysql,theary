@@ -1,0 +1,87 @@
+CREATE DATABASE campus_rentals;
+USE campus_rentals;
+
+CREATE TABLE items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    daily_rate DECIMAL(10, 2) NOT NULL,
+    deposit DECIMAL(10, 2) NOT NULL,
+    owner_vtu_id VARCHAR(50) NOT NULL,
+    is_available BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO items (title, category, daily_rate, deposit, owner_vtu_id) VALUES
+('Arduino Uno R3 Kit', 'Electronics', 50.00, 500.00, '4VV24CS101'),
+('Casio FX-991EX Calculator', 'Academics', 20.00, 300.00, '4VV24CS102'),
+('Canon EOS 1500D DSLR', 'Photography', 300.00, 2000.00, '4VV24CS103');
+
+
+## The "Rent & Return" Campus Hub: Software Architecture & Design Blueprint
+
+Building a secure, low-maintenance peer-to-peer rental network requires a robust backend to handle transactions and a frictionless 
+frontend to keep students engaged. Here is the professional blueprint to engineer this platform.
+
+### 1. Visual Identity & User-Friendly UX
+
+To build trust, the platform must look like a premium, enterprise-grade application rather than a basic classifieds board.
+
+* **Color Palette:** Utilize a deep **slate blue** for the primary background. This reduces eye strain for students browsing
+late at night and provides a highly professional backdrop. Use **vibrant teal** exclusively for primary actions (e.g., "Rent 
+Item," "Verify Return," "Message Lender").
+* **Glassmorphic Aesthetics:** Apply frosted-glass UI elements (translucent panels with subtle background blurs) for item
+cards and login portals. This creates a modern, lightweight interface that feels native and responsive.
+* **QR Code "Frictionless Handoff":** Eliminate manual entry for borrowing and returning. When a student meets to hand over
+an Arduino kit or drafting tool, the lender generates a dynamic QR code on their screen. The borrower scans it, automatically
+starting the rental timer and transferring the security deposit. A second scan upon return instantly closes the contract.
+* **Live Campus Availability:** Use a toggle to show items available right now in specific campus blocks or hostels, avoiding 
+
+the frustration of waiting hours for a response.
+
+### 2. Professional Technology Stack
+
+A scalable, highly structured tech stack is critical for handling concurrent users, real-time searches, and secure data 
+logging.
+
+* **Backend Engine:** **Java (Spring Boot)**. Java provides a strictly typed, highly secure, and object-oriented environment 
+perfect for managing complex financial transactions, rental timers, and user states.
+* **Relational Database:** **MySQL**. A structured relational database is mandatory for this model. You will need 
+interconnected tables for `Users`, `Items`, `Transactions`, and `Disputes`. MySQL ensures ACID compliance so that a
+rental transaction either fully completes or rolls back if an error occurs.
+* **Cloud Infrastructure:** **AWS (Amazon Web Services)**.
+* Host the Java backend on an EC2 instance.
+* Use AWS RDS for the MySQL database to automate hardware provisioning and setup.
+* Store user-uploaded images (like photos of calculators or cameras) in AWS S3 buckets to keep the database lightweight.
+
+
+
+### 3. High-Security Measures
+
+Peer-to-peer networks fail without trust. Security must be baked into the architecture from day one.
+
+* **Institutional Walled Garden:** Restrict registration exclusively to valid `.edu` or specific university email 
+domains (e.g., requiring a VTU student email). This instantly eliminates spam accounts and ensures everyone on the 
+platform is an accountable student.
+* **Stateless Authentication:** Implement JWT (JSON Web Tokens) in your Java backend. When a user logs in, they receive
+a secure token stored in their browser's local storage. This prevents session hijacking and ensures the backend verifies 
+
+the user's identity on every single API request.
+* **Automated Escrow System:** When a student rents a high-end camera, their digital payment
+(rental fee + security deposit) is held in an escrow state. The funds are only released to the 
+lender's wallet when the borrower safely returns the item via the QR scan.
+* **Condition Check-In/Check-Out:** Require the borrower to upload a real-time, timestamped photo of the item upon receiving
+it and returning it. This creates an immutable record in AWS S3 to instantly resolve damage disputes.
+
+### 4. Easy Maintenance Protocol
+
+As a platform scales, it must run autonomously with minimal manual intervention.
+
+* **Automated Database Backups:** Configure AWS RDS to execute automated daily snapshots of your MySQL database. 
+If a critical failure occurs, you can restore the entire user and transaction history with one click.
+* **Decoupled Architecture:** By keeping the frontend UI completely separate from the Java backend 
+(communicating only via REST APIs), you can overhaul the website's design or add a mobile app later without 
+ever rewriting your core transaction logic.
+* **Admin Moderation Dashboard:** Build a hidden `/admin` portal. Instead of fixing issues in the database 
+manually, this dashboard allows authorized moderators to review flagged items, refund deposits, and ban users
+who violate the terms, streamlining daily maintenance.
