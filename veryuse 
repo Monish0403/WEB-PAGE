@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Slate Blue to Vibrant Teal gradient background */
+            background: linear-gradient(135deg, #6A5ACD, #00E5FF);
+        }
+
+        .calculator {
+            width: 320px;
+            padding: 20px;
+            border-radius: 20px;
+            /* Glassmorphic panel effect */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .display {
+            width: 100%;
+            height: 80px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 2.5rem;
+            text-align: right;
+            padding: 15px;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            height: 60px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .operator {
+            background: rgba(0, 229, 255, 0.3); /* Teal interaction */
+            font-weight: bold;
+        }
+
+        .operator:hover {
+            background: rgba(0, 229, 255, 0.5);
+        }
+
+        .clear {
+            background: rgba(255, 107, 107, 0.4);
+            grid-column: span 2;
+        }
+
+        .clear:hover {
+            background: rgba(255, 107, 107, 0.6);
+        }
+
+        .equals {
+            background: rgba(106, 90, 205, 0.6); /* Slate blue interaction */
+            grid-column: span 2;
+            font-weight: bold;
+        }
+
+        .equals:hover {
+            background: rgba(106, 90, 205, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <input type="text" class="display" id="display" disabled value="0">
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="operator" onclick="appendOperator('%')">%</button>
+            <button class="operator" onclick="appendOperator('/')">÷</button>
+            
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+            
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentInput = '0';
+        let isNewInput = false;
+
+        const display = document.getElementById('display');
+
+        function updateDisplay() {
+            // Replace programmatic operators with standard math symbols for the UI
+            let visualStr = currentInput.replace(/\*/g, '×').replace(/\//g, '÷');
+            display.value = visualStr;
+        }
+
+        function appendNumber(number) {
+            if (currentInput === '0' || isNewInput) {
+                currentInput = number;
+                isNewInput = false;
+            } else {
+                currentInput += number;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            const lastChar = currentInput.slice(-1);
+            // Prevent consecutive operators
+            if (['+', '-', '*', '/', '%'].includes(lastChar)) {
+                currentInput = currentInput.slice(0, -1) + op;
+            } else {
+                currentInput += op;
+            }
+            isNewInput = false;
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                // Safely evaluate the mathematical expression
+                currentInput = String(new Function('return ' + currentInput)());
+                if (currentInput === 'NaN' || currentInput === 'Infinity') {
+                    currentInput = 'Error';
+                    isNewInput = true;
+                }
+            } catch (e) {
+                currentInput = 'Error';
+                isNewInput = true;
+            }
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
