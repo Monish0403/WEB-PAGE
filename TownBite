@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TownBite – Your Town's Own Food &amp; Grocery Delivery</title>
+  <meta name="description" content="TownBite delivers from the local shops, home kitchens and bakeries that Zomato and Swiggy don't reach. Order from your own town.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#top" class="logo">Town<span>Bite</span></a>
+      <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Toggle menu">
+      <label for="menu-toggle" class="menu-icon" aria-hidden="true"><span></span></label>
+      <nav class="menu">
+        <a href="#how">How it works</a>
+        <a href="#shops">Local shops</a>
+        <a href="#partner">For shop owners</a>
+        <a href="#rider">Ride with us</a>
+        <a href="#faq">FAQ</a>
+        <a href="#order" class="btn btn-small">Order now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <p class="eyebrow">Delivery for the towns big apps forgot</p>
+          <h1>Your town's favourite shops, <em>at your door.</em></h1>
+          <p class="lead">Idli from the corner mess, cakes from the home baker, vegetables from the market stall. Order from local places that aren't on Zomato or Swiggy, delivered by people from your own town.</p>
+          <div class="hero-actions">
+            <a href="#order" class="btn">Order food now</a>
+            <a href="#partner" class="btn btn-outline">List your shop free</a>
+          </div>
+          <ul class="hero-stats">
+            <li><strong>0%</strong> commission for the first 3 months</li>
+            <li><strong>30 min</strong> average town delivery</li>
+            <li><strong>₹0</strong> joining fee</li>
+          </ul>
+        </div>
+        <div class="hero-card" aria-hidden="true">
+          <div class="order-card">
+            <p class="oc-title">Your order is on the way</p>
+            <div class="oc-bar"><div class="oc-fill"></div></div>
+            <ul class="oc-steps">
+              <li class="done">Order placed</li>
+              <li class="done">Shop is preparing</li>
+              <li class="active">Rider picked up</li>
+              <li>Delivered</li>
+            </ul>
+            <p class="oc-eta">Arriving in <strong>12 min</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="section">
+      <div class="container">
+        <h2>How TownBite works</h2>
+        <p class="section-sub">Four simple steps. No app store hunting, it works right in your phone browser.</p>
+        <div class="grid grid-4">
+          <article class="card step">
+            <span class="num">1</span>
+            <h3>Pick a local shop</h3>
+            <p>Browse restaurants, bakeries, tiffin centres, groceries and sweet shops in your own town.</p>
+          </article>
+          <article class="card step">
+            <span class="num">2</span>
+            <h3>Choose your items</h3>
+            <p>See real menus with real prices set by the shop owner. No hidden mark-ups.</p>
+          </article>
+          <article class="card step">
+            <span class="num">3</span>
+            <h3>Pay your way</h3>
+            <p>UPI, card or cash on delivery. You choose what suits you.</p>
+          </article>
+          <article class="card step">
+            <span class="num">4</span>
+            <h3>Track and enjoy</h3>
+            <p>The nearest free rider picks it up and you follow your order live.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORIES / SHOPS -->
+    <section id="shops" class="section alt">
+      <div class="container">
+        <h2>What you can order</h2>
+        <p class="section-sub">Everything your town has to offer, in one place.</p>
+        <div class="grid grid-6">
+          <a href="#order" class="card cat"><span class="emoji">🍛</span><h3>Local meals</h3><p>Mess, dhaba, family restaurants</p></a>
+          <a href="#order" class="card cat"><span class="emoji">🎂</span><h3>Cakes &amp; bakery</h3><p>Home bakers and bakeries</p></a>
+          <a href="#order" class="card cat"><span class="emoji">🥬</span><h3>Groceries</h3><p>Vegetables, milk, provisions</p></a>
+          <a href="#order" class="card cat"><span class="emoji">🍬</span><h3>Sweets &amp; snacks</h3><p>Festival sweets, savouries</p></a>
+          <a href="#order" class="card cat"><span class="emoji">💊</span><h3>Medicines</h3><p>Nearby pharmacies</p></a>
+          <a href="#order" class="card cat"><span class="emoji">🥡</span><h3>Tiffin &amp; home food</h3><p>Home kitchens and daily tiffin</p></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY TOWNBITE -->
+    <section class="section">
+      <div class="container two-col">
+        <div>
+          <h2>Why towns choose TownBite</h2>
+          <p class="section-sub left">Built for small places, not copied from big cities.</p>
+        </div>
+        <ul class="feature-list">
+          <li><strong>Shops the big apps skip.</strong> We bring unlisted local businesses online, even with a simple phone and no technical knowledge.</li>
+          <li><strong>Fair for shop owners.</strong> Low commission, weekly payouts and your own prices.</li>
+          <li><strong>Local jobs.</strong> Riders are young people from your town, earning per delivery.</li>
+          <li><strong>Works on any phone.</strong> Light website, speaks your language, works on slow networks.</li>
+          <li><strong>Safe and verified.</strong> Shops are verified for food safety and payments are protected.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- FOR SHOP OWNERS -->
+    <section id="partner" class="section dark">
+      <div class="container">
+        <h2>Own a shop? Get online in 10 minutes.</h2>
+        <p class="section-sub light">No website, no app, no computer needed. Just your phone.</p>
+        <div class="grid grid-3">
+          <article class="card dark-card">
+            <h3>Free listing</h3>
+            <p>Add your menu with photos. Our team can do it for you on your first visit.</p>
+          </article>
+          <article class="card dark-card">
+            <h3>Orders on WhatsApp &amp; phone</h3>
+            <p>Get new-order alerts by WhatsApp, SMS or a simple dashboard. Accept with one tap.</p>
+          </article>
+          <article class="card dark-card">
+            <h3>Weekly payouts</h3>
+            <p>Money goes straight to your bank account every week with a clear statement.</p>
+          </article>
+        </div>
+        <form class="form form-inline" action="#" method="post">
+          <h3>Register your shop</h3>
+          <div class="form-row">
+            <label>Shop name<input type="text" name="shop" placeholder="e.g. Lakshmi Tiffin Centre" required></label>
+            <label>Owner name<input type="text" name="owner" placeholder="Your name" required></label>
+          </div>
+          <div class="form-row">
+            <label>Mobile number<input type="tel" name="phone" placeholder="10-digit mobile" pattern="[0-9]{10}" required></label>
+            <label>Shop type
+              <select name="type">
+                <option>Restaurant / Mess</option>
+                <option>Bakery / Cakes</option>
+                <option>Grocery / Vegetables</option>
+                <option>Sweets / Snacks</option>
+                <option>Pharmacy</option>
+                <option>Home kitchen</option>
+              </select>
+            </label>
+          </div>
+          <button type="submit" class="btn">Request free listing</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- RIDERS -->
+    <section id="rider" class="section">
+      <div class="container two-col">
+        <div>
+          <h2>Earn by delivering in your own town</h2>
+          <p class="section-sub left">Flexible hours, weekly pay, and you already know every lane.</p>
+          <a href="#order" class="btn">Become a rider</a>
+        </div>
+        <ul class="feature-list">
+          <li><strong>Earn per delivery</strong> plus distance and rain bonuses.</li>
+          <li><strong>Work when you want</strong>, full time or just evenings.</li>
+          <li><strong>Simple requirements:</strong> a smartphone, a two-wheeler, a valid driving licence and ID.</li>
+          <li><strong>Accident cover</strong> and safety training for every partner.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ORDER FORM -->
+    <section id="order" class="section alt">
+      <div class="container narrow">
+        <h2>Place a quick order</h2>
+        <p class="section-sub">Tell us what you want and we'll confirm with the shop.</p>
+        <form class="form" action="#" method="post">
+          <div class="form-row">
+            <label>Your name<input type="text" name="name" required></label>
+            <label>Mobile number<input type="tel" name="phone" pattern="[0-9]{10}" required></label>
+          </div>
+          <label>Delivery address<textarea name="address" rows="3" placeholder="House no, street, landmark" required></textarea></label>
+          <div class="form-row">
+            <label>Category
+              <select name="category">
+                <option>Local meals</option>
+                <option>Cakes &amp; bakery</option>
+                <option>Groceries</option>
+                <option>Sweets &amp; snacks</option>
+                <option>Medicines</option>
+                <option>Tiffin &amp; home food</option>
+              </select>
+            </label>
+            <label>Payment
+              <select name="payment">
+                <option>UPI</option>
+                <option>Cash on delivery</option>
+                <option>Card</option>
+              </select>
+            </label>
+          </div>
+          <label>What would you like to order?<textarea name="items" rows="3" placeholder="e.g. 4 idli, 1 vada, 1 filter coffee from Lakshmi Tiffin" required></textarea></label>
+          <button type="submit" class="btn btn-block">Send order</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <div class="container narrow">
+        <h2>Questions people ask</h2>
+        <details class="faq">
+          <summary>Which towns do you serve?</summary>
+          <p>We start in one town at a time. Tell us your town and we'll let you know when we open there.</p>
+        </details>
+        <details class="faq">
+          <summary>How much is the delivery charge?</summary>
+          <p>A small fixed fee based on distance, shown before you pay. Nothing is added later.</p>
+        </details>
+        <details class="faq">
+          <summary>Do shops need a licence to join?</summary>
+          <p>Food sellers need a valid FSSAI registration. If a shop doesn't have one yet, we help them apply before listing.</p>
+        </details>
+        <details class="faq">
+          <summary>Is my payment safe?</summary>
+          <p>Online payments go through a regulated payment gateway. We never see or store your card or UPI PIN.</p>
+        </details>
+        <details class="faq">
+          <summary>What if my order is wrong or late?</summary>
+          <p>Contact support from your order page. We'll fix it or refund you according to our refund policy.</p>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a href="#top" class="logo light">Town<span>Bite</span></a>
+        <p>Local food and groceries, delivered by your own town.</p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#how">How it works</a>
+        <a href="#partner">List your shop</a>
+        <a href="#rider">Become a rider</a>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a href="#faq">FAQ</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">Terms &amp; refunds</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p>hello@townbite.example</p>
+        <p>+91 00000 00000</p>
+      </div>
+    </div>
+    <p class="copy">© 2026 TownBite. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
+
+
