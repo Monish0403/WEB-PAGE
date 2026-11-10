@@ -1,0 +1,19 @@
+backend/
+├── alembic/                # Database migrations
+├── app/
+│   ├── api/
+│   │   ├── dependencies.py # Auth & DB session injectors
+│   │   └── v1/
+│   │       ├── auth.py     # Login/JWT routes
+│   │       ├── branches.py # Branch management
+│   │       └── bookings.py # Reservation logic
+│   ├── core/
+│   │   ├── config.py       # Pydantic BaseSettings (Env vars)
+│   │   └── security.py     # Argon2id hashing & JWT generation
+│   ├── models/
+│   │   └── domain.py       # SQLAlchemy ORM models
+│   ├── schemas/
+│   │   └── pydantic.py     # Request/Response validation
+│   └── main.py             # FastAPI application setup
+├── requirements.txt
+└── Dockerfile
