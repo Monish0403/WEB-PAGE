@@ -1,0 +1,12 @@
+That value comes from the **standard normal table**. The table gives the area under the curve from \(0\) to \(z=3.00\), which is about \(0.4987\).
+
+More precisely, if \(\Phi\) is the standard normal cumulative distribution function, then
+
+\[
+P(0<Z<3)=\Phi(3)-\Phi(0)
+\approx 0.99865-0.5
+=0.49865
+\approx 0.4987.
+\]
+
+So the notation \(\phi(3)\) in your notes is being used for that area; commonly, \(\phi\) means the density and \(\Phi\) means the cumulative probability.
