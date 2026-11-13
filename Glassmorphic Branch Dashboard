@@ -1,0 +1,89 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Hotel, Users, CalendarCheck, TrendingUp, Search } from 'lucide-react';
+
+export default function BranchDashboard() {
+  const [stats, setStats] = useState({ occupied: 42, total: 85, revenue: 12450 });
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 p-8 font-sans selection:bg-teal-500/30">
+      
+      {/* Header */}
+      <header className="flex justify-between items-center mb-10">
+        <div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent">
+            OmniStay Management
+          </h1>
+          <p className="text-slate-400 mt-1">Mysuru Branch - Overview</p>
+        </div>
+        
+        <div className="relative">
+          <Search className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
+          <input 
+            type="text" 
+            placeholder="Search guests, rooms..." 
+            className="pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all backdrop-blur-md"
+          />
+        </div>
+      </header>
+
+      {/* KPI Cards (Glassmorphism) */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        {[
+          { label: 'Occupancy Rate', value: `${Math.round((stats.occupied/stats.total)*100)}%`, icon: Hotel, color: 'text-teal-400' },
+          { label: 'Active Guests', value: '112', icon: Users, color: 'text-blue-400' },
+          { label: 'Today\'s Check-ins', value: '18', icon: CalendarCheck, color: 'text-teal-300' },
+          { label: 'Daily Revenue', value: `₹${stats.revenue}`, icon: TrendingUp, color: 'text-emerald-400' },
+        ].map((stat, i) => (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            key={i} 
+            className="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-xl shadow-lg hover:border-teal-500/30 transition-all"
+          >
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm text-slate-400 mb-1">{stat.label}</p>
+                <h3 className="text-2xl font-semibold">{stat.value}</h3>
+              </div>
+              <div className={`p-3 rounded-lg bg-slate-900/50 ${stat.color}`}>
+                <stat.icon className="h-6 w-6" />
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Recent Bookings Table Component */}
+      <div className="rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h2 className="text-xl font-semibold text-slate-200">Recent Branch Activity</h2>
+        </div>
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-slate-900/50 text-slate-400 text-sm">
+              <th className="p-4 font-medium">Guest Name</th>
+              <th className="p-4 font-medium">Room</th>
+              <th className="p-4 font-medium">Check-in</th>
+              <th className="p-4 font-medium">Status</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {/* Map through dynamic data here */}
+            <tr className="border-b border-slate-700/30 hover:bg-slate-800/60 transition-colors">
+              <td className="p-4">Rahul Sharma</td>
+              <td className="p-4 text-teal-400 font-medium">204 (Deluxe)</td>
+              <td className="p-4 text-slate-400">Oct 24, 2026</td>
+              <td className="p-4">
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/20">
+                  Checked In
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
