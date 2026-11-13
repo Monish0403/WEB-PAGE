@@ -1,0 +1,130 @@
+-- 1. Departments Table
+CREATE TABLE departments (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50),
+    hod_name VARCHAR(50),
+    established_year INT,
+    contact_number VARCHAR(15)
+);
+
+INSERT INTO departments (dept_id, dept_name, hod_name, established_year, contact_number) VALUES
+(1, 'Computer Science and Engineering', 'Dr. Sharma', 2001, '9876543210'),
+(2, 'Electronics and Communication', 'Dr. Rao', 2002, '9876543211'),
+(3, 'Mechanical Engineering', 'Dr. Patil', 2000, '9876543212'),
+(4, 'Civil Engineering', 'Dr. Reddy', 2000, '9876543213'),
+(5, 'Information Science', 'Dr. Desai', 2005, '9876543214'),
+(6, 'Artificial Intelligence', 'Dr. Kumar', 2022, '9876543215'),
+(7, 'Electrical Engineering', 'Dr. Singh', 2003, '9876543216'),
+(8, 'Information Technology', 'Dr. Gupta', 2001, '9876543217'),
+(9, 'Data Science', 'Dr. Joshi', 2023, '9876543218'),
+(10, 'Cybersecurity', 'Dr. Bhat', 2023, '9876543219');
+
+-- 2. Professors Table
+CREATE TABLE professors (
+    prof_id INT PRIMARY KEY,
+    prof_name VARCHAR(50),
+    email VARCHAR(100),
+    specialization VARCHAR(50),
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+
+INSERT INTO professors (prof_id, prof_name, email, specialization, dept_id) VALUES
+(101, 'Prof. Ramesh', 'ramesh@college.edu', 'Java Programming', 1),
+(102, 'Prof. Anjali', 'anjali@college.edu', 'Database Management', 1),
+(103, 'Prof. Vikram', 'vikram@college.edu', 'Cloud Computing', 1),
+(104, 'Prof. Suresh', 'suresh@college.edu', 'VLSI Design', 2),
+(105, 'Prof. Kavya', 'kavya@college.edu', 'Networking', 2),
+(106, 'Prof. Dinesh', 'dinesh@college.edu', 'Thermodynamics', 3),
+(107, 'Prof. Meena', 'meena@college.edu', 'Structural Analysis', 4),
+(108, 'Prof. Karthik', 'karthik@college.edu', 'Machine Learning', 6),
+(109, 'Prof. Priya', 'priya@college.edu', 'Data Mining', 9),
+(110, 'Prof. Amit', 'amit@college.edu', 'Cryptography', 10);
+
+-- 3. Students Table
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    enrollment_year INT,
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+
+INSERT INTO students (student_id, first_name, last_name, enrollment_year, dept_id) VALUES
+(1001, 'Monish', 'M N', 2025, 1),
+(1002, 'Rahul', 'Gowda', 2025, 1),
+(1003, 'Sneha', 'Patil', 2024, 2),
+(1004, 'Kiran', 'Kumar', 2025, 1),
+(1005, 'Aishwarya', 'Rao', 2026, 6),
+(1006, 'Darshan', 'S', 2024, 3),
+(1007, 'Pooja', 'Hegde', 2025, 5),
+(1008, 'Vinay', 'Prasad', 2024, 4),
+(1009, 'Neha', 'Desai', 2026, 9),
+(1010, 'Sanjay', 'Murthy', 2025, 10);
+
+-- 4. Courses Table
+CREATE TABLE courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(100),
+    credits INT,
+    semester INT,
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+
+INSERT INTO courses (course_id, course_name, credits, semester, dept_id) VALUES
+(501, 'Advanced Java Programming', 4, 3, 1),
+(502, 'MySQL & Relational Databases', 3, 3, 1),
+(503, 'Data Structures in C', 4, 3, 1),
+(504, 'AWS Cloud Architecture', 3, 5, 1),
+(505, 'CCNA Networking Fundamentals', 3, 4, 2),
+(506, 'Digital Signal Processing', 4, 5, 2),
+(507, 'Fluid Mechanics', 4, 3, 3),
+(508, 'Concrete Technology', 3, 4, 4),
+(509, 'Machine Learning Basics', 4, 5, 6),
+(510, 'Network Security', 3, 6, 10);
+
+-- 5. Enrollments Table
+CREATE TABLE enrollments (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    grade VARCHAR(2),
+    enrollment_date DATE,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+
+INSERT INTO enrollments (enrollment_id, student_id, course_id, grade, enrollment_date) VALUES
+(9001, 1001, 501, 'S', '2026-08-01'),
+(9002, 1001, 502, 'S', '2026-08-01'),
+(9003, 1001, 503, 'A', '2026-08-01'),
+(9004, 1002, 501, 'A', '2026-08-01'),
+(9005, 1003, 505, 'B', '2026-08-02'),
+(9006, 1004, 502, 'A', '2026-08-01'),
+(9007, 1005, 509, 'S', '2026-08-03'),
+(9008, 1006, 507, 'C', '2026-08-02'),
+(9009, 1008, 508, 'B', '2026-08-04'),
+(9010, 1010, 510, 'A', '2026-08-05');
+
+-- 6. Hostels Table
+CREATE TABLE hostels (
+    hostel_id INT PRIMARY KEY,
+    hostel_name VARCHAR(50),
+    capacity INT,
+    warden_name VARCHAR(50),
+    annual_fee DECIMAL(10,2)
+);
+
+INSERT INTO hostels (hostel_id, hostel_name, capacity, warden_name, annual_fee) VALUES
+(201, 'Cauvery Boys Hostel', 300, 'Mr. Swamy', 65000.00),
+(202, 'Narmada Girls Hostel', 250, 'Mrs. Lakshmi', 65000.00),
+(203, 'Krishna Boys Hostel', 400, 'Mr. Raj', 60000.00),
+(204, 'Godavari Girls Hostel', 300, 'Mrs. Geetha', 60000.00),
+(205, 'Tunga Boys Block', 200, 'Mr. Harish', 55000.00),
+(206, 'Bhadra Girls Block', 200, 'Mrs. Vani', 55000.00),
+(207, 'Sharavathi PG Hostel', 150, 'Mr. Mohan', 75000.00),
+(208, 'Hemavathi International', 100, 'Mrs. Smitha', 85000.00),
+(209, 'Netravati Freshman Block', 350, 'Mr. Anand', 62000.00),
+(210, 'Kapila Senior Block', 250, 'Mr. Prasad', 68000.00);
