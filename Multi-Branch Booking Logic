@@ -1,0 +1,42 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from typing import List
+from app.api.dependencies import get_db, get_current_user
+from app.models.domain import Booking, User
+from app.schemas.pydantic import BookingCreate, BookingResponse
+
+router = APIRouter()
+
+@router.post("/", response_model=BookingResponse, status_code=status.HTTP_201_CREATED)
+def create_booking(
+    booking_in: BookingCreate, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Enforce multi-tenant boundary: User can only book for their own branch
+    if not current_user.branch_id:
+        raise HTTPException(status_code=403, detail="Super Admins must specify a branch to book.")
+    
+    # Validation, pricing logic, and conflict checks go here...
+    
+    new_booking = Booking(
+        **booking_in.dict(),
+        branch_id=current_user.branch_id,
+        user_id=current_user.id
+    )
+    db.add(new_booking)
+    db.commit()
+    db.refresh(new_booking)
+    return new_booking
+
+@router.get("/", response_model=List[BookingResponse])
+def get_branch_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    skip: int = 0,
+    limit: int = 50
+):
+    # Data Isolation: Only return bookings for the user's specific branch
+    return db.query(Booking).filter(
+        Booking.branch_id == current_user.branch_id
+    ).offset(skip).limit(limit).all()
