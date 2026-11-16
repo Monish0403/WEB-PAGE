@@ -1,0 +1,88 @@
+import datetime
+from twilio.rest import Client
+
+class CollegeManagementSystem:
+    def __init__(self, twilio_sid, twilio_auth_token, twilio_phone_number):
+        # Initialize Twilio Client
+        self.twilio_client = Client(twilio_sid, twilio_auth_token)
+        self.twilio_phone_number = twilio_phone_number
+        
+        # Simulated Database (In a real app, this would be MySQL, PostgreSQL, etc.)
+        self.students_db = {
+            "STU1001": {
+                "name": "Aarav Sharma",
+                "parent_name": "Rajesh Sharma",
+                "parent_phone": "+919876543210", # Must include country code
+                "course": "B.Tech Computer Science"
+            },
+            "STU1002": {
+                "name": "Priya Patel",
+                "parent_name": "Sunita Patel",
+                "parent_phone": "+919123456789",
+                "course": "B.Sc Physics"
+            }
+        }
+        
+        # Log of attendance records
+        self.attendance_log = []
+
+    def mark_attendance(self, student_id, status="Present"):
+        """Marks the attendance for a student and notifies the parent."""
+        if student_id not in self.students_db:
+            print(f"Error: Student ID {student_id} not found in system.")
+            return
+
+        student = self.students_db[student_id]
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Record attendance
+        record = {
+            "student_id": student_id,
+            "name": student["name"],
+            "status": status,
+            "timestamp": timestamp
+        }
+        self.attendance_log.append(record)
+        print(f"Success: Attendance marked as {status} for {student['name']} at {timestamp}.")
+
+        # Trigger SMS Notification to Parent
+        self._send_sms_to_parent(student, status, timestamp)
+
+    def _send_sms_to_parent(self, student, status, timestamp):
+        """Formats and sends the SMS message via Twilio."""
+        parent_phone = student["parent_phone"]
+        
+        if status == "Present":
+            message_body = (f"Dear {student['parent_name']}, your ward {student['name']} "
+                            f"has safely entered the campus and attended class at {timestamp}.")
+        else:
+            message_body = (f"Dear {student['parent_name']}, notice: your ward {student['name']} "
+                            f"was marked {status} for today's classes as of {timestamp}.")
+
+        try:
+            message = self.twilio_client.messages.create(
+                body=message_body,
+                from_=self.twilio_phone_number,
+                to=parent_phone
+            )
+            print(f"SMS successfully sent to {parent_phone}. Message SID: {message.sid}")
+        except Exception as e:
+            print(f"Failed to send SMS to {parent_phone}. Error: {str(e)}")
+
+
+# --- Execution Example ---
+if __name__ == "__main__":
+    # Replace these credentials with your actual Twilio account details
+    TWILIO_SID = "your_account_sid_here"
+    TWILIO_AUTH_TOKEN = "your_auth_token_here"
+    TWILIO_PHONE = "+1234567890" # Your Twilio number
+
+    # Initialize the system
+    college_system = CollegeManagementSystem(TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE)
+
+    # Simulate student scanning their ID card at the campus gate or classroom
+    print("--- Simulating Campus Entry ---")
+    college_system.mark_attendance("STU1001", status="Present")
+    
+    print("\n--- Simulating Absentee Scan (End of Day) ---")
+    college_system.mark_attendance("STU1002", status="Absent")
