@@ -1,0 +1,138 @@
+import sqlite3
+import datetime
+from twilio.rest import Client
+
+class DatabaseManager:
+    def __init__(self, db_name="college_system.db"):
+        self.db_name = db_name
+        self.setup_database()
+
+    def get_connection(self):
+        return sqlite3.connect(self.db_name)
+
+    def setup_database(self):
+        """Creates the students and attendance tables if they don't exist."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            
+            # Create Students Table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS students (
+                    student_id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    parent_name TEXT NOT NULL,
+                    parent_phone TEXT NOT NULL,
+                    course TEXT NOT NULL
+                )
+            ''')
+            
+            # Create Attendance Table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS attendance (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    student_id TEXT NOT NULL,
+                    status TEXT NOT NULL,
+                    timestamp DATETIME NOT NULL,
+                    FOREIGN KEY (student_id) REFERENCES students (student_id)
+                )
+            ''')
+            conn.commit()
+
+    def add_sample_students(self):
+        """Inserts sample data into the students table for testing."""
+        students_data = [
+            ("STU1001", "Aarav Sharma", "Rajesh Sharma", "+919876543210", "B.Tech Computer Science"),
+            ("STU1002", "Priya Patel", "Sunita Patel", "+919123456789", "B.Sc Physics")
+        ]
+        
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            # Use OR IGNORE to prevent errors if running this script multiple times
+            cursor.executemany('''
+                INSERT OR IGNORE INTO students (student_id, name, parent_name, parent_phone, course)
+                VALUES (?, ?, ?, ?, ?)
+            ''', students_data)
+            conn.commit()
+
+class CollegeManagementSystem:
+    def __init__(self, db_manager, twilio_sid, twilio_auth_token, twilio_phone_number):
+        self.db = db_manager
+        self.twilio_client = Client(twilio_sid, twilio_auth_token)
+        self.twilio_phone_number = twilio_phone_number
+
+    def mark_attendance(self, student_id, status="Present"):
+        """Marks attendance in the SQLite database and notifies the parent."""
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            
+            # 1. Fetch student details from the database
+            cursor.execute("SELECT name, parent_name, parent_phone FROM students WHERE student_id = ?", (student_id,))
+            student_record = cursor.fetchone()
+            
+            if not student_record:
+                print(f"Error: Student ID {student_id} not found in database.")
+                return
+
+            name, parent_name, parent_phone = student_record
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            # 2. Save the attendance record to the database
+            cursor.execute('''
+                INSERT INTO attendance (student_id, status, timestamp)
+                VALUES (?, ?, ?)
+            ''', (student_id, status, timestamp))
+            conn.commit()
+            
+            print(f"Success: Attendance saved in database as {status} for {name} at {timestamp}.")
+
+            # 3. Trigger SMS Notification
+            self._send_sms_to_parent(name, parent_name, parent_phone, status, timestamp)
+
+    def _send_sms_to_parent(self, student_name, parent_name, parent_phone, status, timestamp):
+        """Formats and sends the SMS message via Twilio."""
+        if status == "Present":
+            message_body = (f"Dear {parent_name}, your ward {student_name} "
+                            f"has safely entered the campus and attended class at {timestamp}.")
+        else:
+            message_body = (f"Dear {parent_name}, notice: your ward {student_name} "
+                            f"was marked {status} for today's classes as of {timestamp}.")
+
+        try:
+            # Commented out for local testing without Twilio credentials
+            """
+            message = self.twilio_client.messages.create(
+                body=message_body,
+                from_=self.twilio_phone_number,
+                to=parent_phone
+            )
+            print(f"SMS successfully sent to {parent_phone}. Message SID: {message.sid}")
+            """
+            print(f"[MOCK SMS TO {parent_phone}]: {message_body}")
+        except Exception as e:
+            print(f"Failed to send SMS to {parent_phone}. Error: {str(e)}")
+
+
+# --- Execution Example ---
+if __name__ == "__main__":
+    # Initialize Database and add dummy data
+    db = DatabaseManager("college_system.db")
+    db.add_sample_students()
+
+    # Twilio Credentials (Replace with real ones when ready)
+    TWILIO_SID = "your_account_sid_here"
+    TWILIO_AUTH_TOKEN = "your_auth_token_here"
+    TWILIO_PHONE = "+1234567890"
+
+    # Initialize the College System with the Database connected
+    college_system = CollegeManagementSystem(db, TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE)
+
+    # Simulate RFID/Barcode Scans
+    print("\n--- Simulating Campus Entry ---")
+    college_system.mark_attendance("STU1001", status="Present")
+    
+    print("\n--- Simulating Absentee Scan (End of Day) ---")
+    college_system.mark_attendance("STU1002", status="Absent")
+    
+    # Test an unregistered ID
+    print("\n--- Simulating Unregistered Card Scan ---")
+    college_system.mark_attendance("STU9999", status="Present")
