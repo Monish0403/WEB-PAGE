@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a doubly linked list node
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+
+// Global top pointer initialized to NULL
+struct Node* top = NULL;
+
+// Push: Insert an element at the top of the stack
+void push(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Stack Overflow! Memory allocation failed.\n");
+        return;
+    }
+    
+    newNode->data = value;
+    newNode->prev = NULL; // New top node has no previous node
+    newNode->next = top;  // Link new node to the current top
+
+    if (top != NULL) {
+        top->prev = newNode; // Update old top's prev pointer to newNode
+    }
+    
+    top = newNode; // Update top to the new node
+    printf("%d pushed to stack.\n", value);
+}
+
+// Pop: Remove the top element from the stack
+void pop() {
+    if (top == NULL) {
+        printf("Stack Underflow! Cannot pop from an empty stack.\n");
+        return;
+    }
+    
+    struct Node* temp = top;
+    printf("%d popped from stack.\n", top->data);
+    
+    top = top->next; // Move top to the next node
+    
+    if (top != NULL) {
+        top->prev = NULL; // New top should not point back to the deleted node
+    }
+    
+    free(temp); // Free memory of the removed node
+}
+
+// Display: Print all elements from top to bottom
+void display() {
+    if (top == NULL) {
+        printf("Stack is empty.\n");
+        return;
+    }
+    
+    struct Node* temp = top;
+    printf("Stack elements: NULL <-> ");
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    int choice, value;
+
+    while (1) {
+        printf("\n--- Doubly Linked List Stack Menu ---\n");
+        printf("1. Push\n2. Pop\n3. Display\n4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to push: ");
+                scanf("%d", &value);
+                push(value);
+                break;
+            case 2:
+                pop();
+                break;
+            case 3:
+                display();
+                break;
+            case 4:
+                printf("Exiting program.\n");
+                exit(0);
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+    return 0;
+}
