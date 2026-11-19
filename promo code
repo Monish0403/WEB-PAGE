@@ -1,0 +1,192 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_PRODUCTS 6
+#define MAX_CART 20
+
+typedef struct {
+    int id;
+    char name[50];
+    char category[20];
+    float price;
+    int stock;
+} Product;
+
+typedef struct {
+    int productId;
+    int quantity;
+} CartItem;
+
+Product catalog[MAX_PRODUCTS] = {
+    {101, "Vitamin C Face Serum", "Skincare", 499.00, 15},
+    {102, "Matte Liquid Lipstick", "Makeup", 299.00, 25},
+    {103, "Aloe Vera Hydrating Gel", "Skincare", 199.00, 30},
+    {104, "Waterproof Kajal", "Makeup", 175.00, 40},
+    {105, "Onion Hair Growth Oil", "Haircare", 349.00, 20},
+    {106, "Keratin Smooth Shampoo", "Haircare", 420.00, 18}
+};
+
+CartItem cart[MAX_CART];
+int cartCount = 0;
+
+void displayProducts(const char *filterCategory) {
+    printf("\n==============================================================\n");
+    printf("%-6s %-26s %-12s %-10s %-6s\n", "ID", "Product Name", "Category", "Price(Rs)", "Stock");
+    printf("==============================================================\n");
+    for (int i = 0; i < MAX_PRODUCTS; i++) {
+        if (filterCategory == NULL || strcmp(catalog[i].category, filterCategory) == 0) {
+            printf("%-6d %-26s %-12s %-10.2f %-6d\n",
+                   catalog[i].id, catalog[i].name, catalog[i].category,
+                   catalog[i].price, catalog[i].stock);
+        }
+    }
+    printf("==============================================================\n");
+}
+
+int findProductIndex(int id) {
+    for (int i = 0; i < MAX_PRODUCTS; i++) {
+        if (catalog[i].id == id) return i;
+    }
+    return -1;
+}
+
+void addToCart() {
+    int id, qty;
+    printf("\nEnter Product ID to add: ");
+    scanf("%d", &id);
+
+    int idx = findProductIndex(id);
+    if (idx == -1) {
+        printf("Product not found.\n");
+        return;
+    }
+
+    printf("Enter quantity: ");
+    scanf("%d", &qty);
+
+    if (qty <= 0 || qty > catalog[idx].stock) {
+        printf("Invalid quantity. Available stock: %d\n", catalog[idx].stock);
+        return;
+    }
+
+    // Check if product is already in cart
+    for (int i = 0; i < cartCount; i++) {
+        if (cart[i].productId == id) {
+            cart[i].quantity += qty;
+            catalog[idx].stock -= qty;
+            printf("Updated '%s' quantity in cart.\n", catalog[idx].name);
+            return;
+        }
+    }
+
+    if (cartCount < MAX_CART) {
+        cart[cartCount].productId = id;
+        cart[cartCount].quantity = qty;
+        cartCount++;
+        catalog[idx].stock -= qty;
+        printf("Added '%s' to cart!\n", catalog[idx].name);
+    } else {
+        printf("Cart is full.\n");
+    }
+}
+
+void viewCart() {
+    if (cartCount == 0) {
+        printf("\nYour cart is empty.\n");
+        return;
+    }
+
+    float total = 0;
+    printf("\n==================== YOUR SHOPPING CART ======================\n");
+    printf("%-6s %-26s %-8s %-10s\n", "ID", "Product Name", "Qty", "Subtotal");
+    printf("==============================================================\n");
+    for (int i = 0; i < cartCount; i++) {
+        int idx = findProductIndex(cart[i].productId);
+        float sub = catalog[idx].price * cart[i].quantity;
+        total += sub;
+        printf("%-6d %-26s %-8d Rs.%.2f\n",
+               catalog[idx].id, catalog[idx].name, cart[i].quantity, sub);
+    }
+    printf("==============================================================\n");
+    printf("Total Amount: Rs.%.2f\n", total);
+}
+
+void checkout() {
+    if (cartCount == 0) {
+        printf("\nYour cart is empty. Add items before checkout.\n");
+        return;
+    }
+
+    viewCart();
+    float total = 0;
+    for (int i = 0; i < cartCount; i++) {
+        int idx = findProductIndex(cart[i].productId);
+        total += catalog[idx].price * cart[i].quantity;
+    }
+
+    char promo[20];
+    printf("\nEnter promo code (or 'NONE' to skip) [Hint: PURPLLE10]: ");
+    scanf("%19s", promo);
+
+    float discount = 0;
+    if (strcmp(promo, "PURPLLE10") == 0) {
+        discount = total * 0.10f;
+        printf("Promo applied! You saved Rs.%.2f (10%% off).\n", discount);
+    } else if (strcmp(promo, "NONE") != 0) {
+        printf("Invalid promo code. Proceeding without discount.\n");
+    }
+
+    printf("\n---------------- FINAL RECEIPT ----------------\n");
+    printf("Subtotal : Rs.%.2f\n", total);
+    printf("Discount : Rs.%.2f\n", discount);
+    printf("Payable  : Rs.%.2f\n", total - discount);
+    printf("-----------------------------------------------\n");
+    printf("Order placed successfully! Thank you for shopping.\n");
+
+    cartCount = 0; // Clear cart after checkout
+}
+
+int main() {
+    int choice, catChoice;
+
+    while (1) {
+        printf("\n========== PURPLLE BEAUTY STORE (C APP) ==========\n");
+        printf("1. Browse All Products\n");
+        printf("2. Filter by Category\n");
+        printf("3. Add Product to Cart\n");
+        printf("4. View Cart\n");
+        printf("5. Checkout\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                displayProducts(NULL);
+                break;
+            case 2:
+                printf("\n1. Skincare  2. Makeup  3. Haircare\nSelect category: ");
+                scanf("%d", &catChoice);
+                if (catChoice == 1) displayProducts("Skincare");
+                else if (catChoice == 2) displayProducts("Makeup");
+                else if (catChoice == 3) displayProducts("Haircare");
+                else printf("Invalid category.\n");
+                break;
+            case 3:
+                addToCart();
+                break;
+            case 4:
+                viewCart();
+                break;
+            case 5:
+                checkout();
+                break;
+            case 6:
+                printf("Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+    return 0;
+}
