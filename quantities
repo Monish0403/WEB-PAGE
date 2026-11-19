@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+
+#define MAX_PRODUCTS 50
+#define MAX_CART 20
+#define USERS_FILE "users.txt"
+#define ORDERS_FILE "orders.txt"
+#define ADMIN_USER "admin"
+#define ADMIN_PASS "admin123"
+
+typedef struct {
+    int id;
+    char name[50];
+    char category[20];
+    float price;
+    int stock;
+} Product;
+
+typedef struct {
+    int productId;
+    int quantity;
+} CartItem;
+
+Product catalog[MAX_PRODUCTS] = {
+    {101, "Vitamin C Face Serum", "Skincare", 499.00, 15},
+    {102, "Matte Liquid Lipstick", "Makeup", 299.00, 25},
+    {103, "Aloe Vera Hydrating Gel", "Skincare", 199.00, 30},
+    {104, "Waterproof Kajal", "Makeup", 175.00, 40},
+    {105, "Onion Hair Growth Oil", "Haircare", 349.00, 20},
+    {106, "Keratin Smooth Shampoo", "Haircare", 420.00, 18}
+};
+int productCount = 6;
+
+CartItem cart[MAX_CART];
+int cartCount = 0;
+char currentUser[30] = "";
+
+// ---------------- AUTHENTICATION FUNCTIONS ----------------
+
+void registerUser() {
+    char username[30], password[30];
+    char fileUser[30], filePass[30];
+
+    printf("\n--- REGISTER NEW ACCOUNT ---\n");
+    printf("Enter username (no spaces): ");
+    scanf("%29s",
