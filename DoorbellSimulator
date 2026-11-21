@@ -1,0 +1,23 @@
+package com.iot.doorbell;
+
+import java.util.Scanner;
+
+public class DoorbellSimulator {
+    public static void main(String[] args) {
+        NotificationService notificationService = new NotificationService();
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("=== Smart Doorbell Simulator ===");
+        System.out.println("Press ENTER to ring the doorbell (or type 'exit' to quit):");
+
+        while (true) {
+            String input = scanner.nextLine();
+            if ("exit".equalsIgnoreCase(input.trim())) {
+                break;
+            }
+            System.out.println("🔔 Bell Rung! Notifying owner...");
+            notificationService.sendDoorbellAlert();
+        }
+        scanner.close();
+    }
+}
