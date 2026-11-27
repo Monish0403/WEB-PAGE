@@ -1,0 +1,165 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure of a BST node
+typedef struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+} Node;
+
+// Create a new node
+Node* createNode(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Insert a value into the BST (ignores duplicates)
+Node* insert(Node* root, int value) {
+    if (root == NULL) {
+        return createNode(value);
+    }
+    if (value < root->data) {
+        root->left = insert(root->left, value);
+    } else if (value > root->data) {
+        root->right = insert(root->right, value);
+    }
+    return root;
+}
+
+// Search for a value in the BST
+Node* search(Node* root, int key) {
+    if (root == NULL || root->data == key) {
+        return root;
+    }
+    if (key < root->data) {
+        return search(root->left, key);
+    }
+    return search(root->right, key);
+}
+
+// Find the node with the minimum value (used for deletion)
+Node* findMin(Node* root) {
+    while (root != NULL && root->left != NULL) {
+        root = root->left;
+    }
+    return root;
+}
+
+// Delete a value from the BST
+Node* deleteNode(Node* root, int key) {
+    if (root == NULL) {
+        return NULL;
+    }
+
+    if (key < root->data) {
+        root->left = deleteNode(root->left, key);
+    } else if (key > root->data) {
+        root->right = deleteNode(root->right, key);
+    } else {
+        // Case 1 & 2: Node has 0 or 1 child
+        if (root->left == NULL) {
+            Node* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Case 3: Node has 2 children
+        // Replace with inorder successor (smallest in right subtree)
+        Node* successor = findMin(root->right);
+        root->data = successor->data;
+        root->right = deleteNode(root->right, successor->data);
+    }
+    return root;
+}
+
+// Inorder traversal (Left -> Root -> Right) - prints sorted order
+void inorder(Node* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        printf("%d ", root->data);
+        inorder(root->right);
+    }
+}
+
+// Preorder traversal (Root -> Left -> Right)
+void preorder(Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+// Postorder traversal (Left -> Right -> Root)
+void postorder(Node* root) {
+    if (root != NULL) {
+        postorder(root->left);
+        postorder(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+// Free all allocated memory in the BST
+void freeTree(Node* root) {
+    if (root != NULL) {
+        freeTree(root->left);
+        freeTree(root->right);
+        free(root);
+    }
+}
+
+int main(void) {
+    Node* root = NULL;
+
+    // Insert elements
+    int values[] = {50, 30, 70, 20, 40, 60, 80};
+    int n = sizeof(values) / sizeof(values[0]);
+    for (int i = 0; i < n; i++) {
+        root = insert(root, values[i]);
+    }
+
+    printf("Inorder (sorted): ");
+    inorder(root);
+    printf("\n");
+
+    printf("Preorder:         ");
+    preorder(root);
+    printf("\n");
+
+    printf("Postorder:        ");
+    postorder(root);
+    printf("\n");
+
+    // Search example
+    int key = 40;
+    if (search(root, key) != NULL) {
+        printf("\n%d found in the BST.\n", key);
+    } else {
+        printf("\n%d not found in the BST.\n", key);
+    }
+
+    // Delete examples (leaf, 1 child, 2 children)
+    root = deleteNode(root, 20);
+    root = deleteNode(root, 30);
+    root = deleteNode(root, 50);
+
+    printf("\nInorder after deleting 20, 30, 50: ");
+    inorder(root);
+    printf("\n");
+
+    // Clean up memory
+    freeTree(root);
+    return 0;
+}
