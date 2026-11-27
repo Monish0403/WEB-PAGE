@@ -1,0 +1,160 @@
+public class BST {
+
+    // Node class representing each element in the tree
+    static class Node {
+        int data;
+        Node left, right;
+
+        Node(int value) {
+            this.data = value;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
+    private Node root;
+
+    // Insert a value into the BST (ignores duplicates)
+    public void insert(int value) {
+        root = insertRec(root, value);
+    }
+
+    private Node insertRec(Node node, int value) {
+        if (node == null) {
+            return new Node(value);
+        }
+        if (value < node.data) {
+            node.left = insertRec(node.left, value);
+        } else if (value > node.data) {
+            node.right = insertRec(node.right, value);
+        }
+        return node;
+    }
+
+    // Search for a value in the BST
+    public boolean search(int key) {
+        return searchRec(root, key);
+    }
+
+    private boolean searchRec(Node node, int key) {
+        if (node == null) {
+            return false;
+        }
+        if (node.data == key) {
+            return true;
+        }
+        return key < node.data
+                ? searchRec(node.left, key)
+                : searchRec(node.right, key);
+    }
+
+    // Delete a value from the BST
+    public void delete(int key) {
+        root = deleteRec(root, key);
+    }
+
+    private Node deleteRec(Node node, int key) {
+        if (node == null) {
+            return null;
+        }
+
+        if (key < node.data) {
+            node.left = deleteRec(node.left, key);
+        } else if (key > node.data) {
+            node.right = deleteRec(node.right, key);
+        } else {
+            // Case 1 & 2: Node has 0 or 1 child
+            if (node.left == null) {
+                return node.right;
+            } else if (node.right == null) {
+                return node.left;
+            }
+
+            // Case 3: Node has 2 children
+            // Replace with inorder successor (smallest in right subtree)
+            node.data = findMin(node.right);
+            node.right = deleteRec(node.right, node.data);
+        }
+        return node;
+    }
+
+    private int findMin(Node node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node.data;
+    }
+
+    // Inorder traversal (Left -> Root -> Right) - prints sorted order
+    public void inorder() {
+        inorderRec(root);
+        System.out.println();
+    }
+
+    private void inorderRec(Node node) {
+        if (node != null) {
+            inorderRec(node.left);
+            System.out.print(node.data + " ");
+            inorderRec(node.right);
+        }
+    }
+
+    // Preorder traversal (Root -> Left -> Right)
+    public void preorder() {
+        preorderRec(root);
+        System.out.println();
+    }
+
+    private void preorderRec(Node node) {
+        if (node != null) {
+            System.out.print(node.data + " ");
+            preorderRec(node.left);
+            preorderRec(node.right);
+        }
+    }
+
+    // Postorder traversal (Left -> Right -> Root)
+    public void postorder() {
+        postorderRec(root);
+        System.out.println();
+    }
+
+    private void postorderRec(Node node) {
+        if (node != null) {
+            postorderRec(node.left);
+            postorderRec(node.right);
+            System.out.print(node.data + " ");
+        }
+    }
+
+    public static void main(String[] args) {
+        BST tree = new BST();
+
+        // Insert elements
+        int[] values = {50, 30, 70, 20, 40, 60, 80};
+        for (int v : values) {
+            tree.insert(v);
+        }
+
+        System.out.print("Inorder (sorted): ");
+        tree.inorder();
+
+        System.out.print("Preorder:         ");
+        tree.preorder();
+
+        System.out.print("Postorder:        ");
+        tree.postorder();
+
+        // Search example
+        int key = 40;
+        System.out.println("\n" + key + (tree.search(key) ? " found" : " not found") + " in the BST.");
+
+        // Delete examples (leaf, 1 child, 2 children)
+        tree.delete(20);
+        tree.delete(30);
+        tree.delete(50);
+
+        System.out.print("\nInorder after deleting 20, 30, 50: ");
+        tree.inorder();
+    }
+}
