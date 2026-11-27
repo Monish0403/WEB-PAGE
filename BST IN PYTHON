@@ -1,0 +1,126 @@
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+
+class BST:
+    def __init__(self):
+        self.root = None
+
+    # Insert a value into the BST (ignores duplicates)
+    def insert(self, value):
+        self.root = self._insert_rec(self.root, value)
+
+    def _insert_rec(self, node, value):
+        if node is None:
+            return Node(value)
+        if value < node.data:
+            node.left = self._insert_rec(node.left, value)
+        elif value > node.data:
+            node.right = self._insert_rec(node.right, value)
+        return node
+
+    # Search for a value in the BST
+    def search(self, key):
+        return self._search_rec(self.root, key)
+
+    def _search_rec(self, node, key):
+        if node is None:
+            return False
+        if node.data == key:
+            return True
+        if key < node.data:
+            return self._search_rec(node.left, key)
+        return self._search_rec(node.right, key)
+
+    # Delete a value from the BST
+    def delete(self, key):
+        self.root = self._delete_rec(self.root, key)
+
+    def _delete_rec(self, node, key):
+        if node is None:
+            return None
+
+        if key < node.data:
+            node.left = self._delete_rec(node.left, key)
+        elif key > node.data:
+            node.right = self._delete_rec(node.right, key)
+        else:
+            # Case 1 & 2: Node has 0 or 1 child
+            if node.left is None:
+                return node.right
+            if node.right is None:
+                return node.left
+
+            # Case 3: Node has 2 children
+            # Replace with inorder successor (smallest in right subtree)
+            node.data = self._find_min(node.right)
+            node.right = self._delete_rec(node.right, node.data)
+
+        return node
+
+    def _find_min(self, node):
+        while node.left is not None:
+            node = node.left
+        return node.data
+
+    # Inorder traversal (Left -> Root -> Right) - returns sorted list
+    def inorder(self):
+        result = []
+        self._inorder_rec(self.root, result)
+        return result
+
+    def _inorder_rec(self, node, result):
+        if node is not None:
+            self._inorder_rec(node.left, result)
+            result.append(node.data)
+            self._inorder_rec(node.right, result)
+
+    # Preorder traversal (Root -> Left -> Right)
+    def preorder(self):
+        result = []
+        self._preorder_rec(self.root, result)
+        return result
+
+    def _preorder_rec(self, node, result):
+        if node is not None:
+            result.append(node.data)
+            self._preorder_rec(node.left, result)
+            self._preorder_rec(node.right, result)
+
+    # Postorder traversal (Left -> Right -> Root)
+    def postorder(self):
+        result = []
+        self._postorder_rec(self.root, result)
+        return result
+
+    def _postorder_rec(self, node, result):
+        if node is not None:
+            self._postorder_rec(node.left, result)
+            self._postorder_rec(node.right, result)
+            result.append(node.data)
+
+
+if __name__ == "__main__":
+    tree = BST()
+
+    # Insert elements
+    for v in [50, 30, 70, 20, 40, 60, 80]:
+        tree.insert(v)
+
+    print("Inorder (sorted):", tree.inorder())
+    print("Preorder:        ", tree.preorder())
+    print("Postorder:       ", tree.postorder())
+
+    # Search example
+    key = 40
+    status = "found" if tree.search(key) else "not found"
+    print(f"\n{key} {status} in the BST.")
+
+    # Delete examples (leaf, 1 child, 2 children)
+    for k in [20, 30, 50]:
+        tree.delete(k)
+
+    print("\nInorder after deleting 20, 30, 50:", tree.inorder())
